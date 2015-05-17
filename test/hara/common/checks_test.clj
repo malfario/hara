@@ -17,6 +17,12 @@
    (hash-map? {})    => true
    (hash-map? [])    => false)
 
+^{:refer hara.common.checks/lazy-seq? :added "2.1"}
+(fact "Returns `true` if `x` implements `clojure.lang.LazySeq`."
+
+  (lazy-seq? (map inc [1 2 3]))  => true
+  (lazy-seq? ())    => false)
+
 ^{:refer hara.common.checks/long? :added "2.0"}
 (fact "Returns `true` if `x` is of type `java.lang.Long`."
 

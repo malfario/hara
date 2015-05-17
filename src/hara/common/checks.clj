@@ -21,6 +21,14 @@
   {:added "2.0"}
   [x] (instance? clojure.lang.APersistentMap x))
 
+(defn lazy-seq?
+  "Returns `true` if `x` implements `clojure.lang.LazySeq`.
+
+  (lazy-seq? (map inc [1 2 3]))  => true
+  (lazy-seq? ())    => false"
+  {:added "2.1"}
+  [x] (instance? clojure.lang.LazySeq x))
+
 (defn long?
   "Returns `true` if `x` is of type `java.lang.Long`.
 

@@ -2,7 +2,7 @@
   (:require [hara.common.error :refer [error]]
             [hara.common.checks :refer [promise?]]
             [hara.protocol.state :refer :all])
-  (:refer-clojure :exclude [get set empty]))
+  (:refer-clojure :exclude [get set empty update]))
 
 (defn get
   "Like deref but is extensible through the IStateGet protocol

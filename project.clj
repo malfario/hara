@@ -1,9 +1,9 @@
-(defproject im.chit/hara "2.1.11"
+(defproject im.chit/hara "2.1.12-SNAPSHOT"
   :description "General purpose utilities library"
   :url "https://github.com/zcaudate/hara"
   :license {:name "The MIT License"
             :url "http://http://opensource.org/licenses/MIT"}
-  :dependencies [[org.clojure/clojure "1.6.0"]]
+  :dependencies [[org.clojure/clojure "1.7.0-beta3"]]
   :profiles {:dev {:dependencies [[midje "1.6.3"]]
                    :plugins [[lein-midje "3.1.3"]
                              [lein-midje-doc "0.0.23"]

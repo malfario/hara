@@ -38,7 +38,7 @@
 
 (defn set-field [^Field field ^Object obj ^Object val]
   (let [ftype (.getType field)]
-    (cond (-> ftype .isPrimitive not)
+    (cond (-> ftype .isPrimitive)
           (.set field obj (box-arg ftype val))
 
           (= ftype Boolean)
