@@ -57,9 +57,7 @@
             Byte    (.setByte field obj (.byteValue ^Number val)))
 
           :else
-          (throw (ClassCastException.
-                  (format "Unexpected param type, expected: %s, given: %s"
-                        ftype (-> val .getClass .getName)))))))
+          (.set field obj (box-arg ftype val)))))
 
 (defn param-arg-match
   "Checks if the second argument can be used as the first argument
