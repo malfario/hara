@@ -1,4 +1,6 @@
 # hara 
+
+[![Join the chat at https://gitter.im/zcaudate/hara](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/zcaudate/hara?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/zcaudate/hara.png?branch=master)](https://travis-ci.org/zcaudate/hara)
 
 General purpose utilities library. Please see [finding a middle ground](http://z.caudate.me/finding-a-middle-ground/) for motivations and reasoning.
