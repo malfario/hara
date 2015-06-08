@@ -21,19 +21,19 @@
                           ;{:input "test/midje_doc/guides/home.clj"
                           ; :template "full"
                           ; :title "home"}
-                          "orientation"
-                          {:input "test/midje_doc/hara/orientation.clj"
-                           :title "hara in small pieces"
-                           :link {:auto-number false}}
+                          ;"orientation"
+                          ;{:input "test/midje_doc/hara/orientation.clj"
+                          ; :title "hara in small pieces"
+                          ; :link {:auto-number false}}
                           ;"api"
                           ;{:input "test/midje_doc/hara/outline.clj"
                           ; :title "api reference"}
                           ;"hara.component"
                           ;{:input "test/midje_doc/guides/hara_component.clj"
                           ; :title "hara.component - composable systems"}
-                          ;"hara.ova"
-                          ;{:input "test/midje_doc/guides/hara_ova.clj"
-                          ; :title "hara.ova - reactive array"}
+                          "hara.ova"
+                          {:input "test/documentation/hara/ova.clj"
+                           :title "hara.ova - reactive array"}
                           ;"hara.io.watch"
                           ;{:input "test/midje_doc/guides/hara_io_watch.clj"
                           ; :title "hara.io.watch - file watcher"}

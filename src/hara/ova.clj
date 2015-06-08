@@ -236,6 +236,13 @@
   [ova & es]
   (concat! ova es))
 
+(defn empty!
+  [ova]
+  (watch/clear ova {:type :ova})
+  (watch/clear ova)
+  (state/empty ova)
+  ova)
+
 (defn init!
   "re-initialises the ova to either an empty array or the second argument`coll`
 
@@ -245,14 +252,11 @@
   => [{:val 1, :id :1} {:val 1, :id :2}]"
   {:added "2.1"}
   ([ova]
-     (watch/clear ova {:type :ova})
-     (watch/clear ova)
-     (state/empty ova)
-     ova)
+   (empty! ova))
   ([ova coll]
-     (init! ova)
-     (state/set ova coll)
-     ova))
+   (empty! ova)
+   (state/set ova coll)
+   ova))
 
 (defn indices
   "provides intuitive filtering functionality of ova elements, outputting valid indices

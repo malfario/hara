@@ -1,4 +1,4 @@
-(ns midje-doc.hara.outline)
+(ns documentation.hara.outline)
 
 [[:chapter {:title "Introduction"}]]
 
