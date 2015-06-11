@@ -5,11 +5,11 @@
 
 [[:chapter {:title "Installation"}]]
 
-"Add to `project.clj` dependencies (use double quotes): 
+["Add to `project.clj` dependencies (use double quotes): 
 
     [im.chit/hara.ova '{{PROJECT.version}}']"
 
-"All functions are in the `hara.ova` namespace."
+"All functions are in the `hara.ova` namespace."]
 
 [[{:numbered false}]]
 (comment (use 'hara.ova))
@@ -38,17 +38,18 @@ The library has been abstracted out of [cronj](https://github.com/zcaudate/cronj
 
 [[:chapter {:title "Walkthrough"}]]
 
-[[:file {:src "test/documentation/ova/walkthrough.clj"}]]
+[[:file {:src "test/documentation/hara/ova/walkthrough.clj"}]]
 
 [[:chapter {:title "API Reference"}]]
 
-[[:file {:src "test/documentation/ova/api.clj"}]]
+[[:file {:src "test/documentation/hara/ova/api.clj"}]]
 
 [[:chapter {:title "Indices Selection"}]]
 
-[[:file {:src "test/documentation/ova/selection.clj"}]]
+;[[:file {:src "test/documentation/hara/ova/selection.clj"}]]
 
 [[:chapter {:title "End Notes"}]]
 
 "For any feedback, requests and comments, please feel free to lodge an issue on github or contact me directly.
 "
+

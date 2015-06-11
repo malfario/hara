@@ -25,18 +25,22 @@
       (string/replace #"\*" ".+")
       (re-pattern)))
 
+
 (defn register-sub-directory
   [watcher dir-path]
-  (let [{:keys [seen options service excludes]} watcher]
-    (when (not (or (get @seen dir-path)
-                   (some #(re-find % (last (string/split dir-path #"/"))) excludes)))
+  (let [{:keys [root seen options service excludes includes]} watcher]
+    (when (and (or (= dir-path root)
+                   (empty? includes)
+                   (some #(re-find % (subs dir-path (-> root count inc))) includes))
+               (not (or (get @seen dir-path)
+                        (some #(re-find % (last (string/split dir-path #"/"))) excludes))))
       (let [dir (Paths/get dir-path (make-array String 0))]
         (.register dir service (into-array event-kinds))
         (swap! seen conj dir-path))
       (if (:recursive options)
         (doseq [^java.io.File f (.listFiles (io/file dir-path))]
           (when (. f isDirectory)
-            (register-sub-directory watcher (.getPath f))))))
+            (register-sub-directory watcher (.getCanonicalPath f))))))
     watcher))
 
 (defn process-event [watcher kind ^java.io.File file]
@@ -71,7 +75,7 @@
     (recur watcher)))
 
 (defn start-watcher [watcher]
-  (let [{:keys [types filter exclude]} (:options watcher)
+  (let [{:keys [types filter exclude include]} (:options watcher)
         ^java.nio.file.WatchService service (.newWatchService (FileSystems/getDefault))
         seen    (atom #{})
         kinds   (if (= types :all)
@@ -79,11 +83,14 @@
                   (->> types (map event-lookup) set))
         filters  (->> filter  (map pattern))
         excludes (->> exclude (map pattern))
+        includes (->> include (map pattern))
         watcher  (->> (assoc watcher
+                        :root (first (:paths watcher))
                         :service service
                         :seen seen
                         :filters filters
                         :excludes excludes
+                        :includes includes
                         :kinds kinds))
         watcher  (reduce register-sub-directory watcher (:paths watcher))]
     (assoc watcher :running (future (run-watcher watcher)))))
@@ -141,7 +148,7 @@
 (extend-protocol IWatch
   java.io.File
   (-add-watch [obj k f opts]
-    (let [path (.getAbsolutePath obj)
+    (let [path (.getCanonicalPath obj)
           _    (if-let [wt (get-in @*filewatchers* [path k :watcher])]
                  (-remove-watch obj k nil))
           cb   (watch-callback f obj k)
@@ -150,14 +157,14 @@
       obj))
 
   (-list-watch [obj _]
-    (let [path (.getAbsolutePath obj)]
+    (let [path (.getCanonicalPath obj)]
       (->> path (get @*filewatchers*)
            (reduce-kv (fn [i k v]
                         (assoc i k (:function v)))
                       {}))))
 
   (-remove-watch [obj k _]
-    (let [path (.getAbsolutePath obj)
+    (let [path (.getCanonicalPath obj)
           wt   (get-in @*filewatchers* [path k :watcher])]
       (if-not (nil? wt)
         (do (stop-watcher wt)

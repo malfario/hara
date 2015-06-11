@@ -1,7 +1,7 @@
 (ns hara.data.path
   (:require [clojure.set :as set]
             [hara.common.checks :refer [hash-map?]]
-            [hara.data.map :refer [dissoc-in]]
+            [hara.data.map :as map]
             [hara.string.path :as path]))
 
 (defn list-ns-keys
@@ -72,18 +72,32 @@
                  :j 8})
   => {:a/b {:c 3 :d 4} :a/e {:f 5 :g 6} :h/i 7 :j 8}"
   {:added "2.1"}
-  ([m] (flatten-keys m {}))
-  ([m output]
-     (if-let [[k v] (first m)]
-       (cond (hash-map? v)
-             (let [ks      (->> (keys v)
-                                (map #(path/join [k %])))
-                   voutput (zipmap ks (vals v))]
-               (recur (next m) (merge output voutput)))
+  ([m]
+   (reduce-kv (fn [m k v]
+                (if (hash-map? v)
+                  (reduce-kv (fn [m sk sv]
+                               (assoc m (path/join [k sk]) sv))
+                             m
+                             v)
+                  (assoc m k v)))
+              {}
+              m)))
 
-              :else
-              (recur (next m) (assoc output k v)))
-       output)))
+(defn pathify-keys-nested
+  ([m] (pathify-keys-nested m -1 false []))
+  ([m max] (pathify-keys-nested m max false []))
+  ([m max keep-empty] (pathify-keys-nested m max keep-empty []))
+  ([m max keep-empty arr]
+   (reduce-kv (fn [m k v]
+                (if (or (and (not (> 0 max))
+                             (<= max 1))
+                        (not (hash-map? v))
+                        (and keep-empty
+                             (empty? v)))
+                  (assoc m (conj arr k) v)
+                  (merge m (pathify-keys-nested v (dec max) keep-empty (conj arr k)))))
+              {}
+              m)))
 
 (defn flatten-keys-nested
   "Returns a single associative map with all of the nested
@@ -98,41 +112,13 @@
   (flatten-keys-nested {\"a\" {\"b\" {\"c\" 3 \"d\" 4}
                                \"e\" {\"f\" 5 \"g\" 6}}
                           \"h\" {\"i\" {}}}
-                       true)
+                       -1 true)
   => {\"a/b/c\" 3 \"a/b/d\" 4 \"a/e/f\" 5 \"a/e/g\" 6 \"h/i\" {}}"
   {:added "2.1"}
-  ([m] (flatten-keys-nested m [] {}))
-  ([m nskv output]
-     (if-let [[k v] (first m)]
-       (cond (hash-map? v)
-             (->> output
-                  (flatten-keys-nested (next m) nskv)
-                  (recur v (conj nskv k)))
-
-             (nil? v)
-             (recur (next m) nskv output)
-
-             :else
-             (recur (next m)
-                    nskv
-                    (assoc output (path/join (conj nskv k)) v)))
-       output))
-
-  ([m keep] (flatten-keys-nested m keep [] {}))
-  ([m keep nskv output]
-     (if-let [[k v] (first m)]
-       (cond (and (hash-map? v) (not (empty? v)))
-             (->> output
-                  (flatten-keys-nested (next m) keep nskv)
-                  (recur v keep (conj nskv k)))
-
-             (nil? v)
-             (recur (next m) keep nskv output)
-
-             :else
-             (recur (next m) keep
-                    nskv (assoc output (path/join (conj nskv k)) v)))
-       output)))
+  ([m] (flatten-keys-nested m -1 false))
+  ([m max keep-empty]
+   (-> (pathify-keys-nested m max keep-empty)
+       (map/update-keys-in [] path/join))))
 
 (defn treeify-keys
   "Returns a nested map, expanding out the first
@@ -145,12 +131,11 @@
   => {:a {:b {:e/f 1}
           :c {:g/h 1}}}"
   {:added "2.1"}
-  ([m] (treeify-keys m {}))
-  ([m output]
-     (if-let [[k v] (first m)]
-       (recur (rest m)
-              (assoc-in output (path/split k) v))
-       output)))
+  [m]
+  (reduce-kv (fn [m k v]
+               (assoc-in m (path/split k) v))
+             {}
+             m))
 
 (defn treeify-keys-nested
   "Returns a nested map, expanding out all
@@ -164,15 +149,13 @@
           :c {:g {:h 1}}}}"
   {:added "2.1"}
   [m]
-  (let [kvs  (seq m)
-        hm?  #(hash-map? (second %))
-        ms   (filter hm? kvs)
-        vs   (filter (complement hm?) kvs)
-        outm (reduce (fn [m [k v]] (assoc-in m (path/split k)
-                                            (treeify-keys-nested v)))
-                    {} ms)]
-    (reduce (fn [m [k v]] (assoc-in m (path/split k) v))
-            outm vs)))
+  (reduce-kv (fn [m k v]
+               (assoc-in m (path/split k)
+                         (if (hash-map? v)
+                           (treeify-keys-nested v)
+                           v)))
+             {}
+             m))
 
 (defn nest-keys
   "Returns a map that takes `m` and extends all keys with the
@@ -212,7 +195,7 @@
   ([m nskv ex]
    (let [tm     (treeify-keys-nested m)
          c-map  (get-in tm nskv)
-         x-map  (dissoc-in tm nskv)]
+         x-map  (map/dissoc-in tm nskv)]
     (merge c-map (if (empty? ex)
                    x-map
                    (assoc-in {} ex x-map))))))

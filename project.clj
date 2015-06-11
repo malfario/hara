@@ -1,4 +1,4 @@
-(defproject im.chit/hara "2.1.12-SNAPSHOT"
+(defproject im.chit/hara "2.1.12"
   :description "code patterns and utilities"
   :url "https://github.com/zcaudate/hara"
   :license {:name "The MIT License"
@@ -16,6 +16,7 @@
                   :owners [{:name    "Chris Zheng"
                             :email   "z@caudate.me"
                             :website "http://z.caudate.me"}]
+                  :paths ["test/documentation"]
                   :files {
                           ;"home"
                           ;{:input "test/midje_doc/guides/home.clj"
@@ -62,3 +63,4 @@
             :levels 2
             :path "src"
             :standalone #{"reflect"}}])
+            

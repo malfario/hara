@@ -186,3 +186,19 @@
   {:added "2.1"}
   [m ks v]
   (if (not (nil? (get-in m ks))) m (assoc-in m ks v)))
+
+(defn update-keys-in [m arr f & args]
+  (let [key-fn (fn [m]
+                 (reduce-kv (fn [m k v]
+                              (assoc m (apply f k args) v))
+                            {}
+                            m))]
+    (if (empty? arr)
+      (key-fn m)
+      (update-in m arr key-fn))))
+
+(defn update-vals-in [m arr f & args]
+  (reduce-kv (fn [m k v]
+            (apply update-in m (conj arr k) f args))
+          m
+          m))

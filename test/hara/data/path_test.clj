@@ -60,7 +60,7 @@
   (flatten-keys-nested {"a" {"b" {"c" 3 "d" 4}
                                "e" {"f" 5 "g" 6}}
                           "h" {"i" {}}}
-                       true)
+                       -1 true)
   => {"a/b/c" 3 "a/b/d" 4 "a/e/f" 5 "a/e/g" 6 "h/i" {}})
 
 ^{:refer hara.data.path/treeify-keys :added "2.1"}

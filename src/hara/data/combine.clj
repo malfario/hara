@@ -14,10 +14,10 @@
   => {:id 1 :val 2}"
   {:added "2.1"}
   [set val sel]
-  (if-let [sv (first set)]
-    (if (eq-> sv val sel)
-      sv
-      (recur (next set) val sel))))
+  (->> set
+       (filter (fn [v]
+                 (eq-> v val sel)))
+       first))
 
 (defn combine-value
   "returns a single set, sel is used for item comparison while func
@@ -48,9 +48,9 @@
   => #{{:id 1 :val 1} {:id 2 :val 2 :a 0}}"
   {:added "2.1"}
   [s1 s2 sel func]
-  (if-let [v (first s2)]
-    (recur (combine-value s1 v sel func) (next s2) sel func)
-    s1))
+  (reduce (fn [out v]
+            (combine-value out v sel func))
+   s1 s2))
 
 (defn combine-internal
   "Combines all elements in a single using sel and func
