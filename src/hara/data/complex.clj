@@ -130,30 +130,18 @@
   ([m1 m2] (merges-nested* m1 m2 hash-map? combine))
   ([m1 m2 sel] (merges-nested* m1 m2 sel combine))
   ([m1 m2 sel func]
-   (merges-nested* m1 m2 sel func {}))
-  ([m1 m2 sel func output]
-   (cond (hash-map? m1)
-         (if-let [[k v2] (first m2)]
-           (let [v1 (m1 k)
-                 nm1 (dissoc m1 k)
-                 nm2 (rest m2)]
-             (cond (and (hash-map? v1) (hash-map? v2))
-                   (recur nm1 nm2 sel func
-                          (assoc output k (merges-nested* v1 v2 sel func)))
-                   
-                   (or (set? v1) (set? v2))
-                   (recur nm1 nm2 sel func
-                          (assoc output k
-                                 (combine v1 v2 sel
-                                          #(merges-nested* %1 %2 sel func))))
-                   :else
-                   (recur nm1 nm2 sel func
-                          (assoc output k (func v1 v2)))))
-           (merge m1 output))
+   (reduce-kv (fn [out k v]
+                (let [v1 (get out k)]
+                  (cond (and (hash-map? v1) (hash-map? v))
+                        (assoc out k (merges-nested* v1 v sel func))
 
-         :else
-         (combine m1 m2))))
+                        (or (set? v1) (set? v))
+                        (assoc out k (combine v1 v sel #(merges-nested* %1 %2 sel func)))
 
+                        :else
+                        (assoc out k (func v1 v)))))
+              m1
+              m2)))
 
 (declare gets-in)
 

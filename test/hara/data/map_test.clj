@@ -1,6 +1,7 @@
 (ns hara.data.map-test
   (:use midje.sweet)
-  (:require [hara.data.map :refer :all]))
+  (:require [hara.data.map :refer :all]
+            [clojure.string :as string]))
 
 ^{:refer hara.data.map/dissoc-in :added "2.1"}
 (fact "disassociates keys from a nested map. Setting `keep` to `true` will
@@ -113,3 +114,18 @@
 
   (assoc-in-nil {:a {:b 1}} [:a :b] 2)
   => {:a {:b 1}})
+
+^{:refer hara.data.map/update-keys-in :added "2.1"}
+(fact "updates all keys in a map with given function"
+
+  (update-keys-in {:x {["a" "b"] 1 ["c" "d"] 2}} [:x] string/join)
+  => {:x {"ab" 1 "cd" 2}})
+
+^{:refer hara.data.map/update-vals-in :added "2.1"}
+(fact "updates all values in a map with given function"
+
+  (update-vals-in {:a 1 :b 2} [] inc)
+  => {:a 2 :b 3}
+  
+  (update-vals-in {:a {:c 1} :b 2} [:a] inc)
+  => {:a {:c 2} :b 2})
