@@ -1,7 +1,7 @@
 (ns hara.data.path
   (:require [clojure.set :as set]
             [hara.common.checks :refer [hash-map?]]
-            [hara.data.map :as map]
+            [hara.data.nested :as nested]
             [hara.string.path :as path]))
 
 (defn list-ns-keys
@@ -118,7 +118,7 @@
   ([m] (flatten-keys-nested m -1 false))
   ([m max keep-empty]
    (-> (pathify-keys-nested m max keep-empty)
-       (map/update-keys-in [] path/join))))
+       (nested/update-keys-in [] path/join))))
 
 (defn treeify-keys
   "Returns a nested map, expanding out the first
