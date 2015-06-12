@@ -41,9 +41,9 @@
 (fact "Finds the difference between two maps"
   
   (diff {:a 2} {:a 1})
-  => {:+ {} :- {} :> {[:a] 2} :< {[:a] 1}}
+  => {:+ {} :- {} :> {[:a] 2}}
 
-  (diff {:a {:b 1 :d 3}} {:a {:c 2 :d 4}})
+  (diff {:a {:b 1 :d 3}} {:a {:c 2 :d 4}} true)
   => {:+ {[:a :b] 1}
       :- {[:a :c] 2}
       :> {[:a :d] 3}
@@ -65,6 +65,6 @@
   
   (let [m1  {:a {:b 1 :d 3}}
         m2  {:a {:c 2 :d 4}}
-        df  (diff m2 m1)]
+        df  (diff m2 m1 true)]
     (unpatch m2 df)
     => m1))

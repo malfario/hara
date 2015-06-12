@@ -14,8 +14,99 @@
                     (if (hash-map? v)
                       (set/union (conj s k) (keys-nested v))
                       (conj s k)))
-                  #{}
+
+
+                  
+                  (do (println "Hello") #{})
                   m)))
+
+(defn key-paths
+  "The set of all paths in a map, governed by a max level of nesting
+
+  (key-paths {:a {:b 1} :c {:d 1}})
+  => [[:c :d] [:a :b]]
+
+  (key-paths {:a {:b 1} :c {:d 1}} 1)
+  => [[:c] [:a]]"
+  {:added "2.1"}
+  ([m] (key-paths m -1 []))
+  ([m max] (key-paths m max []))
+  ([m max arr]
+   (reduce-kv (fn [out k v]
+                (cond (and (not= max 1)
+                           (hash-map? v))
+                      (vec (concat out (key-paths v (dec max) (conj arr k))))
+
+                      :else (conj out (conj arr k))))
+              []
+              m)))
+
+(defn update-keys-in
+  "updates all keys in a map with given function
+  
+  (update-keys-in {:x {[\"a\" \"b\"] 1 [\"c\" \"d\"] 2}} [:x] string/join)
+  => {:x {\"ab\" 1 \"cd\" 2}}
+
+  (update-keys-in {:a {:c 1} :b {:d 2}} 2 name)
+  => {:b {\"d\" 2}, :a {\"c\" 1}}"
+  {:added "2.1"}
+  [m arr f & args]
+  (let [key-fn (fn [m]
+                 (reduce-kv (fn [m k v]
+                              (assoc m (apply f k args) v))
+                            {}
+                            m))]
+    (cond (sequential? arr)
+          (if (empty? arr)
+            (key-fn m)
+            (update-in m arr key-fn))
+
+          (number? arr)
+          (if (= 1 arr)
+            (key-fn m)
+            (reduce (fn [out kpath]
+                      (update-in out kpath key-fn))
+                    m
+                    (key-paths m (dec arr))))
+          
+          :else (throw (Exception. (str "`arr` has to be a seq or a number not " arr))))))
+
+(defn update-vals-in
+  "updates all values in a map with given function
+
+  (update-vals-in {:a 1 :b 2} [] inc)
+  => {:a 2 :b 3}
+  
+  (update-vals-in {:a {:c 1} :b 2} [:a] inc)
+  => {:a {:c 2} :b 2}
+
+  (update-vals-in {:a {:c 1} :b {:d 2}} 2 inc)
+  => {:a {:c 2} :b {:d 3}}
+
+  (update-vals-in {:a 1 :b 2} 1 inc)
+  => {:a 2, :b 3}"
+  {:added "2.1"}
+  [m arr f & args]
+  (let [val-fn (fn [m]
+                 (reduce-kv (fn [m k v]
+                              (assoc m k (apply f v args)))
+                            {}
+                            m))]
+    (cond (sequential? arr)
+          (if (empty? arr)
+            (val-fn m)
+            (update-in m arr val-fn))
+
+          (number? arr)
+          (if (= 1 arr)
+            (val-fn m)
+            (reduce (fn [out kpath]
+                      (update-in out kpath val-fn))
+                    m
+                    (key-paths m (dec arr))))
+          
+          :else (throw (Exception. (str "`arr` has to be a seq or a number not " arr))))))
+
 
 (defn merge-nested
   "Merges nested values from left to right.

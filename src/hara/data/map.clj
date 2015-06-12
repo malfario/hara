@@ -186,38 +186,3 @@
   {:added "2.1"}
   [m ks v]
   (if (not (nil? (get-in m ks))) m (assoc-in m ks v)))
-
-(defn update-keys-in
-  "updates all keys in a map with given function
-
-  (update-keys-in {:x {[\"a\" \"b\"] 1 [\"c\" \"d\"] 2}} [:x] string/join)
-  => {:x {\"ab\" 1 \"cd\" 2}}"
-  {:added "2.1"}
-  [m arr f & args]
-  (let [key-fn (fn [m]
-                 (reduce-kv (fn [m k v]
-                              (assoc m (apply f k args) v))
-                            {}
-                            m))]
-    (if (empty? arr)
-      (key-fn m)
-      (update-in m arr key-fn))))
-
-(defn update-vals-in
-  "updates all values in a map with given function
-
-  (update-vals-in {:a 1 :b 2} [] inc)
-  => {:a 2 :b 3}
-  
-  (update-vals-in {:a {:c 1} :b 2} [:a] inc)
-  => {:a {:c 2} :b 2}"
-  {:added "2.1"}
-  [m arr f & args]
-  (let [val-fn (fn [m]
-                 (reduce-kv (fn [m k v]
-                              (assoc m k (apply f v args)))
-                            {}
-                            m))]
-    (if (empty? arr)
-      (val-fn m)
-      (update-in m arr val-fn))))

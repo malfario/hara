@@ -15,20 +15,20 @@
   "
   {:added "2.1"}
   ([m1 m2]
-   (diff-changes m1 m2 [] {}))
-  ([m1 m2 arr output]
-   (reduce-kv (fn [output k1 v1]
+   (diff-changes m1 m2 []))
+  ([m1 m2 arr]
+   (reduce-kv (fn [out k1 v1]
                 (if-let [v2 (and (contains? m2 k1)
                                  (get m2 k1))]
                   (cond (and (hash-map? v1) (hash-map? v2))
-                        (diff-changes v1 v2 (conj arr k1) output)
+                        (merge out (diff-changes v1 v2 (conj arr k1)))
                         
                         (= v1 v2)
-                        output
+                        out
 
                         :else
-                        (assoc output (conj arr k1) v1))
-                  output))
+                        (assoc out (conj arr k1) v1))
+                  out))
               {}
               m1)))
 
@@ -44,37 +44,40 @@
   "
   {:added "2.1"}
   ([m1 m2]
-   (diff-new m1 m2 [] {}))
-  ([m1 m2 arr output]
-   (reduce-kv (fn [output k1 v1]
+   (diff-new m1 m2 []))
+  ([m1 m2 arr]
+   (reduce-kv (fn [out k1 v1]
                  (let [v2 (get m2 k1)]
                    (cond (and (hash-map? v1) (hash-map? v2))
-                         (diff-new v1 v2 (conj arr k1) output)
+                         (merge out (diff-new v1 v2 (conj arr k1)))
 
                          (not (contains? m2 k1))
-                         (assoc output (conj arr k1) v1)
-
-                         :else output)))
-               {}
-               m1)))
+                         (assoc out (conj arr k1) v1)
+                         
+                         :else out)))
+              {}
+              m1)))
 
 (defn diff
   "Finds the difference between two maps
   
   (diff {:a 2} {:a 1})
-  => {:+ {} :- {} :> {[:a] 2} :< {[:a] 1}}
+  => {:+ {} :- {} :> {[:a] 2}}
 
-  (diff {:a {:b 1 :d 3}} {:a {:c 2 :d 4}})
+  (diff {:a {:b 1 :d 3}} {:a {:c 2 :d 4}} true)
   => {:+ {[:a :b] 1}
       :- {[:a :c] 2}
       :> {[:a :d] 3}
       :< {[:a :d] 4}}"
   {:added "2.1"}
-  [m1 m2]
-  (hash-map :+ (diff-new m1 m2)
-            :- (diff-new m2 m1)
-            :> (diff-changes m1 m2)
-            :< (diff-changes m2 m1)))
+  ([m1 m2] (diff m1 m2 false))
+  ([m1 m2 reversible]
+   (let [diff (hash-map :+ (diff-new m1 m2)
+                        :- (diff-new m2 m1)
+                        :> (diff-changes m1 m2))]
+     (if reversible
+       (assoc diff :< (diff-changes m2 m1))
+       diff))))
 
 (defn patch
   "Use the diff to convert one map to another in the forward 
@@ -103,7 +106,7 @@
   
   (let [m1  {:a {:b 1 :d 3}}
         m2  {:a {:c 2 :d 4}}
-        df  (diff m2 m1)]
+        df  (diff m2 m1 true)]
     (unpatch m2 df)
     => m1)"
   {:added "2.1"}

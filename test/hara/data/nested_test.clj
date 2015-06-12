@@ -1,12 +1,46 @@
 (ns hara.data.nested-test
   (:use midje.sweet)
-  (:require [hara.data.nested :refer :all]))
+  (:require [hara.data.nested :refer :all]
+            [clojure.string :as string]))
 
 ^{:refer hara.data.nested/keys-nested :added "2.1"}
 (fact "The set of all nested keys in a map"
 
   (keys-nested {:a {:b 1 :c {:d 1}}})
   => #{:a :b :c :d})
+
+^{:refer hara.data.nested/key-paths :added "2.1"}
+(fact "The set of all paths in a map, governed by a max level of nesting"
+
+  (key-paths {:a {:b 1} :c {:d 1}})
+  => [[:c :d] [:a :b]]
+
+  (key-paths {:a {:b 1} :c {:d 1}} 1)
+  => [[:c] [:a]])
+
+^{:refer hara.data.nested/update-keys-in :added "2.1"}
+(fact "updates all keys in a map with given function"
+  
+  (update-keys-in {:x {["a" "b"] 1 ["c" "d"] 2}} [:x] string/join)
+  => {:x {"ab" 1 "cd" 2}}
+
+  (update-keys-in {:a {:c 1} :b {:d 2}} 2 name)
+  => {:b {"d" 2}, :a {"c" 1}})
+
+^{:refer hara.data.nested/update-vals-in :added "2.1"}
+(fact "updates all values in a map with given function"
+
+  (update-vals-in {:a 1 :b 2} [] inc)
+  => {:a 2 :b 3}
+  
+  (update-vals-in {:a {:c 1} :b 2} [:a] inc)
+  => {:a {:c 2} :b 2}
+
+  (update-vals-in {:a {:c 1} :b {:d 2}} 2 inc)
+  => {:a {:c 2} :b {:d 3}}
+
+  (update-vals-in {:a 1 :b 2} 1 inc)
+  => {:a 2, :b 3})
 
 ^{:refer hara.data.nested/merge-nested :added "2.1"}
 (fact "Merges nested values from left to right."
