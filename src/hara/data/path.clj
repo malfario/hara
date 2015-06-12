@@ -2,6 +2,7 @@
   (:require [clojure.set :as set]
             [hara.common.checks :refer [hash-map?]]
             [hara.data.nested :as nested]
+            [hara.data.map :as map]
             [hara.string.path :as path]))
 
 (defn list-ns-keys
