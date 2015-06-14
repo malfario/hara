@@ -151,7 +151,7 @@
   {:added "2.1"}
   [m]
   (reduce-kv (fn [m k v]
-               (if (hash-map? v)
+               (if (and (hash-map? v) (not (empty? v)))
                  (update-in m (path/split k) nested/merge-nested (treeify-keys-nested v))
                  (assoc-in m (path/split k) v)))
              {}
