@@ -14,10 +14,7 @@
                     (if (hash-map? v)
                       (set/union (conj s k) (keys-nested v))
                       (conj s k)))
-
-
-                  
-                  (do (println "Hello") #{})
+                  #{}
                   m)))
 
 (defn key-paths
