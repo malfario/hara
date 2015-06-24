@@ -8,6 +8,7 @@
 
 (def ^:dynamic *defaults* {:recursive true
                            :types :all
+                           :mode :sync
                            :exclude [".*"]})
 
 (def ^:dynamic *filewatchers* (atom {}))
@@ -24,7 +25,6 @@
       (string/replace #"\." "\\\\\\Q.\\\\\\E")
       (string/replace #"\*" ".+")
       (re-pattern)))
-
 
 (defn register-sub-directory
   [watcher dir-path]
@@ -50,9 +50,9 @@
     (if (and (get kinds kind)
              (or  (empty? filters)
                   (some #(re-find % filename) filters)))
-      (if (:async options)
-        (future (callback (kind-lookup kind) file))
-        (callback (kind-lookup kind) file)))))
+      (case (:mode options)
+        :async (future (callback (kind-lookup kind) file))
+        :sync  (callback (kind-lookup kind) file)))))
 
 (defn run-watcher [watcher]
   (let [^java.nio.file.WatchKey wkey
@@ -122,8 +122,7 @@
              {:types #{:create :modify}
               :recursive false
               :filter  [\".hara\"]
-              :exclude [\".git\" \"target\"]
-              :async false})
+              :exclude [\".git\" \"target\"]})
 
   (watch/list (io/file \".\"))
   => (contains {:save fn?})

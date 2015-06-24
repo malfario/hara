@@ -1,5 +1,5 @@
 (ns documentation.hara.ova
-  (:require [hara.ova :refer :all]
+  (:require [hara.concurrent.ova :refer :all]
             [hara.common.watch :as watch]
             [midje.sweet :refer :all]))
 

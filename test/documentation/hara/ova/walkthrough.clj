@@ -1,5 +1,5 @@
 (ns documentation.hara.ova.walkthrough
-  (:require [hara.ova :refer :all]
+  (:require [hara.concurrent.ova :refer :all]
             [hara.common.watch :as watch]
             [midje.sweet :refer :all]))
             
@@ -13,7 +13,7 @@
           {:val 3} {:val 4}]))
 
   (-> ov class str)
-  => "class hara.ova.Ova")
+  => "class hara.concurrent.ova.Ova")
 
 [[:section {:title "Dereferencing"}]]
 "An `ova` is a `ref` of a `vector` of `refs`. They are dereferenced accordingly:"

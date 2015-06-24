@@ -21,6 +21,18 @@
                 (not (= pv nv)))
             (apply f args)))))
 
+(defn wrap-mode [f mode]
+  (fn [& args]
+    (case mode
+      :sync  (apply f args)
+      :async (future (apply f args)))))
+
+(defn wrap-suppress [f]
+  (fn [& args]
+    (try
+      (apply f args)
+      (catch Throwable t))))
+
 (defn process-options
   [opts f]
   (let [_ (if (:args opts)
@@ -30,7 +42,11 @@
             f)
         f (if-let [sel (:select opts)]
             (wrap-select f sel)
-            f)]
+            f)
+        f (if (:suppress opts)
+            (wrap-suppress f)
+            f)
+        f (wrap-mode f (or (:mode opts) :sync))]
     f))
 
 (defn add

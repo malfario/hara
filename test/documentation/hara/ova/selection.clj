@@ -1,5 +1,5 @@
 (ns documentation.hara.ova.selection
-  (:require [hara.ova :refer :all]
+  (:require [hara.concurrent.ova :refer :all]
             [midje.sweet :refer :all]))
 
 "There are a number of ways elements in an `ova` can be selected. The library uses custom syntax to provide a shorthand for element selection. We use the function `indices` in order to give an examples of how searches can be expressed. Most of the functions like `select`, `remove!`, `filter!`, `smap!`, `smap-indexed!`, and convenience macros are all built on top of the `indices` function and so can be used accordingly once the convention is understood."

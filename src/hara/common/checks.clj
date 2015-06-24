@@ -155,6 +155,14 @@
   (let [^String s (.getName ^Class (type obj))]
     (.startsWith s "clojure.core$promise$")))
 
+(defn thread?
+  "Returns `true` is `x` is a thread
+
+  (thread? (Thread/currentThread)) => true"
+  {:added "2.2"}
+  [obj]
+  (instance? java.lang.Thread obj))
+
 (defn type-checker
   "Returns the checking function associated with `k`
 

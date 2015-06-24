@@ -112,6 +112,12 @@
   (promise? (promise)) => true
   (promise? (future))  => false)
 
+
+^{:refer hara.common.checks/thread? :added "2.2"}
+(fact "Returns `true` is `x` is a thread"
+
+  (thread? (Thread/currentThread)) => true)
+  
 ^{:refer hara.common.checks/type-checker :added "2.0"}
 (fact "Returns the checking function associated with `k`"
 

@@ -62,5 +62,5 @@
   :repack [{:type :clojure
             :levels 2
             :path "src"
-            :standalone #{"reflect"}}])
+            :standalone #{"reflect" "time"}}])
             

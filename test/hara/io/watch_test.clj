@@ -17,8 +17,7 @@
              {:types #{:create :modify}
               :recursive false
               :filter  [".hara"]
-              :exclude [".git" "target"]
-              :async false})
+              :exclude [".git" "target"]})
 
   (watch/list (io/file "."))
   => (contains {:save fn?})

@@ -1,9 +1,9 @@
-(ns hara.ova-test
+(ns hara.concurrent.ova-test
   (:use midje.sweet)
-  (:require [hara.ova :refer :all]
+  (:require [hara.concurrent.ova :refer :all]
             [hara.common.watch :as watch]))
 
-^{:refer hara.ova/get-filtered :added "2.1"}
+^{:refer hara.concurrent.ova/get-filtered :added "2.1"}
 (fact "gets the first element in the ova that matches the selector:"
 
   (let [o (ova [{:id :1 :val 1} {:id :2 :val 1}])]
@@ -16,7 +16,7 @@
     (get-filtered o :3 nil :not-found)
     => :not-found))
 
-^{:refer hara.ova/-invoke :added "2.1"}
+^{:refer hara.concurrent.ova/-invoke :added "2.1"}
 (fact "function invocation finds the first value that matches the selector:"
 
   (let [o (ova [{:id :1 :val 1} {:id :2 :val 1}
@@ -33,7 +33,7 @@
     (o :val even?) => {:val 2, :id :3}
     (o (list :id name) "4") => {:val 2, :id :4}))
 
-^{:refer hara.ova/ova :added "2.1"}
+^{:refer hara.concurrent.ova/ova :added "2.1"}
 (fact "constructs an ova instance"
 
   (ova []) ;=> #ova []
@@ -41,7 +41,7 @@
   (ova [{:id :1} {:id :2}]) ;=> #ova [{:id :1} {:id :2}]
   )
 
-^{:refer hara.ova/concat! :added "2.1"}
+^{:refer hara.concurrent.ova/concat! :added "2.1"}
 (fact "works like clojure.core/concat, but modifies ova state"
 
   (let [o1 (ova [{:id :1 :val 1} {:id :2 :val 1}])
@@ -52,7 +52,7 @@
   => [{:val 1, :id :1} {:val 1, :id :2}
       {:val 2, :id :3} {:val 2, :id :4}])
 
-^{:refer hara.ova/append! :added "2.1"}
+^{:refer hara.concurrent.ova/append! :added "2.1"}
 (fact "like conj! but appends multiple array elements to the ova"
 
   (let [o (ova [{:id :1 :val 1}])]
@@ -60,7 +60,7 @@
     (persistent! o))
   => [{:id :1 :val 1} {:id :2 :val 1} {:id :3 :val 2}])
 
-^{:refer hara.ova/init! :added "2.1"}
+^{:refer hara.concurrent.ova/init! :added "2.1"}
 (fact "re-initialises the ova to either an empty array or the second argument`coll`"
 
   (let [o (ova [])]
@@ -68,7 +68,7 @@
     (persistent! o))
   => [{:val 1, :id :1} {:val 1, :id :2}])
 
-^{:refer hara.ova/indices :added "2.1"}
+^{:refer hara.concurrent.ova/indices :added "2.1"}
 (fact "provides intuitive filtering functionality of ova elements, outputting valid indices"
 
   (let [o (ova [{:id :1 :val 1} {:id :2 :val 1}
@@ -91,7 +91,7 @@
     (indices o #(even? (:val %))) => [2 3]
     (indices o [:id :1]) => [0]))
 
-^{:refer hara.ova/select :added "2.1"}
+^{:refer hara.concurrent.ova/select :added "2.1"}
 (fact "grabs the selected ova entries as a set of values"
 
   (let [o (ova [{:id :1 :val 1} {:id :2 :val 1}
@@ -108,7 +108,7 @@
     (select o [:id '((name) (bigint) (odd?))])
     => #{{:id :1 :val 1} {:id :3 :val 2}}))
 
-^{:refer hara.ova/has? :added "2.1"}
+^{:refer hara.concurrent.ova/has? :added "2.1"}
 (fact "checks that the ova contains elements matching a selector"
 
   (let [o (ova [{:id :1 :val 1} {:id :2 :val 1}
@@ -119,7 +119,7 @@
     (has? o -1) => false
     (has? o [:id '((name) (bigint) (odd?))]) => true))
 
-^{:refer hara.ova/map! :added "2.1"}
+^{:refer hara.concurrent.ova/map! :added "2.1"}
 (fact "applies a function on the ova with relevent arguments"
 
   (let [o (ova [{:id :1} {:id :2}])]
@@ -127,7 +127,7 @@
     (persistent! o))
   => [{:val 1, :id :1} {:val 1, :id :2}])
 
-^{:refer hara.ova/map-indexed! :added "2.1"}
+^{:refer hara.concurrent.ova/map-indexed! :added "2.1"}
 (fact "applies a function that taking the data index as well as the data
   to all elements of the ova"
 
@@ -137,7 +137,7 @@
     (persistent! o))
   => [{:val 0, :id :1} {:val 1, :id :2}])
 
-^{:refer hara.ova/smap! :added "2.1"}
+^{:refer hara.concurrent.ova/smap! :added "2.1"}
 (fact "applies a function to only selected elements of the array"
 
   (let [o (ova [{:id :1 :val 1} {:id :2 :val 1}
@@ -147,7 +147,7 @@
     (persistent! o))
   => [{:val 101, :id :1} {:val 101, :id :2} {:val 2, :id :3} {:val 2, :id :4}])
 
-^{:refer hara.ova/smap-indexed! :added "2.1"}
+^{:refer hara.concurrent.ova/smap-indexed! :added "2.1"}
 (fact "applies a function that taking the data index as well as the data
   to selected elements of the ova"
 
@@ -159,7 +159,7 @@
     (persistent! o))
   => [{:val 101, :id :1} {:val 102, :id :2} {:val 2, :id :3} {:val 2, :id :4}])
 
-^{:refer hara.ova/insert! :added "2.1"}
+^{:refer hara.concurrent.ova/insert! :added "2.1"}
 (fact "inserts data at either the end of the ova or when given an index"
 
   (let [o (ova (range 5))]
@@ -168,7 +168,7 @@
     (persistent! o))
   => [0 1 2 3 4 5 6])
 
-^{:refer hara.ova/sort! :added "2.1"}
+^{:refer hara.concurrent.ova/sort! :added "2.1"}
 (fact "sorts all data in the ova using a comparator function"
 
   (let [o (ova [2 1 3 4 0])]
@@ -178,13 +178,13 @@
     (dosync (sort! o <))
     (persistent! o) => [0 1 2 3 4]))
 
-^{:refer hara.ova/reverse! :added "2.1"}
+^{:refer hara.concurrent.ova/reverse! :added "2.1"}
 (fact "reverses the order of elements in the ova"
   (let [o (ova (range 5))]
     (dosync (reverse! o))
     (persistent! o) => [4 3 2 1 0]))
 
-^{:refer hara.ova/remove! :added "2.1"}
+^{:refer hara.concurrent.ova/remove! :added "2.1"}
 (fact "removes data from the ova that matches a selector"
 
   (let [o (ova (range 10))]
@@ -202,7 +202,7 @@
     (persistent! o))
   => [3 4 5 6])
 
-^{:refer hara.ova/filter! :added "2.1"}
+^{:refer hara.concurrent.ova/filter! :added "2.1"}
 (fact "filter is the opposite of reverse. It keeps the
   elements that matches a selector instead of throwing
   them away"
@@ -217,7 +217,7 @@
     (persistent! o))
   => [0 1 2 7 8 9])
 
-^{:refer hara.ova/clone :added "2.1"}
+^{:refer hara.concurrent.ova/clone :added "2.1"}
 (fact "creates an exact copy of the ova, including its watches"
   (let [o (ova (range 10))
         _ (watch/set o {:a (fn [_ _ _ _ _])})
@@ -225,14 +225,14 @@
     (persistent! o-clone) => (range 10)
     (watch/list o-clone) => (just {:a fn?})))
 
-^{:refer hara.ova/split :added "2.1"}
+^{:refer hara.concurrent.ova/split :added "2.1"}
 (fact "creates an exact copy of the ova, including its watches"
   (let [o (ova (range 10))
         sp (dosync (split o #{'(< 3) '(> 6)}))]
     (persistent! (sp true))  => [0 1 2 7 8 9]
     (persistent! (sp false)) => [3 4 5 6]))
 
-^{:refer hara.ova/!! :added "2.1"}
+^{:refer hara.concurrent.ova/!! :added "2.1"}
 (fact "sets the value of a given data cell in the ova"
   (dosync (-> (range 5) (ova) (!! 1 0) persistent!))
   => [0 0 2 3 4]
@@ -241,13 +241,13 @@
   (dosync (-> (range 5) (ova) (!! even? 0) persistent!))
   => [0 1 0 3 0])
 
-^{:refer hara.ova/<< :added "2.1"}
+^{:refer hara.concurrent.ova/<< :added "2.1"}
 (fact "outputs the persistent value of an entire body after manipulation"
   (<< (def obj-a (ova [1 2 3 4 5]))
       (append! obj-a 6 7 8 9))
   => [1 2 3 4 5 6 7 8 9])
 
-^{:refer hara.ova/!> :added "2.1"}
+^{:refer hara.concurrent.ova/!> :added "2.1"}
 (fact "applies a set of transformations to a selector on the ova"
   (let [ov (ova [{:id :1}])]
 

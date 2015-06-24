@@ -15,7 +15,7 @@
 
 (+ 1 1)
 
-[[:reference {:refer    hara.io.watch/pattern
+[[:reference {:refer    'hara.io.watch/pattern
               :mode     :source
               :numbered false
               :title    "interesting pattern function for replacement"}]]
