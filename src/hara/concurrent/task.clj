@@ -15,7 +15,7 @@
           :zone (time/system-timezone)} 
    :registry *default-registry*
    :cache    *default-cache*
-   :id-fn (fn [_] (str (java.util.UUID/randomUUID)))})
+   :id-fn    (fn [_] (str (java.util.UUID/randomUUID)))})
 
 (defn max-inputs
   "finds the maximum number of inputs that a function can take
@@ -124,13 +124,15 @@
 (defn invoke-task [{:keys [id-fn handler arglist time] :as task} & args]
   (let [_          (if (< (count arglist) (count args))
                      (throw (Exception.
-                             (str "There should be less inputs than arglist: " arglist))))
+                             (str "There should be less inputs than the arglist: " arglist))))
         ninputs    (max-inputs handler (count args))
         opts       (zipmap arglist args)
         opts       (if-let [t (:instance opts)]
                      (nested/merge-nested t (dissoc opts :instance))
                      opts)
-        instance   (map->TaskInstance (nested/merge-nested task opts))
+        instance   (map->TaskInstance (-> task
+                                          (nested/merge-nested opts)
+                                          (assoc :task task)))
         instance   (update-in instance [:timestamp]
                               (fn [t] (or t
                                           (time/now (:type time)
@@ -195,7 +197,6 @@
   [v ^java.io.Writer w]
   (.write w (str v)))
 
-
 (defmethod print-method TaskInstance
   [v ^java.io.Writer w]
   (.write w (str v)))
@@ -211,33 +212,40 @@
         (hash-map? tk)
         (map->Task (nested/merge-nil-nested tk *default-settings*))))
 
-(defn all-running
-  ([] (all-running *default-registry*))
-  ([registry]
-   (nested/update-vals-in @registry [] (comp sort keys))))
 
-(defn instance
-  ([name id] (instance *default-registry* name id))
-  ([registry name id]
-   (get-in @registry [name id])))
+(defn running-instances
+  ([]))
 
-(defn running?
-  ([name id] (running? *default-registry* name id))
-  ([registry name id]
-   (if (instance registry name id)
-     true
-     false)))
 
-(defn kill
-  ([name id] (kill *default-registry* name id))
-  ([registry name id]
-   (if-let [{:keys [thread]} (instance registry name id)]
-     (do (cond (future? thread)
-               (future-cancel thread)
-               
-               (and (thread? thread)
-                    (= thread (Thread/currentThread)))
-               (.stop ^Thread thread))
-         (swap! registry map/dissoc-in [name id])
-         true)
-     false)))
+
+(comment
+  (defn all-running
+    ([] (all-running *default-registry*))
+    ([registry]
+     (nested/update-vals-in @registry [] (comp sort keys))))
+
+  (defn instance
+    ([name id] (instance *default-registry* name id))
+    ([registry name id]
+     (get-in @registry [name id])))
+
+  (defn running?
+    ([name id] (running? *default-registry* name id))
+    ([registry name id]
+     (if (instance registry name id)
+       true
+       false)))
+
+  (defn kill
+    ([name id] (kill *default-registry* name id))
+    ([registry name id]
+     (if-let [{:keys [thread]} (instance registry name id)]
+       (do (cond (future? thread)
+                 (future-cancel thread)
+                 
+                 (and (thread? thread)
+                      (= thread (Thread/currentThread)))
+                 (.stop ^Thread thread))
+           (swap! registry map/dissoc-in [name id])
+           true)
+       false))))

@@ -59,6 +59,7 @@
 
   (all-running)
 
+  (swap! *default-cache* empty)
   (kill "println" (java.util.Date. 0))
 
   (+ 1 1))
