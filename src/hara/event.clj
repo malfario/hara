@@ -1,82 +1,123 @@
 (ns hara.event
-  (:require [hara.common.checks :refer [hash-map?]]
-            [hara.data.map :as map]
-            [hara.common.primitives :refer [uuid]]))
+  (:require [hara.event.common :as common]
+            [hara.event.condition.data :as data]
+            [hara.event.condition.raise :as raise]
+            [hara.event.condition.manage :as manage]
+            [hara.event.condition.util :as util]))
 
-(defn expand-data [data]
-  (cond (hash-map? data) data
-        (keyword? data) {data true}
-        (vector? data)  (apply merge (map expand-data data))
-        :else (throw (Exception. (str data " should be a keyword, hash-map or vector")))))
+(defonce ^:dynamic *signal-manager* (atom (common/manager)))
 
-(defn- check-data [data chk]
-  (cond (hash-map? chk)
-        (every? (fn [[k vchk]]
-                  (let [vcnt (get data k)]
-                    (cond (keyword? vchk) (= vchk vcnt)
-                          (fn? vchk) (vchk vcnt)
-                          :else (= vchk vcnt))))
-                chk)
+(defonce ^:dynamic *issue-managers* [])
 
-        (vector? chk)
-        (every? #(check-data data %) chk)
+(defonce ^:dynamic *issue-optmap* {})
 
-        (or (fn? chk) (keyword? chk))
-        (chk data)
+(defn clear-listeners []
+  (reset! *signal-manager* (common/manager)))
 
-        (hash-set? chk)
-        (some #(check-data data %) chk)
+(defn list-listeners
+  ([]
+   (common/list-handlers @*signal-manager*))
+  ([checker]
+   (common/list-handlers @*signal-manager* checker)))
 
-        (= '_ chk) true
-        
-        :else 
-        (error "CHECK_DATA: " chk " cannot be found")))
+(defn install-listener [id checker handler]
+  (swap! *signal-manager*
+         common/add-handler checker {:id id
+                                     :fn handler}))
 
-(defrecord Manager [index store])
+(defn uninstall-listener [id]
+  (swap! *signal-manager* common/remove-handler id))
 
-(defn manager [m] (map->Manager m))
+(defmacro deflistener [name checker bindings & more]
+  (let [sym    (str  (.getName *ns*) "/" name)
+        hform  (common/handler-form bindings more)]
+    `(install-listener (symbol ~sym) ~checker ~hform)))
 
-(defonce ^:dynamic *default-manager* (manager {}))
+(defmacro signal [data]
+  `(let [ndata#   (common/expand-data ~data)]
+     (doall (for [handler# (common/match-handlers @*signal-manager* ndata#)]
+              ((:fn handler#) ndata#)))))
 
-(defn attach )
+(defmacro continue [& body]
+  `{:type :continue :value (do ~@body)})
+
+(defmacro default [& args]
+  `{:type :default :args (list ~@args)})
+
+(defmacro choose [label & args]
+  `{:type :choose :label ~label :args (list ~@args)})
+
+(defmacro fail
+  ([] {:type :fail})
+  ([data]
+     `{:type :fail :data ~data}))
+
+(defmacro escalate [data & forms]
+  (let [[data forms]
+        (if (util/is-special-form :raise data)
+          [nil (cons data forms)]
+          [data forms])]
+    `{:type :escalate
+      :data ~data
+      :options  ~(util/parse-option-forms forms)
+      :default  ~(util/parse-default-form forms)}))
+
+(defmacro raise
+  "Raise an issue with the content to be either a keyword, hashmap or vector, optional message
+  and raise-forms - 'option' and 'default'"
+  [content & [msg & forms]]
+  (let [[msg forms] (if (util/is-special-form :raise msg)
+                      ["" (cons msg forms)]
+                      [msg forms])
+        options (util/parse-option-forms forms)
+        default (util/parse-default-form forms)]
+    `(let [issue# (data/issue ~content ~msg ~options ~default)]
+       (signal (assoc (:data issue#) :issue (:msg issue#)))
+       (raise/raise-loop issue# *issue-managers*
+                         (merge (:optmap issue#) *issue-optmap*)))))
+
+
+(defmacro manage
+  "This creats the 'manage' dynamic scope form. The body will be executed
+  in a dynamic context that allows handling of issues with 'on' and 'option' forms."
+  [& forms]
+  (let [sp-fn           (fn [form] (util/is-special-form :manage form #{'finally 'catch}))
+        body-forms      (vec (filter (complement sp-fn) forms))
+        sp-forms        (filter sp-fn forms)
+        id              (common/new-id)
+        options         (util/parse-option-forms sp-forms)
+        on-handlers     (util/parse-on-handler-forms sp-forms)
+        on-any-handlers (util/parse-on-any-handler-forms sp-forms)
+        try-forms       (util/parse-try-forms sp-forms)
+        optmap          (zipmap (keys options) (repeat id))]
+    `(let [manager# (common/manager ~id
+                                    ~(vec (concat on-handlers on-any-handlers))
+                                    ~options)]
+       (binding [*issue-managers* (cons manager# *issue-managers*)
+                 *issue-optmap*   (merge ~optmap *issue-optmap*)]
+         (try
+           (try
+             ~@body-forms
+             (catch clojure.lang.ExceptionInfo ~'ex
+               (manage/manage-condition manager# ~'ex)))
+           ~@try-forms)))))
 
 
 (comment
-  (attach-trigger [:has-data]
-          (fn [event]
-            (println event)))
+  (deflistener hello-print :hello
+    ev
+    (println ev))
 
-  (detach-trigger "oeuoeuoeuoeuoeu")
+  (manage
+   [(raise {:hello "there"} "hoeuoeu")]
+   (on :hello e
+       (println e)
+       (continue 3)
+       (escalate {:a 1})))
 
-  (list-triggers [:has-data])
+  
+  
 
 
+  
   )
-
-(defonce ^:dynamic *triggers* (atom {}))
-
-(defonce ^:dynamic *trigger-index* (atom {}))
-
-
-
-(defn attach-listener [key handler]
-  (swap! *global* assoc key handler))
-
-(defn detach-listener [key]
-  (swap! *global* dissoc key))
-
-(defn list-listeners []
-  (keys *global*))
-
-(def event-types #{:catch :choose :common})
-
-(defrecord Event [type target value])
-
-(defn sig
-  ([value]
-   (sig :common nil value))
-  ([type target value]
-   {::type type ::target target ::value value}))
-
-(defn signal [value])
-

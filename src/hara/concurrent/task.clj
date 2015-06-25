@@ -53,6 +53,8 @@
         :success data
         :error   (throw data)))))
 
+
+
 (defn wrap-instance [f]
   (fn [{:keys [arglist] :as instance} args]
     (let [args (map (fn [arg desc]
@@ -213,7 +215,7 @@
         (map->Task (nested/merge-nil-nested tk *default-settings*))))
 
 
-(defn running-instances
+(defn list-all 
   ([]))
 
 
