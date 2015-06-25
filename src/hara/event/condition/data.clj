@@ -3,17 +3,18 @@
             [hara.common.primitives :refer [uuid]]))
 
 (defn issue
-  [data msg options default]
-  (let [data    (common/expand-data data)
-        id      (common/new-id)
-        options (or options {})
-        optmap (zipmap (keys options) (repeat id))]
-    {:id id
-     :data data
-     :msg msg
-     :options options
-     :optmap optmap
-     :default default}))
+  ([data msg options default]
+   (issue (common/new-id) msg options default))
+  ([id data msg options default]
+   (let [data    (common/expand-data data)
+         options (or options {})
+         optmap  (zipmap (keys options) (repeat id))]
+     {:id id
+      :data data
+      :msg msg
+      :options options
+      :optmap optmap
+      :default default})))
 
 (defn catch-condition
   [target value]

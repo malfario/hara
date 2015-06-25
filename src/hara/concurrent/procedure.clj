@@ -1,16 +1,44 @@
-(ns hara.concurrent.task
+(ns hara.concurrent.procedure
   (:require [hara.time :as time]
+            [hara.event :as event]
             [hara.common.checks :refer [hash-map? thread?]]
             [hara.data.map :as map]
             [hara.data.nested :as nested]
             [hara.function.args :as args]))
 
-(defonce ^:dynamic *default-registry* (atom {}))
+(defrecord ProcedureRegistry []
+  Object
+  (toString [obj]
+    (str "#reg" (nested/update-vals-in obj [] keys))))
+
+(defonce ^:dynamic *default-registry* (atom (ProcedureRegistry.)))
+
+(defn instance
+    ([name id] (instance *default-registry* name id))
+    ([registry name id]
+     (get-in @registry [name id])))
+
+(defn kill
+    ([name id] (kill *default-registry* name id))
+    ([registry name id]
+     (if-let [{:keys [thread]} (instance registry name id)]
+       (do (cond (future? thread)
+                 (future-cancel thread)
+                 
+                 (and (thread? thread)
+                      (not= thread (Thread/currentThread)))
+                 (do (.stop ^Thread thread)
+                     (Thread/sleep 1)))
+           (event/signal [:log {:msg "Killed Execution" :instance instance}])
+           (swap! registry map/dissoc-in [name id])
+           true)
+       false)))
 
 (defonce ^:dynamic *default-cache* (atom {}))
 
-(defonce ^:dynamic *default-settings*
+(def ^:dynamic *default-settings*
   {:mode :async
+   :interrupt false
    :time {:type java.util.Date
           :zone (time/system-timezone)} 
    :registry *default-registry*
@@ -28,7 +56,8 @@
   
   (max-inputs (fn ([a])) 0)
   => throws"
-  {:added "2.2"} [func num]
+  {:added "2.2"}
+  [func num]
   (if (args/vargs? func)
     num
     (let [cargs (args/arg-count func)
@@ -37,14 +66,16 @@
         (throw (Exception. (str "Function needs at least " (apply min cargs) " inputs")))
         (apply max carr)))))
 
-(defrecord TaskInstance []
+(defrecord ProcedureInstance []
   Object
   (toString [obj]
-    (str "#exec" (-> (select-keys obj [:name :id :result :timestamp
-                                       :mode :params :cached :runtime])
-                     (->> (into {}))
-                     (update-in [:runtime] (fn [x] (if x (deref x) {})))
-                     (update-in [:result]  (fn [x] (if (realized? x) (deref x) :waiting))))))
+    (str "#proc[" (:id obj) "]"
+         (-> (select-keys obj [:name :result :timestamp :interrupt
+                               :overwrite :cached :runtime
+                               :mode :params :input :args])
+             (->> (into {}))
+             (update-in [:runtime] (fn [x] (if x (deref x) {})))
+             (update-in [:result]  (fn [x] (if (realized? x) (deref x) :waiting))))))
 
   clojure.lang.IDeref
   (deref [obj]
@@ -76,11 +107,18 @@
           (let [current (f instance args)]
             (swap! cache assoc-in (concat [name id] args) instance)))))))
 
-(defn wrap-exist [f]
-  (fn [{:keys [registry name id] :as instance} args]
-    (if-let [existing (get-in @registry [name id])]
-      existing
-      (f instance args))))
+(defn wrap-interrupt [f]
+  (fn [{:keys [registry name id interrupt] :as instance} args]
+    (let [existing (get-in @registry [name id])]
+      (cond (and interrupt existing)
+            (do (kill registry name id)
+                (f instance args))
+
+            existing
+            existing
+
+            :else
+            (f instance args)))))
 
 (defn wrap-timing [f]
   (fn [instance args]
@@ -123,7 +161,7 @@
                                            ((:id-fn instance) instance))))]
       (f instance args))))
 
-(defn invoke-task [{:keys [id-fn handler arglist time] :as task} & args]
+(defn invoke-procedure [{:keys [id-fn handler arglist time] :as procedure} & args]
   (let [_          (if (< (count arglist) (count args))
                      (throw (Exception.
                              (str "There should be less inputs than the arglist: " arglist))))
@@ -132,9 +170,7 @@
         opts       (if-let [t (:instance opts)]
                      (nested/merge-nested t (dissoc opts :instance))
                      opts)
-        instance   (map->TaskInstance (-> task
-                                          (nested/merge-nested opts)
-                                          (assoc :task task)))
+        instance   (nested/merge-nested procedure opts)
         instance   (update-in instance [:timestamp]
                               (fn [t] (or t
                                           (time/now (:type time)
@@ -144,62 +180,77 @@
                                            (atom {}))))
         nargs      (->> arglist
                         (take ninputs)
-                        (map #(get instance %)))]
+                        (map #(get instance %)))
+        instance   (-> instance
+                       (assoc :input args)
+                       (assoc :args  nargs)
+                       (assoc :procedure procedure)
+                       (map->ProcedureInstance))]
     ((-> invoke-base
          wrap-instance
          wrap-cached
          wrap-timing
          wrap-registry
          wrap-mode
-         wrap-exist
+         wrap-interrupt
          wrap-id)
      instance nargs)))
 
-(defrecord Task []
+(defrecord Procedure []
   Object
   (toString [obj]
-    (str "#task" (-> (select-keys obj [:name :mode :params :cached :runtime :arglist])
+    (str "#proc" (-> (select-keys obj [:name :mode :params :cached :runtime :arglist])
                      (->> (into {})))))
   
   clojure.lang.IFn
   (invoke [obj]
-    (invoke-task obj))
+    (invoke-procedure obj))
   (invoke [obj arg1]
-    (invoke-task obj arg1))
+    (invoke-procedure obj arg1))
   (invoke [obj arg1 arg2]
-    (invoke-task obj arg1 arg2))
+    (invoke-procedure obj arg1 arg2))
   (invoke [obj arg1 arg2 arg3]
-    (invoke-task obj arg1 arg2 arg3))
+    (invoke-procedure obj arg1 arg2 arg3))
   (invoke [obj arg1 arg2 arg3 arg4]
-    (invoke-task obj arg1 arg2 arg3 arg4))
+    (invoke-procedure obj arg1 arg2 arg3 arg4))
   (invoke [obj arg1 arg2 arg3 arg4 arg5]
-    (invoke-task obj arg1 arg2 arg3 arg4 arg5))
+    (invoke-procedure obj arg1 arg2 arg3 arg4 arg5))
   (invoke [obj arg1 arg2 arg3 arg4 arg5 arg6]
-    (invoke-task obj arg1 arg2 arg3 arg4 arg5 arg6))
+    (invoke-procedure obj arg1 arg2 arg3 arg4 arg5 arg6))
   (invoke [obj arg1 arg2 arg3 arg4 arg5 arg6 arg7]
-    (invoke-task obj arg1 arg2 arg3 arg4 arg5 arg6 arg7))
+    (invoke-procedure obj arg1 arg2 arg3 arg4 arg5 arg6 arg7))
   (invoke [obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8]
-    (invoke-task obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8))
+    (invoke-procedure obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8))
   (invoke [obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9]
-    (invoke-task obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9))
+    (invoke-procedure obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9))
   (invoke [obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9 arg10]
-    (invoke-task obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9 arg10))
+    (invoke-procedure obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9 arg10))
   (invoke [obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9 arg10 arg11]
-    (invoke-task obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9 arg10 arg11))
+    (invoke-procedure obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9 arg10 arg11))
   (invoke [obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9 arg10 arg11 arg12]
-    (invoke-task obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9 arg10 arg11 arg12))
+    (invoke-procedure obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9 arg10 arg11 arg12))
   (invoke [obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9 arg10 arg11 arg12 arg13]
-    (invoke-task obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9 arg10 arg11 arg12 arg13))
+    (invoke-procedure obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9 arg10 arg11 arg12 arg13))
   (invoke [obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9 arg10 arg11 arg12 arg13 arg14]
-    (invoke-task obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9 arg10 arg11 arg12 arg13 arg14))
+    (invoke-procedure obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9 arg10 arg11 arg12 arg13 arg14))
+  (invoke [obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9 arg10 arg11 arg12 arg13 arg14 arg15]
+    (invoke-procedure obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9 arg10 arg11 arg12 arg13 arg14 arg15))
+  (invoke [obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9 arg10 arg11 arg12 arg13 arg14 arg15 arg16]
+    (invoke-procedure obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9 arg10 arg11 arg12 arg13 arg14 arg15 arg16))
+  (invoke [obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9 arg10 arg11 arg12 arg13 arg14 arg15 arg16 arg17]
+    (invoke-procedure obj arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9 arg10 arg11 arg12 arg13 arg14 arg15 arg16 arg17))
   (applyTo [obj args]
-    (apply invoke-task obj args)))
+    (apply invoke-procedure obj args)))
 
-(defmethod print-method Task
+(defmethod print-method Procedure
   [v ^java.io.Writer w]
   (.write w (str v)))
 
-(defmethod print-method TaskInstance
+(defmethod print-method ProcedureInstance
+  [v ^java.io.Writer w]
+  (.write w (str v)))
+
+(defmethod print-method ProcedureRegistry
   [v ^java.io.Writer w]
   (.write w (str v)))
 
@@ -207,17 +258,34 @@
                clojure.lang.IRecord
                clojure.lang.IDeref)
 
-(defn task [tk]
-  (cond (fn? tk)
-        (task {:handler tk})
+(defn procedure
+  "creates a procedure based"
+  
+  {:added "2.2"}
+  ([tk arglist]
+   (cond (fn? tk)
+         (procedure {:handler tk} arglist)
 
-        (hash-map? tk)
-        (map->Task (nested/merge-nil-nested tk *default-settings*))))
+         (hash-map? tk)
+         (-> (assoc tk :arglist arglist)
+             (nested/merge-nil-nested *default-settings*)
+             (map->Procedure)))))
 
+(defmacro defprocedure [name defaults & body]
+  (let [defaults (cond (vector? defaults)
+                       {:arglist defaults}
+                       (map? defaults)
+                       defaults)
+        arglist  (:arglist defaults)]
+    `(def ~name (procedure (merge {:handler (fn ~@body)} ~defaults) ~arglist))))
 
-(defn list-all 
-  ([]))
+(comment
+  
+  (macroexpand-1 '(defprocedure screen-scraper
+                   {:arglist [:timestamp :params :instance]} 
+                   ([t params])))
 
+  )
 
 
 (comment
@@ -226,11 +294,6 @@
     ([registry]
      (nested/update-vals-in @registry [] (comp sort keys))))
 
-  (defn instance
-    ([name id] (instance *default-registry* name id))
-    ([registry name id]
-     (get-in @registry [name id])))
-
   (defn running?
     ([name id] (running? *default-registry* name id))
     ([registry name id]
@@ -238,16 +301,4 @@
        true
        false)))
 
-  (defn kill
-    ([name id] (kill *default-registry* name id))
-    ([registry name id]
-     (if-let [{:keys [thread]} (instance registry name id)]
-       (do (cond (future? thread)
-                 (future-cancel thread)
-                 
-                 (and (thread? thread)
-                      (= thread (Thread/currentThread)))
-                 (.stop ^Thread thread))
-           (swap! registry map/dissoc-in [name id])
-           true)
-       false))))
+  )

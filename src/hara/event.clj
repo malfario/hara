@@ -63,8 +63,6 @@
       :default  ~(util/parse-default-form forms)}))
 
 (defmacro raise
-  "Raise an issue with the content to be either a keyword, hashmap or vector, optional message
-  and raise-forms - 'option' and 'default'"
   [content & [msg & forms]]
   (let [[msg forms] (if (util/is-special-form :raise msg)
                       ["" (cons msg forms)]
@@ -78,8 +76,6 @@
 
 
 (defmacro manage
-  "This creats the 'manage' dynamic scope form. The body will be executed
-  in a dynamic context that allows handling of issues with 'on' and 'option' forms."
   [& forms]
   (let [sp-fn           (fn [form] (util/is-special-form :manage form #{'finally 'catch}))
         body-forms      (vec (filter (complement sp-fn) forms))

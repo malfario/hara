@@ -7,13 +7,36 @@
 (defn new-id []
   (keyword (str (uuid))))
 
-(defn expand-data [data]
+(defn expand-data
+  "expands shorthand data into a map
+  
+  (expand-data :hello)
+  => {:hello true}
+
+  (expand-data [:hello {:world \"foo\"}])
+  => {:world \"foo\", :hello true}"
+  {:added "2.2"} 
+  [data]
   (cond (hash-map? data) data
         (keyword? data) {data true}
         (vector? data)  (apply merge (map expand-data data))
         :else (throw (Exception. (str data " should be a keyword, hash-map or vector")))))
 
-(defn check-data [data chk]
+(defn check-data
+  "checks to see if the data corresponds to a template
+
+  (check-data {:hello true} :hello)
+  => true
+
+  (check-data {:hello true} {:hello true?})
+  => true
+
+  (check-data {:hello true} '_)
+  => true
+
+  (check-data {:hello true} #{:hello})
+  => true"
+  {:added "2.2"} [data chk]
   (cond (hash-map? chk)
         (every? (fn [[k vchk]]
                   (let [vcnt (get data k)]
@@ -43,12 +66,26 @@
   ([] (Manager. (new-id) [] {}))
   ([id store options] (Manager. id store options)))
 
-(defn remove-handler [manager id]
+(defn remove-handler
+  "adds a handler to the manager
+  (-> (add-handler (manager) :hello {:id :hello
+                                     :handler identity})
+      (remove-handler :hello)
+      (match-handlers {:hello \"world\"}))
+  => ()"
+  {:added "2.2"} [manager id]
   (if-let [position (first (seq/positions #(-> % :id (= id)) (:store manager)))]
     (update-in manager [:store] seq/remove-index position)
     manager))
 
 (defn add-handler
+  "adds a handler to the manager
+  (-> (add-handler (manager) :hello {:id :hello
+                                     :handler identity})
+      (match-handlers {:hello \"world\"})
+      (count))
+  => 1"
+  {:added "2.2"}
   ([manager handler]
    (let [handler (if (:id handler)
                    handler
@@ -82,17 +119,3 @@
                    (symbol? bindings)    [bindings]
                    :else (throw (Exception. (str "bindings " bindings " should be a vector, hashmap or symbol"))))]
     `(fn ~bind ~@body)))
-
-(-> (manager)
-    (add-handler :from-cache
-                 (fn [event]
-                   (println event)))
-    (add-handler [:from-cache]
-                 {:id "hello"
-                  :handler (fn [event]
-                             (println event))})
-    (remove-handler "hello")
-    ;;(list-handlers)
-    (match-handlers {:from-cache "true"})
-    )
-
