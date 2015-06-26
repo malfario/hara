@@ -41,8 +41,9 @@
   ;; watch for changes in ticker
   (add-watch ticker :trigger
              (fn [_ _ _ {:keys [time array params instance]}]
-               (doseq [handler (ova/<< handlers)]
-                 (if (tab/match-array? array (:schedule-array handler))
+               (doseq [handler (persistent! handlers)]
+                 (if (and (tab/match-array? array (:schedule-array handler))
+                          (not (:disabled handler)))
                    (handler time params instance)))))
   ;; update registry
   (dosync (ova/map! handlers assoc-in [:registry] registry))

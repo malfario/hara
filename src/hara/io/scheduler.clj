@@ -3,6 +3,7 @@
              [time :as time]
              [component :as component]]
             [hara.concurrent
+             [ova :as ova]
              [procedure :as procedure]]
             [hara.data.nested :as nested]
             [hara.io.scheduler
@@ -77,7 +78,16 @@
     (-  (System/currentTimeMillis)
         (time/to-long start))))
 
-(defn task [scheduler id])
+(defn task [scheduler name]
+  (first (ova/select (-> scheduler :array :handlers) [:name name])))
+
+(defn enable-task [scheduler name]
+  (dosync (ova/smap! (-> scheduler :array :handlers) [:name name]
+                     dissoc :disabled)))
+
+(defn disable-task [scheduler name]
+  (dosync (ova/smap! (-> scheduler :array :handlers) [:name name]
+                     assoc :disabled true)))
 
 (comment
   
@@ -88,6 +98,10 @@
                               {:array {:print-task {:schedule "/2 * * * * * *"
                                                     :params  {:hello "world"}}}})))
 
+  (disable-task sch1 :print-task)
+  (task sch1 :print-task)
+  (ova/select (-> sch1 :array :handlers) [:name :print-task])
+  
   (uptime sch1)
   (component/stop sch1)
   

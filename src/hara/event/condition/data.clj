@@ -4,7 +4,7 @@
 
 (defn issue
   ([data msg options default]
-   (issue (common/new-id) msg options default))
+   (issue (common/new-id) data msg options default))
   ([id data msg options default]
    (let [data    (common/expand-data data)
          options (or options {})

@@ -103,17 +103,16 @@
       (dissoc cam :status)))
 
   (defmethod print-method Camera
-    [v w]
+    [v ^java.io.Writer w]
     (.write w (str v)))
 
 ^{:refer hara.component/more-tests :added "2.1"}
 (fact "creates a system of components"
 
-  (def topology {:database   [{:constructor map->Database
-                               :initialiser #(assoc % :a 1)}]
+  (def topology {:database   [{:constructor map->Database}]
 
                  :cameras    [{:constructor [map->Camera]
-                               :initialiser #(assoc % :a 2)}
+                               :initialiser #(map (fn [x] (assoc x :a 1)) %)}
                               :database]})
 
   (#'hara.component/system-constructors topology)
@@ -126,8 +125,7 @@
 
   (start (system topology
                  {:watchmen [{:id 1} {:id 2}]
-                  :cameras ^{:hello "world"} [{:id 1} {:id 2 :hello "again"}]}))
+                  :cameras  ^{:hello "world"} [{:id 1} {:id 2 :hello "again"}]}))
   => (contains {:database (contains {:status "started"})
-                :a 2,
-                :cameras anything #_(contains [(contains {:hello "world", :id 1,  :status "started"})
-                                               (contains {:hello "again", :id 2,  :status "started"})])}))
+                :cameras (contains [(contains {:hello "world", :id 1,  :a 1 :status "started"})
+                                    (contains {:hello "again", :id 2,  :a 1 :status "started"})])}))

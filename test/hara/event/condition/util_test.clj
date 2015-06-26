@@ -1,4 +1,5 @@
 (ns hara.event.condition.util-test
+  (:use midje.sweet)
   (:require [hara.event.condition.util :refer :all]))
   
 ^{:refer hara.event.condition/is-special-form :added "2.2"}
