@@ -40,6 +40,13 @@
   (if value
     (Date. value)))
 
+(defmethod common/truncate Date
+  [^Date t field tz]
+  (if (= :milli field)
+    (let [val (.getTime t)]
+      (Date. (* (quot val 1000) 1000)))
+    (throw (Exception. (str "truncate for " field " not implemented")))))
+
 (comment
 
   (common/from-long Date 0 nil)

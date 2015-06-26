@@ -6,3 +6,6 @@
 (defmulti from-long (fn [type long tz] type))
 
 (defmulti from-map (fn [type map] type))
+
+(defmulti truncate (fn [data field tz] (type data)))
+

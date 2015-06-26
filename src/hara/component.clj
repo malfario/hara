@@ -165,26 +165,31 @@
 
 (declare start-system stop-system)
 
+(defn system-string
+  ([sys]
+   (let []
+     (str "#" (or (-> sys meta :name) "sys") " "
+          (reduce (fn [m [k v]]
+                    (cond (or (system? v)
+                              (array? v)
+                              (not (component? v)))
+                          (assoc m k v)
+
+                          :else
+                          (assoc m k (reduce (fn [m [k v]]
+                                               (cond (extends? IComponent (type v))
+                                                     (update-in m ['*] (fnil #(conj % k) []))
+
+                                                     :else
+                                                     (assoc m k v)))
+                                             (empty-record v)
+                                             v))))
+                  {} sys)))))
+
 (defrecord ComponentSystem []
   Object
   (toString [sys]
-    (str "#sys"
-         (reduce (fn [m [k v]]
-                   (cond (or (system? v)
-                             (array? v)
-                             (not (component? v)))
-                         (assoc m k v)
-
-                         :else
-                         (assoc m k (reduce (fn [m [k v]]
-                                              (cond (extends? IComponent (type v))
-                                                    (update-in m ['*] (fnil #(conj % k) []))
-
-                                                    :else
-                                                    (assoc m k v)))
-                                            (empty-record v)
-                                            v))))
-                 {} sys)))
+    (system-string sys))
 
   IComponent
   (-start [sys]
@@ -259,12 +264,12 @@
                         ctor       (get cmp-ctors k)
                         init       (get cmp-inits k)
                         aug        (get cmp-augs k)]
-                    (init (assoc m k (cond (vector? ctor)
+                    (assoc m k (init (cond (vector? ctor)
                                            (->> (seq component)
                                                 (map-indexed (augmentation-fn m aug))
                                                 (ComponentArray.)
                                                 (start))
-
+                                           
                                            (instance? clojure.lang.IPersistentCollection component)
                                            (-> component
                                                (merge (select-keys m aug))
@@ -323,30 +328,32 @@
 
     (-> sys :store seq first keys))  => (just [:status :fs :db :id] :in-any-order)"
   {:added "2.1"}
-  [topology config]
-  (let [deps  (system-dependencies  topology)
-        ctors (system-constructors  topology)
-        inits (system-initialisers  topology)
-        augms (system-augmentations topology)]
-    (with-meta
-      (reduce (fn [sys [k ctor]]
-                (assoc sys k (cond (nil? ctor) config
+  ([topology config] (system topology config nil))
+  ([topology config name]
+   (let [deps  (system-dependencies  topology)
+         ctors (system-constructors  topology)
+         inits (system-initialisers  topology)
+         augms (system-augmentations topology)]
+     (with-meta
+       (reduce (fn [sys [k ctor]]
+                 (assoc sys k (cond (nil? ctor) config
 
-                                   (vector? ctor)
-                                   (let [arr-cfg (get config k)]
-                                     (if (vector? arr-cfg)
-                                       (array (first ctor) arr-cfg)
-                                       (throw (Exception. (str "config for component " k
-                                                               " has to be a vector.")))))
+                                    (vector? ctor)
+                                    (let [arr-cfg (get config k)]
+                                      (if (vector? arr-cfg)
+                                        (array (first ctor) arr-cfg)
+                                        (throw (Exception. (str "config for component " k
+                                                                " has to be a vector.")))))
 
-                                   :else
-                                   (ctor (get config k)))))
-              (ComponentSystem.)
-              ctors)
-      {:dependencies deps
-       :constructors ctors
-       :initialisers inits
-       :augmentations augms})))
+                                    :else
+                                    (ctor (get config k)))))
+               (ComponentSystem.)
+               ctors)
+       {:name name
+        :dependencies deps
+        :constructors ctors
+        :initialisers inits
+        :augmentations augms}))))
 
 (defn system?
   "checks if object is a component system

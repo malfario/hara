@@ -6,12 +6,9 @@
             [hara.data.nested :as nested]
             [hara.function.args :as args]))
 
-(defrecord ProcedureRegistry []
-  Object
-  (toString [obj]
-    (str "#reg" (nested/update-vals-in obj [] keys))))
+(defn registry [] (atom {}))
 
-(defonce ^:dynamic *default-registry* (atom (ProcedureRegistry.)))
+(defonce ^:dynamic *default-registry* (registry))
 
 (defn instance
     ([name id] (instance *default-registry* name id))
@@ -249,11 +246,7 @@
 (defmethod print-method ProcedureInstance
   [v ^java.io.Writer w]
   (.write w (str v)))
-
-(defmethod print-method ProcedureRegistry
-  [v ^java.io.Writer w]
-  (.write w (str v)))
-
+  
 (prefer-method print-method
                clojure.lang.IRecord
                clojure.lang.IDeref)
@@ -280,13 +273,9 @@
     `(def ~name (procedure (merge {:handler (fn ~@body)} ~defaults) ~arglist))))
 
 (comment
-  
   (macroexpand-1 '(defprocedure screen-scraper
                    {:arglist [:timestamp :params :instance]} 
-                   ([t params])))
-
-  )
-
+                   ([t params]))))
 
 (comment
   (defn all-running
@@ -299,6 +288,4 @@
     ([registry name id]
      (if (instance registry name id)
        true
-       false)))
-
-  )
+       false))))

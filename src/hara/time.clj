@@ -84,6 +84,10 @@
   ([] (now *default-type* (system-timezone)))
   ([type tz] (common/from-long type (System/currentTimeMillis) tz)))
 
+(defn truncate
+  ([t field] (common/truncate t field (system-timezone)))
+  ([t field tz] (common/truncate t field tz)))
+
 (comment
 
   (now)
