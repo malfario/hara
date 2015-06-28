@@ -5,6 +5,7 @@
             [hara.concurrent
              [ova :as ova]
              [procedure :as procedure]]
+            [hara.concurrent.procedure.data :as data]
             [hara.data.nested :as nested]
             [hara.io.scheduler
              [array :as array]
@@ -17,6 +18,7 @@
               :interval 1
               :truncate :milli}
    :registry {}
+   :cache    {}
    :ticker   {}})
 
 (defn scheduler
@@ -25,10 +27,11 @@
     ([handlers config global]
      (component/system
       {:array     [{:constructor (array/seed-fn handlers)
-                    :initialiser array/initialise} :registry :ticker]
+                    :initialiser array/initialise} :cache :registry :ticker]
        :clock     [clock/clock :ticker]
        :ticker    [(fn [_] (atom {:time nil :array nil}))]
-       :registry  [(fn [_] (atom {}))]}
+       :registry  [(fn [_] (data/registry))]
+       :cache     [(fn [_] (data/cache))]}
       (-> global
           (update-in [:array] nested/merge-nested config)
           (nested/merge-nil-nested *defaults*))

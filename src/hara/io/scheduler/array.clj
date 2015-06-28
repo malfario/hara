@@ -37,7 +37,7 @@
     (map->TaskArray
      {:handlers (ova/ova (build-handlers handlers config))})))
 
-(defn initialise [{:keys [handlers registry ticker] :as arr}]
+(defn initialise [{:keys [handlers registry cache ticker] :as arr}]
   ;; watch for changes in ticker
   (add-watch ticker :trigger
              (fn [_ _ _ {:keys [time array params instance]}]
@@ -46,6 +46,7 @@
                           (not (:disabled handler)))
                    (handler time params instance)))))
   ;; update registry
-  (dosync (ova/map! handlers assoc-in [:registry] registry))
+  (dosync (ova/map! handlers assoc-in [:registry] registry)
+          (ova/map! handlers assoc-in [:cache] cache))
   
   arr)
