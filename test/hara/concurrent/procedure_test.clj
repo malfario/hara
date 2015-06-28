@@ -1,7 +1,8 @@
 (ns hara.concurrent.procedure-test
   (:use midje.sweet)
   (:require [hara.concurrent.procedure :refer :all]
-            [hara.event :refer :all]))
+            [hara.event :refer :all]
+            [hara.common.state :as state]))
 
 ^{:refer hara.concurrent.procedure/max-inputs :added "2.2"}
 (fact "finds the maximum number of inputs that a function can take"
@@ -27,14 +28,15 @@
 
   (def two-procedure (procedure {:name "two"
                                  :handler (fn [id params]
-                                            (Thread/sleep 1000000)
+                                            
                                             2)
                                  :mode :async}
-                                [:id :params]))
+                                [:id :params :instance]))
   
-  (def exec (future (two-procedure (rand) {})))
+  (def exec (future (two-procedure (rand-int 100) {})))
   *default-registry*
-  (def exec (future (two-procedure :three {})))
+  *default-cache*
+  (def exec (future (two-procedure (rand-int 100) {} {:cached true})))
   
   (all-running)
   {"two" (:two)}
@@ -42,8 +44,9 @@
   (kill "two" :two)
   (kill "two" :three)
 
+  
   *default-registry*
-  *default-cache*)
+  (state/empty *default-cache*) ( (.state ) {}))
 
 (comment
   (def print-hello
@@ -72,7 +75,7 @@
 
 *default-registry*
 
-(comment {:procedure        <ref>
+(comment {:procedure   <ref>
           :id          <any>
           :params      <map>
           :mode        <keyword>
@@ -82,4 +85,3 @@
           :cached      <bool>
           :overwrite   <bool>
           :restart     <bool>})
-

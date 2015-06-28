@@ -2,13 +2,13 @@
   (:require [hara.time :as time]
             [hara.event :as event]
             [hara.common.checks :refer [hash-map? thread?]]
+            [hara.common.state :as state]
             [hara.data.map :as map]
             [hara.data.nested :as nested]
-            [hara.function.args :as args]))
+            [hara.function.args :as args]
+            [hara.concurrent.procedure.data :as data]))
 
-(defn registry [] (atom {}))
-
-(defonce ^:dynamic *default-registry* (registry))
+(defonce ^:dynamic *default-registry* (data/registry))
 
 (defn instance
     ([name id] (instance *default-registry* name id))
@@ -21,36 +21,36 @@
      (if-let [{:keys [thread]} (instance registry name id)]
        (do (cond (future? thread)
                  (future-cancel thread)
-                 
+
                  (and (thread? thread)
                       (not= thread (Thread/currentThread)))
                  (do (.stop ^Thread thread)
                      (Thread/sleep 1)))
            (event/signal [:log {:msg "Killed Execution" :instance instance}])
-           (swap! registry map/dissoc-in [name id])
+           (state/update registry map/dissoc-in [name id])
            true)
        false)))
 
-(defonce ^:dynamic *default-cache* (atom {}))
+(defonce ^:dynamic *default-cache* (data/cache))
 
 (def ^:dynamic *default-settings*
   {:mode :async
    :interrupt false
    :time {:type java.util.Date
-          :zone (time/system-timezone)} 
+          :zone (time/system-timezone)}
    :registry *default-registry*
    :cache    *default-cache*
    :id-fn    (fn [_] (str (java.util.UUID/randomUUID)))})
 
 (defn max-inputs
   "finds the maximum number of inputs that a function can take
-  
+
   (max-inputs (fn ([a]) ([a b])) 4)
   => 2
 
   (max-inputs (fn [& more]) 4)
   => 4
-  
+
   (max-inputs (fn ([a])) 0)
   => throws"
   {:added "2.2"}
@@ -81,7 +81,9 @@
         :success data
         :error   (throw data)))))
 
-
+(defmethod print-method ProcedureInstance
+  [v ^java.io.Writer w]
+  (.write w (str v)))
 
 (defn wrap-instance [f]
   (fn [{:keys [arglist] :as instance} args]
@@ -97,12 +99,12 @@
   (fn [{:keys [cached cache overwrite name id] :as instance} args]
     (if-not cached
       (f instance args)
-      (let [prev (get-in @cache (concat [name id] args))]
+      (let [prev (get-in @cache [name id args])]
         (if (and prev (not overwrite))
           (deliver (:result instance)
                    (assoc @(:result prev) :cached (-> prev :runtime deref :ended)))
           (let [current (f instance args)]
-            (swap! cache assoc-in (concat [name id] args) instance)))))))
+            (state/update cache assoc-in [name id args] instance)))))))
 
 (defn wrap-interrupt [f]
   (fn [{:keys [registry name id interrupt] :as instance} args]
@@ -125,11 +127,11 @@
 
 (defn wrap-registry [f]
   (fn [{:keys [registry name id cached] :as instance} args]
-    (swap! registry assoc-in [name id] instance)
+    (state/update registry assoc-in [name id] instance)
     (f instance args)
-    (swap! registry map/dissoc-in [name id])))
+    (state/update registry map/dissoc-in [name id])))
 
-(defn invoke-base 
+(defn invoke-base
   [instance args]
   (try
     (let [result (apply (:handler instance) args)]
@@ -198,7 +200,7 @@
   (toString [obj]
     (str "#proc" (-> (select-keys obj [:name :mode :params :cached :runtime :arglist])
                      (->> (into {})))))
-  
+
   clojure.lang.IFn
   (invoke [obj]
     (invoke-procedure obj))
@@ -243,17 +245,9 @@
   [v ^java.io.Writer w]
   (.write w (str v)))
 
-(defmethod print-method ProcedureInstance
-  [v ^java.io.Writer w]
-  (.write w (str v)))
-  
-(prefer-method print-method
-               clojure.lang.IRecord
-               clojure.lang.IDeref)
-
 (defn procedure
   "creates a procedure based"
-  
+
   {:added "2.2"}
   ([tk arglist]
    (cond (fn? tk)
@@ -271,21 +265,3 @@
                        defaults)
         arglist  (:arglist defaults)]
     `(def ~name (procedure (merge {:handler (fn ~@body)} ~defaults) ~arglist))))
-
-(comment
-  (macroexpand-1 '(defprocedure screen-scraper
-                   {:arglist [:timestamp :params :instance]} 
-                   ([t params]))))
-
-(comment
-  (defn all-running
-    ([] (all-running *default-registry*))
-    ([registry]
-     (nested/update-vals-in @registry [] (comp sort keys))))
-
-  (defn running?
-    ([name id] (running? *default-registry* name id))
-    ([registry name id]
-     (if (instance registry name id)
-       true
-       false))))
