@@ -17,7 +17,7 @@
   => throws)
 
 ^{:refer hara.concurrent.procedure/procedure :added "2.2"}
-(fact "creates ")
+(fact "creates")
 
 (comment
   (deflistener print-log :log
@@ -28,13 +28,27 @@
 
   (def two-procedure (procedure {:name "two"
                                  :handler (fn [id params]
-                                            
+                                            (Thread/sleep 1000)
+                                            (println id params)
                                             2)
-                                 :mode :async}
+                                 ;;:mode :async
+                                 }
                                 [:id :params :instance]))
+
+  (:procedure (two-procedure 100 {:a 1} {:mode :sync :cached true}))
+  
+  {:mode :sync}
+  
+  a -> b -> c
+
+  function
+  process
+  result
+
+  
   
   (def exec (future (two-procedure (rand-int 100) {})))
-  *default-registry*
+  (state/update *default-registry*)
   *default-cache*
   (def exec (future (two-procedure (rand-int 100) {} {:cached true})))
   

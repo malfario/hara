@@ -5,7 +5,7 @@
 
 (defn diff-changes
   "Finds changes in nested maps, does not consider new elements
-  
+
   (diff-changes {:a 2} {:a 1})
   => {[:a] 2}
 
@@ -22,7 +22,7 @@
                                  (get m2 k1))]
                   (cond (and (hash-map? v1) (hash-map? v2))
                         (merge out (diff-changes v1 v2 (conj arr k1)))
-                        
+
                         (= v1 v2)
                         out
 
@@ -34,7 +34,7 @@
 
 (defn diff-new
   "Finds new elements in nested maps, does not consider changes
-  
+
   (diff-new {:a 2} {:a 1})
   => {}
 
@@ -53,14 +53,14 @@
 
                          (not (contains? m2 k1))
                          (assoc out (conj arr k1) v1)
-                         
+
                          :else out)))
               {}
               m1)))
 
 (defn diff
   "Finds the difference between two maps
-  
+
   (diff {:a 2} {:a 1})
   => {:+ {} :- {} :> {[:a] 2}}
 
@@ -79,10 +79,17 @@
        (assoc diff :< (diff-changes m2 m1))
        diff))))
 
+(defn merge-or-replace [x v]
+  (cond (and (hash-map? x)
+             (hash-map? v))
+        (nested/merge-nested x v)
+
+        :else v))
+
 (defn patch
-  "Use the diff to convert one map to another in the forward 
+  "Use the diff to convert one map to another in the forward
   direction based upon changes between the two.
-  
+
   (let [m1  {:a {:b 1 :d 3}}
         m2  {:a {:c 2 :d 4}}
         df  (diff m2 m1)]
@@ -92,7 +99,7 @@
   [m diff]
   (->> m
        (#(reduce-kv (fn [m arr v]
-                       (assoc-in m arr v))
+                       (update-in m arr merge-or-replace v))
                     %
                     (merge (:+ diff) (:> diff))))
        (#(reduce (fn [m arr]
@@ -101,9 +108,9 @@
                     (keys (:- diff))))))
 
 (defn unpatch
-  "Use the diff to convert one map to another in the reverse 
+  "Use the diff to convert one map to another in the reverse
   direction based upon changes between the two.
-  
+
   (let [m1  {:a {:b 1 :d 3}}
         m2  {:a {:c 2 :d 4}}
         df  (diff m2 m1 true)]
@@ -113,11 +120,10 @@
   [m diff]
   (->> m
        (#(reduce-kv (fn [m arr v]
-                       (assoc-in m arr v))
+                       (update-in m arr merge-or-replace v))
                     %
                     (merge (:- diff) (:< diff))))
        (#(reduce (fn [m arr]
                    (map/dissoc-in m arr))
                     %
                     (keys (:+ diff))))))
-
