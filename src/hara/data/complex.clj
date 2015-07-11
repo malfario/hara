@@ -99,6 +99,8 @@
    => {:a #{{:foo #{{:bar #{{:baz 2}}}
                     {:bar #{{:baz 1}}}}}}}"
   {:added "2.1"}
+  ([] nil)
+  ([m] m)
   ([m1 m2] (merges-nested m1 m2 identity combine))
   ([m1 m2 sel] (merges-nested m1 m2 sel combine))
   ([m1 m2 sel func]
@@ -127,6 +129,8 @@
             #{{:id 2 :bar
                #{{:id 3 :baz #{1 2}}}}}}}}"
   {:added "2.1"}
+  ([] nil)
+  ([m] m)
   ([m1 m2] (merges-nested* m1 m2 hash-map? combine))
   ([m1 m2 sel] (merges-nested* m1 m2 sel combine))
   ([m1 m2 sel func]

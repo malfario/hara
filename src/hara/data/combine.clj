@@ -76,6 +76,8 @@
            :id merge)
   => #{{:id 1 :val 1} {:id 2 :val 2}}"
   {:added "2.1"}
+  ([] nil)
+  ([m] m)
   ([v1 v2]
      (cond (nil? v2) v1
            (nil? v1) v2

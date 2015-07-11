@@ -115,6 +115,7 @@
                 {:a {:b {:c 3}}})
   => {:a {:b {:c 3 :d 2}}}"
   {:added "2.1"}
+  ([] nil)
   ([m] m)
   ([m1 m2]
    (reduce-kv (fn [out k v]
@@ -144,6 +145,7 @@
   (merge-nil-nested {:b {:c :old}} {:b {:c :new}})
   => {:b {:c :old}}"
   {:added "2.1"}
+  ([] nil)
   ([m] m)
   ([m1 m2]
    (reduce-kv (fn [out k v]

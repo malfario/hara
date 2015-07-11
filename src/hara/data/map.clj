@@ -97,6 +97,7 @@
   (merge-if {:a 1} {:b nil} {:c 2})
   => {:a 1 :c 2}"
   {:added "2.1"}
+  ([] nil)
   ([m]
      (reduce (fn [i [k v]]
                (if (not (nil? v)) (assoc i k v) i))
@@ -152,6 +153,8 @@
   (merge-nil {:a 1} {:a 2})
   => {:a 1}"
   {:added "2.1"}
+  ([] nil)
+  ([m] m)
   ([m1 m2]
      (reduce (fn [i [k v]]
                (if (not (nil? (get i k)))
