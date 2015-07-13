@@ -1,4 +1,4 @@
-(ns documentation.hara.ova.selection
+(ns documentation..hara-concurrent-ova.selection
   (:require [hara.concurrent.ova :refer :all]
             [midje.sweet :refer :all]))
 

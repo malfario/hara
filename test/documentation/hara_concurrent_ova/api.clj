@@ -1,4 +1,4 @@
-(ns documentation.hara.ova.api
+(ns documentation.hara-concurrent-ova.api
   (:require [hara.concurrent.ova :refer :all]
             [hara.common.watch :as watch]
             [midje.sweet :refer :all]))
@@ -312,7 +312,7 @@
   => [15 2 35 4 55 6 75 8 95])
 
 
-[[:section {:title "Element Watch"}]]
+[[:section {:title "Element Watch" :tag "element-watch-2"}]]
 
 "Watches can be set up so that. Instead of a normal ref/atom watch where there are four inputs to the watch function, the Element watch requires an additional input to distinguish which array a change has occured. The function signature looks like:"
 

@@ -1,8 +1,8 @@
-(ns documentation.hara.event.api
+(ns documentation.hara-event.api
   (:require [hara.event :refer :all]
             [midje.sweet :refer :all]))
 
-[[:chapter {:title "API Reference"}]]
+[[:chapter {:title "API"}]]
 
 [[:section {:title "raise" :tag "api-raise"}]]
 
@@ -29,7 +29,7 @@
 
 [[{:numbered false}]]
 (defmacro raises-issue [payload]
-  `(throws (fn [e#] 
+  `(throws (fn [e#]
              ((just ~payload) (ex-data e#)))))
 
 "Please note that the `raises-issue` macro is only working with `midje`. In order to work outside of midje, we need to define the `payload` macro:"
@@ -232,7 +232,7 @@
   => "odd-number: true, value: 1")
 
 "Bindings can be a vector"
-  
+
 [[{:numbered false}]]
 (fact
   (manage
@@ -490,4 +490,3 @@
 
     => nil  ;; notice that the :use-nil is overridden
     )
-            

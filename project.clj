@@ -32,9 +32,15 @@
                           ;"hara.component"
                           ;{:input "test/midje_doc/guides/hara_component.clj"
                           ; :title "hara.component - composable systems"}
-                          "hara.ova"
-                          {:input "test/documentation/hara/ova.clj"
-                           :title "hara.ova - reactive array"}
+                          "hara-concurrent-ova"
+                          {:input "test/documentation/hara_concurrent_ova.clj"
+                           :title "hara.concurrent.ova"
+                           :subtitle "shared mutable state for multi-threaded applications"}
+                          "hara-event"
+                          {:input "test/documentation/hara_event.clj"
+                           :title "hara.event"
+                           :subtitle "event signalling and conditional restart framework"}
+
                           ;"hara.io.watch"
                           ;{:input "test/midje_doc/guides/hara_io_watch.clj"
                           ; :title "hara.io.watch - file watcher"}
@@ -46,21 +52,20 @@
                        :theme "clean"
                        :home "home",
                        :navigation ["quickstart"
-                                    ["guides" ["hara.component" 
-                                               "hara.ova" 
-                                               "hara.io.watch" 
+                                    ["guides" ["hara.component"
+                                               "hara.ova"
+                                               "hara.io.watch"
                                                "hara.io.timer"]]
                                     {:link "api", :text "api"}
-                                    {:link "https://gitter.im/zcaudate/hara", 
+                                    {:link "https://gitter.im/zcaudate/hara",
                                      :text "support"}
-                                    {:link "https://www.github.com/zcaudate/hara", 
+                                    {:link "https://www.github.com/zcaudate/hara",
                                      :text "source"}]}
                 :link {:auto-tag    true
                        :auto-number true}}
-                  
+
   :global-vars {*warn-on-reflection* true}
   :repack [{:type :clojure
             :levels 2
             :path "src"
             :standalone #{"reflect" "time" "event"}}])
-            

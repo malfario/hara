@@ -1,20 +1,18 @@
-(ns documentation.hara.ova
-  (:require [hara.concurrent.ova :refer :all]
-            [hara.common.watch :as watch]
-            [midje.sweet :refer :all]))
+(ns documentation.hara-concurrent-ova)
 
-[[:chapter {:title "Installation"}]]
+[[:chapter {:title "Overview"}]]
 
-["Add to `project.clj` dependencies (use double quotes): 
+[[:section {:title "Installation"}]]
 
-    [im.chit/hara.ova '{{PROJECT.version}}']"
+"Add to `project.clj` dependencies:
 
-"All functions are in the `hara.ova` namespace."]
+    [im.chit/hara.concurrent.ova \"{{PROJECT.version}}\"]"
 
-[[{:numbered false}]]
-(comment (use 'hara.ova))
+"All functions are in the `hara.ova` namespace."
 
-[[:chapter {:title "Motivation"}]]
+(comment (use 'hara.concurrent.ova))
+
+[[:section {:title "Motivation"}]]
 
 "An `ova` represents a mutable array of elements. The question should really be asked: Why?
 
@@ -38,18 +36,12 @@ The library has been abstracted out of [cronj](https://github.com/zcaudate/cronj
 
 [[:chapter {:title "Walkthrough"}]]
 
-[[:file {:src "test/documentation/hara/ova/walkthrough.clj"}]]
+[[:file {:src "test/documentation/hara_concurrent_ova/walkthrough.clj"}]]
 
-[[:chapter {:title "API Reference"}]]
+[[:chapter {:title "API"}]]
 
-[[:file {:src "test/documentation/hara/ova/api.clj"}]]
+[[:file {:src "test/documentation/hara_concurrent_ova/api.clj"}]]
 
 [[:chapter {:title "Indices Selection"}]]
 
-;[[:file {:src "test/documentation/hara/ova/selection.clj"}]]
-
-[[:chapter {:title "End Notes"}]]
-
-"For any feedback, requests and comments, please feel free to lodge an issue on github or contact me directly.
-"
-
+[[:file {:src "test/documentation/hara_concurrent_ova/selection.clj"}]]

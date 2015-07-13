@@ -1,8 +1,8 @@
-(ns documentation.hara.ova.walkthrough
+(ns documentation.hara-concurrent-ova.walkthrough
   (:require [hara.concurrent.ova :refer :all]
             [hara.common.watch :as watch]
             [midje.sweet :refer :all]))
-            
+
 [[:section {:title "Constructor"}]]
 "The key to `ova` lies in the ease of manipulating the postions of elements within an array as well as updating the elements themselves. We begin by constructing and displaying an ova."
 
