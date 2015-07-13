@@ -1,5 +1,6 @@
 (ns hara.component
   (:require [hara.common.checks :refer [hash-map?]]
+            [hara.data.map :refer [assoc-if]]
             [hara.data.nested :refer [merge-nested]]
             [hara.data.record :refer [empty-record]]
             [hara.sort.topological :refer [topological-sort]]))
@@ -223,6 +224,17 @@
    {}
    topology))
 
+(defn- system-exposes [topology]
+  (reduce (fn [m [k [const & deps]]]
+            (assoc m k
+                   (if-let [exp (:expose const)]
+                      {:key (first deps)
+                       :fn  (if (vector? exp)
+                               #(get-in % exp)
+                               exp)})))
+   {}
+   topology))
+
 (defn- system-initialisers [topology]
   (reduce (fn [m [k [const & _]]]
             (assoc m k
@@ -255,21 +267,26 @@
 
 (defn start-system [csys]
   (let [graph (meta csys)
-        cmp-keys  (-> graph :dependencies topological-sort)
-        cmp-ctors (-> graph :constructors)
-        cmp-inits (-> graph :initialisers)
-        cmp-augs  (-> graph :augmentations)]
+        cmp-keys    (-> graph :dependencies topological-sort)
+        cmp-ctors   (-> graph :constructors)
+        cmp-exps    (-> graph :exposes)
+        cmp-inits   (-> graph :initialisers)
+        cmp-augs    (-> graph :augmentations)]
     (-> (reduce (fn [m k]
                   (let [component  (get csys k)
+                        exp        (get cmp-exps k)
                         ctor       (get cmp-ctors k)
                         init       (get cmp-inits k)
                         aug        (get cmp-augs k)]
-                    (assoc m k (init (cond (vector? ctor)
+                    (assoc m k (init (cond exp
+                                           ((:fn exp) (get m (:key exp)))
+
+                                           (vector? ctor)
                                            (->> (seq component)
                                                 (map-indexed (augmentation-fn m aug))
                                                 (ComponentArray.)
                                                 (start))
-                                           
+
                                            (instance? clojure.lang.IPersistentCollection component)
                                            (-> component
                                                (merge (select-keys m aug))
@@ -295,19 +312,24 @@
   (let [graph (meta csys)
         cmp-keys  (-> graph :dependencies topological-sort)
         cmp-ctors (-> graph :constructors)
+        cmp-exps  (-> graph :exposes)
         cmp-augs  (-> graph :augmentations)]
     (reduce (fn [m k]
               (let [component  (get csys k)
                     ctor       (get cmp-ctors k)
                     aug        (get cmp-augs k)]
-                (assoc m k (cond (vector? ctor)
+                (assoc-if m k
+                          (cond (get cmp-exps k)
+                                 nil
+
+                                 (vector? ctor)
                                  (->> (stop component)
                                       (map-indexed (de-augmentation-fn m aug))
                                       (vec)
                                       (ComponentArray.))
 
-                               :else
-                               (apply dissoc (stop component) aug)))))
+                                 :else
+                                 (apply dissoc (stop component) aug)))))
             {}
             (reverse cmp-keys))))
 
@@ -332,11 +354,16 @@
   ([topology config name]
    (let [deps  (system-dependencies  topology)
          ctors (system-constructors  topology)
+         exps  (system-exposes       topology)
          inits (system-initialisers  topology)
          augms (system-augmentations topology)]
      (with-meta
        (reduce (fn [sys [k ctor]]
-                 (assoc sys k (cond (nil? ctor) config
+                 (assoc sys k (cond (and (nil? ctor)
+                                         (nil? (get exps k)))
+                                    config
+
+                                    (get exps k) nil
 
                                     (vector? ctor)
                                     (let [arr-cfg (get config k)]
@@ -352,6 +379,7 @@
        {:name name
         :dependencies deps
         :constructors ctors
+        :exposes      exps
         :initialisers inits
         :augmentations augms}))))
 

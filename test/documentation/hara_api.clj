@@ -1,23 +1,23 @@
-(ns documentation.hara.outline)
+(ns documentation.hara-api)
 
 [[:chapter {:title "Introduction"}]]
 
-"`hara` provides a set of functions, best practises and code abstractions. It serves a `clojure.contrib` like 
-purpose but attempts to uphold the higher principles of programming. 
+"`hara` provides a set of functions, best practises and code abstractions. It serves a `clojure.contrib` like
+purpose but attempts to uphold the higher principles of programming.
 
  - synergistic design
- - maximal code reuse 
+ - maximal code reuse
  - minimal code repetition and wastage
  - functional orthogonality
  - functional modularity
  - functional extensibility
  - self-documentated code
- 
+
 Please See [finding a middle ground](http://z.caudate.me/finding-a-middle-ground/) for motivations and reasoning."
 
 [[:chapter {:title "Installation"}]]
 
-"Add to `project.clj` dependencies: 
+"Add to `project.clj` dependencies:
 
 `[im.chit/hara `\"`{{PROJECT.version}}`\"`]`
 
@@ -96,6 +96,10 @@ Where `PACKAGE` and `NAMESPACE` can be glean from the sections listed in the sub
 [[:section {:title "concurrent.notification"}]]
 
 [[:file {:src "test/hara/concurrent/notification_test.clj"}]]
+
+[[:section {:title "concurrent.ova"}]]
+
+[[:file {:src "test/hara/concurrent/ova_test.clj"}]]
 
 [[:section {:title "concurrent.propagate"}]]
 
@@ -199,11 +203,6 @@ Where `PACKAGE` and `NAMESPACE` can be glean from the sections listed in the sub
 
 [[:file {:src "test/hara/namespace/eval_test.clj"}]]
 
-;;-------
-
-[[:chapter {:title "hara.ova"}]]
-
-[[:file {:src "test/hara/ova_test.clj"}]]
 
 ;;-------
 

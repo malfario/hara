@@ -129,3 +129,15 @@
   => (contains {:database (contains {:status "started"})
                 :cameras (contains [(contains {:hello "world", :id 1,  :a 1 :status "started"})
                                     (contains {:hello "again", :id 2,  :a 1 :status "started"})])}))
+
+
+^{:refer hara.component/expose-test :added "2.2"}
+(fact "exposes sub-components within a system"
+
+  (def topology {:database [map->Database]
+                 :status   [{:expose [:status]} :database]})
+
+  (start (system topology
+                 {:database {:status "stopped"}}))
+  => (contains {:database {:status "started"}
+                :status   "started"}))

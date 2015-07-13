@@ -1,12 +1,12 @@
 (ns documentation.hara-concurrent-ova.walkthrough
+  (:use midje.sweet)
   (:require [hara.concurrent.ova :refer :all]
-            [hara.common.watch :as watch]
-            [midje.sweet :refer :all]))
+            [hara.common.watch :as watch]))
 
 [[:section {:title "Constructor"}]]
 "The key to `ova` lies in the ease of manipulating the postions of elements within an array as well as updating the elements themselves. We begin by constructing and displaying an ova."
 
-[[{:numbered false}]]
+
 (fact
   (def ov
     (ova [{:val 1} {:val 2}
@@ -17,7 +17,7 @@
 
 [[:section {:title "Dereferencing"}]]
 "An `ova` is a `ref` of a `vector` of `refs`. They are dereferenced accordingly:"
-[[{:numbered false}]]
+
 (fact
   (mapv deref (deref ov))
   => [{:val 1} {:val 2}
@@ -30,7 +30,7 @@
 [[:section {:title "Append / Insert / Concat"}]]
 "Adding elements to the ova is very straight forward:"
 
-[[{:numbered false}]]
+
 (fact
   (<< (append! ov {:val 6}))         ;; Append
   => [{:val 1} {:val 2} {:val 3}
@@ -49,7 +49,7 @@
 [[:section {:title "Select"}]]
 "Where `ova` really shines is in the mechanism by which elements are selected. There are abundant ways of selecting elements - by index, by sets, by vectors, by predicates and by lists. The specific mechanism will be described more clearly in later sections."
 
-[[{:numbered false}]]
+
 (fact
   (select ov 0)                      ;; By Index
   => #{{:val 1}}
@@ -87,7 +87,7 @@
 [[:section {:title "Remove / Filter"}]]
 "`remove!` and `filter!` also use the same mechanism as `select`:"
 
-[[{:numbered false}]]
+
 (fact
   (<< (remove! ov 7))               ;; Index Notation
   => [{:val 1} {:val 2} {:val 3}
@@ -107,7 +107,7 @@
 [[:section {:title "Sorting"}]]
 "The `sort!` functions allows elements in the ova to be rearranged. The function becomes clearer to read with access and comparison defined seperately (last example)."
 
-[[{:numbered false}]]
+
 (fact
   (def ov (ova (map (fn [n] {:val n})
                     (range 8))))
@@ -132,7 +132,7 @@
 [[:section {:title "Manipulation"}]]
 "Using the same mechanism as `select`, bulk update of elements within the `ova` can be performed in a succint manner:"
 
-[[{:numbered false}]]
+
 (fact
   (def ov (ova (map (fn [n] {:val n})
                     (range 4))))
@@ -168,7 +168,7 @@
 [[:section {:title "Ova Watch"}]]
 "Because a ova is simply a ref, it can be watched for changes"
 
-[[{:numbered false}]]
+
 (fact
   (def ov (ova [0 1 2 3 4 5]))
 
@@ -187,7 +187,7 @@
 [[:section {:title "Element Watch"}]]
 "Entire elements of the ova can be watched. A more substantial example can be seen in the [scoreboard example](#scoreboard-example):"
 
-[[{:numbered false}]]
+
 (fact
   (def ov (ova [0 1 2 3 4 5]))
 
@@ -213,7 +213,7 @@
 [[:subsection {:title "Element Change Watch"}]]
 "The `add-elem-change-watch` function can be used to only notify when an element has changed."
 
-[[{:numbered false}]]
+
 (fact
   (def ov (ova [0 1 2 3 4 5]))
 
@@ -241,7 +241,7 @@
 [[:section {:title "Clojure Protocols"}]]
 "`ova` implements the sequence protocol so it is compatible with all the bread and butter methods."
 
-[[{:numbered false}]]
+
 (fact
   (def ov (ova (map (fn [n] {:val n})
                     (range 8))))

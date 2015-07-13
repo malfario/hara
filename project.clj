@@ -22,31 +22,43 @@
                           ;{:input "test/midje_doc/guides/home.clj"
                           ; :template "full"
                           ; :title "home"}
-                          ;"orientation"
-                          ;{:input "test/midje_doc/hara/orientation.clj"
-                          ; :title "hara in small pieces"
-                          ; :link {:auto-number false}}
-                          ;"api"
-                          ;{:input "test/midje_doc/hara/outline.clj"
-                          ; :title "api reference"}
-                          ;"hara.component"
-                          ;{:input "test/midje_doc/guides/hara_component.clj"
-                          ; :title "hara.component - composable systems"}
+                          "orientation"
+                          {:input "test/midje_doc/hara/orientation.clj"
+                           :title "hara in small pieces"
+                           :link {:auto-number false}}
+                          "api"
+                          {:input "test/documentation/hara_api.clj"
+                           :title "api examples"}
+                          "hara-component"
+                          {:input "test/documentation/hara_component.clj"
+                           :title "hara.component"
+                           :subtitle "constructing composable systems"}
                           "hara-concurrent-ova"
                           {:input "test/documentation/hara_concurrent_ova.clj"
                            :title "hara.concurrent.ova"
                            :subtitle "shared mutable state for multi-threaded applications"}
+                          "hara-concurrent-procedure"
+                          {:input "test/documentation/hara_concurrent_procedure.clj"
+                           :title "hara.concurrent.procedure"
+                           :subtitle ""}
                           "hara-event"
                           {:input "test/documentation/hara_event.clj"
                            :title "hara.event"
-                           :subtitle "event signalling and conditional restart framework"}
+                           :subtitle "event signalling and conditional restart"}
+                          "hara-io-watch"
+                          {:input "test/documentation/hara_io_watch.clj"
+                           :title "hara.io.watch"
+                           :subtitle "watch for filesystem changes"}
+                          "hara-io-scheduler"
+                          {:input "test/midje_doc/guides/hara_io_scheduler.clj"
+                           :title "hara.io.scheduler"
+                           :subtitle "easy and intuitive task scheduling"}
+                          "hara-reflect"
+                          {:input "test/documentation/hara_io_watch.clj"
+                           :title "hara.reflect"
+                           :subtitle ""
+                           }
 
-                          ;"hara.io.watch"
-                          ;{:input "test/midje_doc/guides/hara_io_watch.clj"
-                          ; :title "hara.io.watch - file watcher"}
-                          ;"hara.io.timer"
-                          ;{:input "test/midje_doc/guides/hara_io_timer.clj"
-                          ; :title "hara.io.scheduler - task scheduler"}
                           }
                 :html {:logo "hara.png"
                        :theme "clean"

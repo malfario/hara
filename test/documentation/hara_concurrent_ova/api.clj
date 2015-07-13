@@ -1,13 +1,13 @@
 (ns documentation.hara-concurrent-ova.api
+  (:use midje.sweet)
   (:require [hara.concurrent.ova :refer :all]
-            [hara.common.watch :as watch]
-            [midje.sweet :refer :all]))
+            [hara.common.watch :as watch]))
 
 [[:section {:title "Basics"}]]
 [[:subsection {:title "ova"}]]
 "An `ova` deals with data in a vector. The data can be anything but it is recommended that the data are clojure maps."
 
-[[{:numbered false}]]
+
 (fact
   (def ov (ova [1 2 3 4]))
 
@@ -21,7 +21,7 @@
 [[:subsection {:title "persistent!"}]]
 "Since `ova.core.Ova` implements the `clojure.lang.ITransientCollection` interface, it can be made persistent with `persistent!`."
 
-[[{:numbered false}]]
+
 (fact
   (persistent! (ova [1 2 3 4]))
   => [1 2 3 4])
@@ -30,7 +30,7 @@
 
 "`reinit!` resets the data elements in an ova to another set of values. Any change in the ova requires it to be wrapped in a `dosync` macro."
 
-[[{:numbered false}]]
+
 (fact
   (def ov (ova [1 2 3 4]))
   (dosync (init! ov [5 6 7 8 9]))
@@ -39,7 +39,7 @@
 
 [[:subsection {:title "<<"}]]
 "The output macro is a shorthand for outputting the value of `ova` after a series of transformations. There is an implicit `dosync` block within the macro."
-[[{:numbered false}]]
+
 (fact
   (<< (def ov (ova [1 2 3 4]))
       (init! ov [5 6 7 8 9]))
@@ -62,7 +62,7 @@
 
 "Where ova shines is in the various ways that elements can be selected. It is best to define some data that can be queried:"
 
-[[{:numbered false}]]
+
 (def players
   (ova [{:id :a1 :score 10 :info {:name "Bill"  :gender :m :nationality :aus}}
         {:id :a2 :score 15 :info {:name "John"  :gender :m :nationality :aus}}
@@ -78,25 +78,25 @@
 
 "##### Index:"
 
-[[{:numbered false}]]
+
 (fact
   (select players 0)
   => #{{:id :a1 :score 10 :info {:name "Bill"  :gender :m :nationality :aus}}})
 
 "##### Predicates:"
-[[{:numbered false}]]
+
 (fact
   (select players #(= (:id %) :a1))
   => #{{:id :a1 :score 10 :info {:name "Bill"  :gender :m :nationality :aus}}})
 
 "##### List Predicates:"
-[[{:numbered false}]]
+
 (fact
   (select players '(:id (= :a1)))
   => #{{:id :a1 :score 10 :info {:name "Bill"  :gender :m :nationality :aus}}})
 
 "##### Vector Predicates:"
-[[{:numbered false}]]
+
 (fact
   (select players [:id :a1])
   => #{{:id :a1 :score 10 :info {:name "Bill"  :gender :m :nationality :aus}}}
@@ -113,7 +113,7 @@
   => #{{:id :a9 :score 13 :info {:name "Rose"  :gender :f :nationality :aus}}})
 
 "##### Sets:"
-[[{:numbered false}]]
+
 (fact
   (select players #{1 2})
   => #{{:id :a2 :score 15 :info {:name "John"  :gender :m :nationality :aus}}
@@ -127,7 +127,7 @@
 [[:subsection {:title "selectv"}]]
 
 "`selectv` is the same as `select` except it returns a vector instead of a set."
-[[{:numbered false}]]
+
 (fact
   (selectv players #{[:score even?] [:score 13 [:info :gender] :f]})
   => (just [{:id :a1 :score 10 :info {:name "Bill"  :gender :m :nationality :aus}}
@@ -140,7 +140,7 @@
 [[:subsection {:title "fn"}]]
 "`ova` implements the `clojure.lang.IFn` interface and so can be called with select parameters. It can be used to return elements within an array. Additionally, if an element has an :id tag, it will search based on the :id tag."
 
-[[{:numbered false}]]
+
 (fact
   (players 0)
   => {:id :a1 :score 10 :info {:name "Bill"  :gender :m :nationality :aus}}
@@ -162,7 +162,7 @@
 [[:subsection {:title "append!"}]]
 "`append!` adds additional elements to the end:"
 
-[[{:numbered false}]]
+
 (fact
   (<< (append! (ova [1 2 3 4])
                5 6 7 8))
@@ -171,7 +171,7 @@
 [[:subsection {:title "concat!"}]]
 "`concat!` joins an array at the end:"
 
-[[{:numbered false}]]
+
 (fact
   (<< (concat! (ova [1 2 3 4])
                [5 6 7 8]))
@@ -181,7 +181,7 @@
 [[:subsection {:title "insert!"}]]
 "`insert!` allows elements to be inserted."
 
-[[{:numbered false}]]
+
 (fact
   (<< (insert! (ova [:a :b :c :e :f])
                :d 3))
@@ -191,7 +191,7 @@
 [[:subsection {:title "empty!"}]]
 "`empty!` clears all elements"
 
-[[{:numbered false}]]
+
 (fact
   (<< (empty! (ova [:a :b :c :d])))
   => [])
@@ -199,7 +199,7 @@
 [[:subsection {:title "remove!"}]]
 "`remove!` will selectively remove elements from the `ova`. The query syntax can be used"
 
-[[{:numbered false}]]
+
 (fact
   (<< (remove! (ova [:a :b :c :d])
                '(= :a)))
@@ -213,7 +213,7 @@
 [[:subsection {:title "filter!"}]]
 "`filter!` performs the opposite of `remove!`. It will keep all elements in the array that matches the query."
 
-[[{:numbered false}]]
+
 (fact
   (<< (filter! (ova [:a :b :c :d])
                '(= :a)))
@@ -226,7 +226,7 @@
 [[:subsection {:title "sort!"}]]
 "`sort!` arranges the array in order of the comparator. It can take only a comparator, or a selector/comparator combination."
 
-[[{:numbered false}]]
+
 (fact
   (<< (sort! (ova [9 8 7 6 5 4 3 2 1])
              <))
@@ -239,7 +239,7 @@
 [[:subsection {:title "reverse!"}]]
 "`reverse!` arranges array elements in reverse"
 
-[[{:numbered false}]]
+
 (fact
   (<< (reverse! (ova [1 2 3 4 5 6 7 8 9])))
   => [9 8 7 6 5 4 3 2 1])
@@ -250,7 +250,7 @@
 [[:subsection {:title "!!"}]]
 "`!!` sets the value of all selected indices to a specified value."
 
-[[{:numbered false}]]
+
 (fact
   (<< (!! (ova [1 2 3 4 5 6 7 8 9]) 0 0))
   => [0 2 3 4 5 6 7 8 9]
@@ -266,7 +266,7 @@
 [[:subsection {:title "map!"}]]
 "`map!` performs an operation on every element."
 
-[[{:numbered false}]]
+
 (fact
   (<< (map! (ova [1 2 3 4 5 6 7 8 9])
             inc))
@@ -275,7 +275,7 @@
 
 [[:subsection {:title "smap!"}]]
 "`smap!` performs an operation only on selected elements"
-[[{:numbered false}]]
+
 (fact
   (<< (smap! (ova [1 2 3 4 5 6 7 8 9])
              odd? inc))
@@ -285,7 +285,7 @@
 [[:subsection {:title "map-indexed!"}]]
 "`map-indexed!` performs an operation with the element index as the second parameter on every element"
 
-[[{:numbered false}]]
+
 (fact
   (<< (map-indexed! (ova [1 2 3 4 5 6 7 8 9])
                     +))
@@ -295,7 +295,7 @@
 [[:subsection {:title "smap-indexed!"}]]
 "`smap-indexed!` performs an operation with the element index as the second parameter on selected elements"
 
-[[{:numbered false}]]
+
 (fact
   (<< (smap-indexed! (ova [1 2 3 4 5 6 7 8 9])
                      odd? +))
@@ -303,7 +303,7 @@
 
 [[:subsection {:title "!>"}]]
 "The threading array performs a series of operations on selected elements."
-[[{:numbered false}]]
+
 (fact
   (<< (!> (ova [1 2 3 4 5 6 7 8 9])
           odd?
@@ -316,7 +316,7 @@
 
 "Watches can be set up so that. Instead of a normal ref/atom watch where there are four inputs to the watch function, the Element watch requires an additional input to distinguish which array a change has occured. The function signature looks like:"
 
-[[{:numbered false}]]
+
 (comment
   (fn [k o r p v]  ;; key, ova, ref, prev, current
     (... do something ...)))
@@ -329,7 +329,7 @@
 
 "`add-elem-watch` adds a watch function on all elements of an `ova`."
 
-[[{:numbered false}]]
+
 (fact
   (def ov     (ova [1 2 3 4]))
   (def watch  (atom []))
@@ -350,7 +350,7 @@
 
 "`remove-elem-watch` cleares the element watch function to a `ova`."
 
-[[{:numbered false}]]
+
 (fact
   (watch/clear ov :conj)
   (keys (watch/list ov))

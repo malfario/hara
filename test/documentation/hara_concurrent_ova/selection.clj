@@ -1,13 +1,13 @@
 (ns documentation..hara-concurrent-ova.selection
-  (:require [hara.concurrent.ova :refer :all]
-            [midje.sweet :refer :all]))
+  (:use midje.sweet)
+  (:require [hara.concurrent.ova :refer :all]))
 
 "There are a number of ways elements in an `ova` can be selected. The library uses custom syntax to provide a shorthand for element selection. We use the function `indices` in order to give an examples of how searches can be expressed. Most of the functions like `select`, `remove!`, `filter!`, `smap!`, `smap-indexed!`, and convenience macros are all built on top of the `indices` function and so can be used accordingly once the convention is understood."
 
 [[:section {:title "by index"}]]
 "The most straight-forward being the index itself, represented using a number."
 
-[[{:numbered false}]]
+
 (fact
   (def ov (ova [{:v 0, :a {:c 4}}    ;; 0
                 {:v 1, :a {:d 3}}    ;; 1
@@ -26,7 +26,7 @@
 [[:section {:title "by value"}]]
 "A less common way is to search for indices by value."
 
-[[{:numbered false}]]
+
 (fact
   (indices ov            ;; return indices of elements matching term
            {:v 0 :a {:c 4}})
@@ -36,7 +36,7 @@
 [[:section {:title "by predicate"}]]
 "Most of the time, predicates are used. They allow selection of any element returning a non-nil value when evaluated against the predicate. Predicates can take the form of functions, keywords or list representation."
 
-[[{:numbered false}]]
+
 (fact
   (indices ov #(get % :a))   ;; retur indicies where (:a elem) is non-nil
 
@@ -61,7 +61,7 @@
 [[:section {:title "by sets (or)"}]]
 "sets can be used to compose more complex searches by acting as an `union` operator over its members"
 
-[[{:numbered false}]]
+
 (fact
   (indices ov #{0 1})        ;; return indices 0 and 1
   => [0 1]
@@ -76,7 +76,7 @@
 [[:section {:title "by vectors (and)"}]]
 "vectors can be used to combine predicates for more selective filtering of elements"
 
-[[{:numbered false}]]
+
 (fact
   (indices ov [:v 0])        ;; return indicies where (:a ele) = {:c 4}
   => [0]

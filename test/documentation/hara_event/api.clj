@@ -2,13 +2,10 @@
   (:require [hara.event :refer :all]
             [midje.sweet :refer :all]))
 
-[[:chapter {:title "API"}]]
-
 [[:section {:title "raise" :tag "api-raise"}]]
 
 "The keyword `raise` is used to raise an 'issue'. At the simplest, when there is no `manage` blocks, `raise` just throws a `clojure.lang.ExceptionInfo` object"
 
-[[{:numbered false}]]
 (fact
   [[{:title "raise is of type clojure.lang.ExceptionInfo" :tag "raise-type"}]]
   (raise {:error true})
@@ -16,7 +13,6 @@
 
 "The payload of the issue can be extracted using `ex-data`"
 
-[[{:numbered false}]]
 (fact
   (try
     (raise {:error true})
@@ -24,17 +20,14 @@
       (ex-data e)))
   => {:error true})
 
-
 "The payload can be expressed as a `hash-map`, a `keyword` or a `vector`. We define the `raises-issue` macro to help explore this a little further:"
 
-[[{:numbered false}]]
 (defmacro raises-issue [payload]
   `(throws (fn [e#]
              ((just ~payload) (ex-data e#)))))
 
 "Please note that the `raises-issue` macro is only working with `midje`. In order to work outside of midje, we need to define the `payload` macro:"
 
-[[{:numbered false}]]
 (defmacro payload [& body]
     `(try ~@body
           (throw (Throwable.))
@@ -45,16 +38,14 @@
 
 "Its can be used to detect what type of issue has been raised:"
 
-[[{:numbered false}]]
 (fact
   (payload (raise :error))
   => {:error true})
 
-
 [[:subsection {:title "hash-map"}]]
 
 "Because the issue can be expressed as a hash-map, it is more general than using a class to represent exceptions."
-[[{:numbered false}]]
+
 (fact
   (raise {:error true :data "data"})
   => (raises-issue {:error true :data "data"}))
@@ -62,7 +53,7 @@
 [[:subsection {:title "keyword"}]]
 
 "When a `keyword` is used, it is shorthand for a map with having the specified keyword with value `true`."
-[[{:numbered false}]]
+
 (fact
   (raise :error)
   => (raises-issue {:error true}))
@@ -70,7 +61,6 @@
 [[:subsection {:title "vector"}]]
 "Vectors can contain only keywords or both maps and keywords. They are there mainly for syntacic sugar"
 
-[[{:numbered false}]]
 (fact
 
    (raise [:lvl-1 :lvl-2 :lvl-3])
@@ -80,7 +70,7 @@
   (raise [:lvl-1 {:lvl-2 true :data "data"}])
    => (raises-issue {:lvl-1 true :lvl-2 true :data "data"}))
 
-[[:subsection {:title "option/default"}]]
+[[:section {:title "option/default"}]]
 
 "Strategies for an unmanaged issue can be specified within the raise form:
 - [e.{{option-one}}](#option-one) specifies two options and the specifies the default option as `:use-nil`.
@@ -113,7 +103,6 @@
 
 "Raised issues can be resolved through use of `manage` blocks set up. The blocks set up execution scope, providing handlers and options to redirect program flow. A manage block looks like this:"
 
-[[{:numbered false}]]
 (comment
   (manage
 
@@ -131,13 +120,11 @@
 
 "We define `half-int` and its usage:"
 
-[[{:numbered false}]]
 (defn half-int [n]
   (if (= 0 (mod n 2))
     (quot n 2)
     (raise [:odd-number {:value n}])))
 
-[[{:numbered false}]]
 (fact
   (half-int 2)
   => 1
@@ -145,11 +132,10 @@
   (half-int 3)
   => (raises-issue {:odd-number true :value 3}))
 
-[[:subsection {:title "checkers"}]]
+[[:section {:title "checkers"}]]
 
-"Within the `manage` form, issue handlers are specified with `on`. The form requires a check, which if returns true will be  "
+"Within the `manage` form, issue handlers are specified with `on`. The form requires a check, which if returns true will be activated:"
 
-[[{:numbered false}]]
 (fact
   (manage
    (mapv half-int [1 2 3 4])
@@ -159,7 +145,6 @@
 
 "The checker can be a map with the value"
 
-[[{:numbered false}]]
 (fact
   (manage
    (mapv half-int [1 2 3 4])
@@ -169,7 +154,6 @@
 
 "Or it can be a map with a checking function:"
 
-[[{:numbered false}]]
 (fact
   (manage
    (mapv half-int [1 2 3 4])
@@ -179,7 +163,6 @@
 
 "A set will check if any elements are true"
 
-[[{:numbered false}]]
 (fact
   (manage
    (mapv half-int [1 2 3 4])
@@ -189,7 +172,6 @@
 
 "A vector will check if all elements are true "
 
-[[{:numbered false}]]
 (fact
   (manage
    (mapv half-int [1 2 3 4])
@@ -197,10 +179,8 @@
        "odd-number-exception"))
   => "odd-number-exception")
 
-
 "An underscore will match anything"
 
-[[{:numbered false}]]
 (fact
   (manage
    (mapv half-int [1 2 3 4])
@@ -210,7 +190,6 @@
 
 "`on-any` can also be used instead of `on _`"
 
-[[{:numbered false}]]
 (fact
   (manage
    (mapv half-int [1 2 3 4])
@@ -218,12 +197,10 @@
        "odd-number-exception"))
   => "odd-number-exception")
 
-
-[[:subsection {:title "bindings"}]]
+[[:section {:title "bindings"}]]
 
 "Bindings within the `on` handler allow values in the issue payload to be accessed:"
 
-[[{:numbered false}]]
 (fact
   (manage
    (mapv half-int [1 2 3 4])
@@ -233,7 +210,6 @@
 
 "Bindings can be a vector"
 
-[[{:numbered false}]]
 (fact
   (manage
    (mapv half-int [1 2 3 4])
@@ -243,7 +219,6 @@
 
 "Bindings can also be a hashmap"
 
-[[{:numbered false}]]
 (fact
   (manage
    (mapv half-int [1 2 3 4])
@@ -251,11 +226,10 @@
        (str "odd-number: " odd? ", value: " v)))
   => "odd-number: true, value: 1")
 
-[[:subsection {:title "catch and finally"}]]
+[[:section {:title "catch and finally"}]]
 
 "The special forms `catch` and `finally` are also supported in the `manage` blocks for exception handling just as they are in `try` blocks."
 
-[[{:numbered false}]]
 (fact
   (manage
    (throw (Exception. "Hello"))
@@ -268,7 +242,6 @@
 
 "They can be mixed and matched with `on` forms"
 
-[[{:numbered false}]]
 (fact
   (manage
    (mapv half-int [1 2 3 4])
@@ -282,13 +255,13 @@
 [[:section {:title "special forms"}]]
 
 "There are five special forms that can be used within the `on` handler:
-- continue
-- fail
-- choose
-- default
-- escalate"
+- [continue](#api-continue)
+- [fail](#api-fail)
+- [choose](#api-choose)
+- [default](#api-default)
+- [escalate](#api-escalate)"
 
-[[:subsection {:title "continue" :tag "api-continue"}]]
+[[:section {:title "continue" :tag "api-continue"}]]
 
  "The `continue` special form is used to continue the operation from the point that the `issue` was raised ([e.{{continue-using-nan}}](#continue-using-nan)). It must be pointed out that this is impossible to do using the `try/catch` paradigm because the all the information from the stack will be lost.
 
@@ -317,8 +290,7 @@
   => [1/2 1 3/2 2]
   )
 
-
-[[:subsection {:title "fail" :tag "api-fail"}]]
+[[:section {:title "fail" :tag "api-fail"}]]
 
 "The `fail` special form will forcibly cause an exception to be thrown. It is used when there is no need to advise managers of situation. More data can be added to the failure ([e.{{fail-example}}](#fail-example))."
 
@@ -331,10 +303,10 @@
   => (raises-issue {:value 1 :odd-number true :unhandled true :error true})
   )
 
-[[:subsection {:title "choose" :tag "api-choose"}]]
+[[:section {:title "choose" :tag "api-choose"}]]
 
 "The `choose` special form is used to jump to a `option`. A new function `half-int-b` ([e.{{half-int-b-definition}}](#half-int-b-definition)) is defined giving options to jump to within the `raise` form."
-[[{:numbered false}]]
+
 (defn half-int-b [n]
     (if (= 0 (mod n 2))
       (quot n 2)
@@ -373,13 +345,11 @@
    (option :use-nil [] nil))
   => nil)
 
-
-[[:subsection {:title "default" :tag "api-default"}]]
-
+[[:section {:title "default" :tag "api-default"}]]
 
 " The `default` special short-circuits the raise process and skips managers further up to use an issue's default option. A function is defined and is usage is shown how the `default` form behaves. "
 
-[[{:numbered false}]]
+
 (fact
   (defn half-int-c [n]
     (if (= 0 (mod n 2))
@@ -397,13 +367,11 @@
 
 "The `default` form can even refer to an option that has to be implemented higher up in scope. An additional function is defined: "
 
-[[{:numbered false}]]
 (defn half-int-d [n]
   (if (= 0 (mod n 2))
     (quot n 2)
     (raise [:odd-number {:value n}]
            (default :use-empty))))
-
 
 "The usage for `half-int-d` can be seen in ([e.{{d-alone}}](#d-alone) and [e.{{d-higher}}](#d-higher)) to show these particular cases."
 
@@ -420,11 +388,10 @@
        (default)))
   => [])
 
-[[:subsection {:title "escalate" :tag "api-escalate"}]]
+[[:section {:title "escalate" :tag "api-escalate"}]]
 
 "The `escalate` special form is used to add additional information to the issue and raised to higher managers. In the following example, if a `3` or a `5` is seen, then the flag `:three-or-five` is added to the issue and the `:odd-number` flag is set false."
 
-[[{:numbered false}]]
 (fact
   (defn half-array-e [arr]
     (manage
@@ -442,7 +409,6 @@
 
 "Program decision points can be changed by higher level managers through `escalate`"
 
-[[{:numbered false}]]
 (fact
   (defn half-int-f [n]
    (manage
@@ -473,7 +439,6 @@
 
 "Options specified higher up are favored:"
 
-[[{:numbered false}]]
 (fact
    (manage
     (mapv half-int-f [1 2 3 4])
