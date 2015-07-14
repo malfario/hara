@@ -17,7 +17,8 @@
             (first eles)
             (if (every? element? eles)
               (to-element (vec eles))
-              (set eles))))))))
+              (set eles))))
+        (first eles)))))
 
 (defn- select-terms-fn
   [grp]
@@ -35,4 +36,7 @@
     (select-terms-fn grp)
     (sort-terms-fn grp)
     (filter-terms-fn grp))
-    eles))
+   eles))
+
+;;((comp #(+ 3 %) #(* 8 %)) 0)
+

@@ -65,7 +65,7 @@
     (-> body
         (assoc :type type)
         (assoc :origins (list (:container body)))
-        (assoc :params (if (:static body) [] [(:container body)]))
+        (assoc :params (if (:static body) [Class] [(:container body)]))
         (assoc :delegate (patch-field obj))
         (element))))
 

@@ -84,6 +84,6 @@
          (filter-by has-type?       :type grp)
          (filter-by has-params?     :params grp)
          (filter-by has-any-params? :any-params grp :params)
-         (filter-by has-any-params? :all-params grp :params)
+         (filter-by has-all-params? :all-params grp :params)
          (filter-by has-num-params? :num-params grp :params)
          (filter-by has-modifier?   :modifiers grp))))

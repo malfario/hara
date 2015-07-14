@@ -50,13 +50,13 @@
                            :title "hara.io.watch"
                            :subtitle "watch for filesystem changes"}
                           "hara-io-scheduler"
-                          {:input "test/midje_doc/guides/hara_io_scheduler.clj"
+                          {:input "test/documentation/hara_io_scheduler.clj"
                            :title "hara.io.scheduler"
                            :subtitle "easy and intuitive task scheduling"}
                           "hara-reflect"
-                          {:input "test/documentation/hara_io_watch.clj"
+                          {:input "test/documentation/hara_reflect.clj"
                            :title "hara.reflect"
-                           :subtitle ""
+                           :subtitle "java reflection made easy"
                            }
 
                           }

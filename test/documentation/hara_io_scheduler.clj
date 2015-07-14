@@ -8,7 +8,7 @@
 
 "Add to `project.clj` dependencies:
 
-`[im.chit/hara.io.scheduler `\"`{{PROJECT.version}}`\"`]`"
+    [im.chit/hara.io.scheduler \"{{PROJECT.version}}\"]"
 
 "All functions are in the `hara.io.scheduler` namespace."
 
@@ -35,4 +35,3 @@ There are many scheduling libraries in the clojure world including:
 - [quartzite](https://github.com/michaelklishin/quartzite)
 - [schejulure](https://github.com/AdamClements/schejulure)
 "
-

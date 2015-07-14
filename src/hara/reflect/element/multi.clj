@@ -59,7 +59,6 @@
   (->> prelim
        (map (fn [[_ v]] v))
        (filter (fn [ele]
-                 (println aparams (:params ele))
                  (every? (fn [[ptype atype]]
                            (util/param-arg-match ptype atype))
                          (map list (:params ele) aparams))))))
