@@ -8,15 +8,12 @@
 
   (class-info String)
   => (contains {:name \"java.lang.String\"
-                :tag :class
                 :hash anything
-                :container nil
-                :modifiers #{:instance :class :public :final}
-                :static false
-                :delegate java.lang.String})"
+                :modifiers #{:instance :class :public :final}})"
   {:added "2.1"}
   [obj]
-  (element/seed :class (common/context-class obj)))
+  (select-keys (element/seed :class (common/context-class obj))
+               [:name :hash :modifiers]))
 
 (defn class-hierarchy
   "Lists the class and interface hierarchy for the class

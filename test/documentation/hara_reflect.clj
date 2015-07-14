@@ -234,7 +234,7 @@ The option array takes selectors and filters can be used to customise the result
   (query-class Long [:name [:any String Long]])
   => ["bitCount" "compare" "decode" "getChars" "getLong" "highestOneBit" "lowestOneBit" "new" "numberOfLeadingZeros" "numberOfTrailingZeros" "parseLong" "reverse" "reverseBytes" "rotateLeft" "rotateRight" "signum" "stringSize" "toBinaryString" "toHexString" "toOctalString" "toString" "toUnsignedString" "valueOf"])
 
-"Using a vector with `:any` as the first input will output all functions having all of the types as input arguments"
+"Using a vector with `:all` as the first input will output all functions having all of the types as input arguments"
 
 (fact
   (query-class Long [:name :params [:all String Long]])
@@ -332,11 +332,154 @@ The option array takes selectors and filters can be used to customise the result
       {:name "rotateLeft", :type Long/TYPE}
       {:name "rotateRight", :type Long/TYPE}])
 
-[[:chapter {:title "Execution"}]]
+[[:chapter {:title "Member Operations"}]]
 
-"There are two different calls for querying - `query-instance` and `query-class`. They have the same listing and filtering mechanisms but they do things a little differently. Both has the same structure, given as follows:"
+[[:section {:title "apply-element"}]]
 
-(apply-element "oeuo" "value" [])
+"`apply-element` is for function invocation of an object. It uses `query-instance` underneath the hood to figure what to call but is faster when used more than once because the reflected member is cached."
 
+(fact
+  (apply-element "HELLO" "charAt" [0])
+  => \H
+
+  (seq (apply-element "HELLO" "value" []))
+  => [\H \E \L \L \O])
+
+[[:section {:title "delegate"}]]
+
+"`delegate` does what `bean` does but instead of manipulating fields through accessor functions, it directly gives field access to the underlying object. This way, one can set and get values from any object, regardless of permission model. `delegate` is used most often to look at the entire state of an object as well as to set the fields of an object to a particular initial state for testing. In the following example, we will change the value of a normally immutable string"
+
+(fact
+  (def a "hello")
+  a => "hello"
+
+  (def a* (delegate a))
+  (deref a*)   ; dereferencing the delegate will give all the fields
+  => (contains {:hash 99162322,
+                :hash32 0,
+                :value #(instance? (Class/forName "[C") %)})
+  
+  (:hash a*)   ; values can be accessed just like bean
+  => 99162322
+
+  (seq (a* :value))     ; getter call
+  => [\h \e \l \l \o]
+
+  (a* :value (char-array "world"))   ; setter call
+  a => "world" ; oh look! we have secretly changed an immutable object
+)
+
+
+[[:chapter {:title "Class Information"}]]
+
+[[:section {:title "class-info"}]]
+
+"Information about a class can be accessed using `class-info`. Either a class or an instance can be passed it. The contextual class will be determined automatically:"
+
+(fact
+  (class-info Long)
+  => (contains {:name "java.lang.Long"
+                :hash number?
+                :modifiers #{:instance :public :final :class}}))
+
+"It is interesting to be able explore the underlying implementation of clojure itself. For example, if there are nine elements passed to a zipmap, the type is an `PersistentArrayMap` whereas is ten elements are passed to the zipmap, the object becomes a `PersistentHashMap`:"
+
+(fact
+  (class-info (zipmap (range 9) (range 9)))
+  => (contains {:name "clojure.lang.PersistentArrayMap"
+                :hash number?
+                :modifiers #{:instance :public :class}})
+  
+  (class-info (zipmap (range 10) (range 10)))
+  => (contains {:name "clojure.lang.PersistentHashMap",
+                :hash number?
+                :modifiers #{:instance :public :class}}))
+
+[[:section {:title "class-hierarchy"}]]
+
+"The class hierarchy can be readily viewed. It is given in the form of a vector. The first element is always the class itself, the subsequent elements are split into the base/super class as well as all extended interfaces:"
+
+(fact
+  (class-hierarchy String)
+  => [java.lang.String [java.lang.Object ; base class
+                        #{java.io.Serializable ;interfaces
+                          java.lang.CharSequence
+                          java.lang.Comparable}]])
+
+"Here is the type hierarchy of a `PersistentHashMap`:"
+
+(comment
+  (class-hierarchy clojure.lang.PersistentHashMap)
+  => [clojure.lang.PersistentHashMap
+
+      [clojure.lang.APersistentMap
+       #{clojure.lang.IObj
+         clojure.lang.IEditableCollection
+         clojure.lang.IMapIterable}]
+
+      [clojure.lang.AFn
+       #{clojure.lang.IHashEq
+         java.io.Serializable
+         clojure.lang.IPersistentMap
+         java.util.Map
+         java.lang.Iterable
+         clojure.lang.MapEquivalence}]
+
+      [java.lang.Object
+       #{clojure.lang.IFn}]])
 
 [[:chapter {:title "Extraction"}]]
+
+[[:section {:title "extract-to-var"}]]
+
+"Often, we need to extract out one or all elements of a class for use. `extract-to-var` and `extract-to-ns` allows for this. We see how extract-to-var works:"
+
+(fact
+  (extract-to-var 'char-at String "charAt")
+
+  (mapv #(char-at "Hello" %) (range 5))
+  => [\H \e \l \l \o])
+
+"The function can also take a fully qualified symbol as well as create meta-information regarding the var itself. "
+
+(fact
+  (extract-to-var 'hello/char-at String "charAt")
+
+  (eval '(hello/char-at "Hello" 4))
+  => \o
+  
+  (eval '(meta #'hello/char-at))
+  => (contains {:ns #(instance? clojure.lang.Namespace %)
+                :name 'char-at
+                :arglists '[[java.lang.String int]]
+                :doc "\nmember: java.lang.String/charAt\ntype: char\nmodifiers: instance, method, public"}))
+
+[[:section {:title "extract-to-ns"}]]
+
+"`extract-to-ns` takes a class and extracts out all methods to a particular namespace, filters can be applied as seen in the [selectors](#selectors) section:"
+
+(extract-to-ns 'test.string String [:private])
+=> [#'test.string/HASHING_SEED
+    #'test.string/checkBounds
+    #'test.string/hash
+    #'test.string/hash32
+    #'test.string/indexOfSupplementary
+    #'test.string/lastIndexOfSupplementary
+    #'test.string/serialPersistentFields
+    #'test.string/serialVersionUID
+    #'test.string/value]
+
+(fact
+  (eval '(seq (test.string/value "hello")))
+  => '(\h \e \l \l \o))
+
+"If just the class is passed in, it will dump all methods of the class into the current namespace. This is very useful for quickly getting information about the internal structure of a class when exploring a new package."
+
+(fact
+  (extract-to-ns Long)
+
+  (valueOf "72" 10)
+  => 72
+
+  (valueOf "72" 16)
+  => 114)

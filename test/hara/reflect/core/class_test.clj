@@ -7,12 +7,8 @@
 
   (class-info String)
   => (contains {:name "java.lang.String"
-                :tag :class
                 :hash anything
-                :container nil
-                :modifiers #{:instance :class :public :final}
-                :static false
-                :delegate java.lang.String}))
+                :modifiers #{:instance :class :public :final}}))
 
 ^{:refer hara.reflect.core.class/class-hierarchy :added "2.1"}
 (fact "Lists the class and interface hierarchy for the class"

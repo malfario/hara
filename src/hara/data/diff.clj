@@ -5,7 +5,7 @@
 
 (defn diff-changes
   "Finds changes in nested maps, does not consider new elements
-
+  
   (diff-changes {:a 2} {:a 1})
   => {[:a] 2}
 
@@ -34,7 +34,7 @@
 
 (defn diff-new
   "Finds new elements in nested maps, does not consider changes
-
+  
   (diff-new {:a 2} {:a 1})
   => {}
 
@@ -60,7 +60,7 @@
 
 (defn diff
   "Finds the difference between two maps
-
+  
   (diff {:a 2} {:a 1})
   => {:+ {} :- {} :> {[:a] 2}}
 
@@ -87,9 +87,9 @@
         :else v))
 
 (defn patch
-  "Use the diff to convert one map to another in the forward
+  "Use the diff to convert one map to another in the forward 
   direction based upon changes between the two.
-
+  
   (let [m1  {:a {:b 1 :d 3}}
         m2  {:a {:c 2 :d 4}}
         df  (diff m2 m1)]
@@ -108,9 +108,9 @@
                     (keys (:- diff))))))
 
 (defn unpatch
-  "Use the diff to convert one map to another in the reverse
+  "Use the diff to convert one map to another in the reverse 
   direction based upon changes between the two.
-
+  
   (let [m1  {:a {:b 1 :d 3}}
         m2  {:a {:c 2 :d 4}}
         df  (diff m2 m1 true)]

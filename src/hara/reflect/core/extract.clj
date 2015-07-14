@@ -9,9 +9,8 @@
             [hara.reflect.core.query :as q]))
 
 (defn process-if-single [args]
-  (if (and (vector? (first (first args)))
-           (= 1 (count (first args))))
-    (first args)
+  (if (vector? (first (first args)))
+    (vec (apply concat args))
     args))
 
 (defn element-meta
@@ -47,10 +46,18 @@
   (eval '(hash-without {:a 1 :b 2} :a))
   => {:b 2}"
   {:added "2.1"}
+  ([varsym class method]
+   (extract-to-var varsym class method []))
   ([varsym class method selectors]
-   (extract-to-var *ns* varsym class method selectors))
+   (let [[nssym varsym] (if-let [nsstr (.getNamespace ^clojure.lang.Symbol varsym)]
+                          [(let [nssym (symbol nsstr)
+                                  _  (create-ns nssym)]
+                             nssym)
+                           (symbol (name varsym))]
+                          [(.getName *ns*) varsym])]
+     (extract-to-var nssym varsym class method selectors)))
   ([nssym varsym class method selectors]
-    (let [v  (intern nssym varsym (q/query-class class (cons (str method) (cons :# selectors))))]
+   (let [v  (intern nssym varsym (q/query-class class (cons (str method) (cons :# selectors))))]
       (alter-meta! v (fn [m] (merge m (element-meta @v))))
       v)))
 
@@ -61,9 +68,19 @@
        (extract-to-ns 'test.string String [:private #\"serial\"]))
   => '[serialPersistentFields serialVersionUID]"
   {:added "2.1"}
-  [nssym class selectors]
-  (let [eles (q/list-class-elements class selectors)
-        methods (distinct (map :name eles))]
-    (clojure.core/create-ns nssym)
-    (doall (for [method methods]
-             (extract-to-var nssym (symbol method) class method selectors)))))
+  ([class]
+   (extract-to-ns (symbol (.getName *ns*)) class []))
+  ([nssym class]
+   (extract-to-ns nssym class []))
+  ([nssym class selectors]
+   (let [eles (q/list-class-elements class selectors)
+         methods (distinct (map :name eles))]
+     (create-ns nssym)
+     (doall (for [method methods]
+              (extract-to-var nssym (symbol method) class method selectors))))))
+
+(extract-to-var 'val-of String "valueOf")
+
+(extract-to-var 'veeee String "value")
+
+(meta #'val-of)

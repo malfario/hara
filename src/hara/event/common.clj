@@ -15,7 +15,7 @@
 
   (expand-data [:hello {:world \"foo\"}])
   => {:world \"foo\", :hello true}"
-  {:added "2.2"} 
+  {:added "2.2"}
   [data]
   (cond (hash-map? data) data
         (keyword? data) {data true}
@@ -36,7 +36,8 @@
 
   (check-data {:hello true} #{:hello})
   => true"
-  {:added "2.2"} [data chk]
+  {:added "2.2"}
+  [data chk]
   (cond (hash-map? chk)
         (every? (fn [[k vchk]]
                   (let [vcnt (get data k)]
@@ -73,7 +74,8 @@
       (remove-handler :hello)
       (match-handlers {:hello \"world\"}))
   => ()"
-  {:added "2.2"} [manager id]
+  {:added "2.2"}
+  [manager id]
   (if-let [position (first (seq/positions #(-> % :id (= id)) (:store manager)))]
     (update-in manager [:store] seq/remove-index position)
     manager))

@@ -44,13 +44,13 @@
 
 (defn max-inputs
   "finds the maximum number of inputs that a function can take
-
+  
   (max-inputs (fn ([a]) ([a b])) 4)
   => 2
 
   (max-inputs (fn [& more]) 4)
   => 4
-
+  
   (max-inputs (fn ([a])) 0)
   => throws"
   {:added "2.2"}
@@ -246,8 +246,7 @@
   (.write w (str v)))
 
 (defn procedure
-  "creates a procedure based"
-
+  "creates"
   {:added "2.2"}
   ([tk arglist]
    (cond (fn? tk)
