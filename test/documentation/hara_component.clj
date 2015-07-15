@@ -357,7 +357,7 @@ The focus of `hara.component` is to tease apart configuration and application to
 
 [[:section {:title "Partial System Testing"}]]
 
-"Having implemented the records for :traps and :model, we can test to see if our array of traps are working. It can be seen here that the call to system takes two parameters - a topology map and a configuration map. The topology map specifies functions and dependencies whilst the configuration map specifies the initial input data:"
+"Having implemented the records for `:traps` and `:model`, we can test to see if our array of traps are working. It can be seen here that the call to system takes two parameters - a topology map and a configuration map. The topology map specifies functions and dependencies whilst the configuration map specifies the initial input data. Note that to specify contruction of an array of components just put the constructor in an additional vector:"
 
 (comment
   (def sys (-> {:traps [[trap] :model]
@@ -568,7 +568,6 @@ The focus of `hara.component` is to tease apart configuration and application to
   ;;    :server #server[:port]}
 
   )
-
 
 [[:chapter {:title "The Big Picture"}]]
 

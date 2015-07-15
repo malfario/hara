@@ -11,20 +11,18 @@
                    :plugins [[lein-midje "3.1.3"]
                              [lein-midje-doc "0.0.23"]
                              [lein-repack "0.2.10"]]}}
-  :documentation {:type   :portfolio
-                  :name   "hara"
-                  :output "docs/index.html"
+  :documentation {:site   "hara"
+                  :output "docs"
                   :description "code patterns and utilities"
                   :tracking "UA-31320512-2"
                   :owners [{:name    "Chris Zheng"
                             :email   "z@caudate.me"
                             :website "http://z.caudate.me"}]
                   :paths ["test/documentation"]
-                  :files {
-                          ;"home"
-                          ;{:input "test/midje_doc/guides/home.clj"
-                          ; :template "full"
-                          ; :title "home"}
+                  :files {"index"
+                          {:type :html
+                           :template {:article "home.html"}
+                           :title "home"}
                           "orientation"
                           {:input "test/midje_doc/hara/orientation.clj"
                            :title "hara in small pieces"
@@ -59,17 +57,17 @@
                           "hara-reflect"
                           {:input "test/documentation/hara_reflect.clj"
                            :title "hara.reflect"
-                           :subtitle "java reflection made easy"
-                           }
-                          }
+                           :subtitle "java reflection made easy"}}
                 :html {:logo "hara.png"
-                       :theme "clean"
-                       :home "home",
+                       :home  "index",
                        :navigation ["quickstart"
-                                    ["guides" ["hara.component"
-                                               "hara.ova"
-                                               "hara.io.watch"
-                                               "hara.io.timer"]]
+                                    ["guides" ["hara-component"
+                                               "hara-concurrent-ova"
+                                               "hara-concurrent-procedure"
+                                               "hara-event"
+                                               "hara-io-watch"
+                                               "hara-io-scheduler"
+                                               "hara-reflect"]]
                                     {:link "api", :text "api"}
                                     {:link "https://gitter.im/zcaudate/hara",
                                      :text "support"}
