@@ -5,12 +5,12 @@
 [[:chapter {:title "Introduction"}]]
 
 "
-`hara.event` aims to provide more loosely coupled code through two mechanisms:
+[hara.event](https://github.com/zcaudate/hara/blob/master/src/hara/event.clj) aims to provide more loosely coupled code through two mechanisms:
 
 - a global eventing system for decoupilng of side-effecting
 - a conditional restart framework that hooks into the eventing system.
 
-`hara.event` was originally developed as a seperate library - [ribol](https://github.com/zcaudate/ribol) but has been included as part of the larger [hara](https://github.com/zcaudate/hara) codebase. The main change from the original library has been the inclusion of the eventing system as it was felt that there should be an integrated way of dealing with side-effecting calls such as logging, indexing, emails and many other tasks within both normal and abnormal program flows.
+`hara.event` was originally developed as a [seperate library](https://github.com/zcaudate/ribol) but has been included as part of the larger [hara](https://github.com/zcaudate/hara) codebase. The main addition to the original library has been the inclusion of the eventing system as it was felt that there should be an integrated way of dealing with side-effecting calls such as logging, indexing, emails and many other tasks within both normal and abnormal program flows.
 "
 
 [[:section {:title "Installation"}]]
@@ -42,9 +42,7 @@ There are two forms of `exceptions` that a programmer will typically encounter:
 
 The method of `try` and `catch` exception handing, though commonly used and familiar to most programmers is a very weak system for exception handling. The try blocks are not really needed when dealing with the *Type 1* exceptions and a little too weak when dealing with those of *Type 2*. The net effect of using only the `try/catch` paradigm in application code is that in order to mitigate these *Type 2* exceptions, there requires a lot of defensive programming. This turns the middle level of the application into spagetti code with program control flow (`try/catch`) mixed in with program logic.
 
-Conditional restarts provide a way for the top-level application to more cleanly deal with *Type 2* exceptions. A simple use case looking at advantages in using restarts over exceptions can be seen in the [Quickstart](#unlucky-numbers).
-
-For those that wish to know more about conditional restarts, there is a comprehensive [chapter](#strategies) to the different strategies be achived. For those curious about how the framework has been implementated, please jump over [here](#implementation).
+Conditional restarts provide a way for the top-level application to more cleanly deal with *Type 2* exceptions. A simple use case looking at advantages in using restarts over exceptions can be seen in the [quickstart](#quickstart). For those that wish to know more about conditional restarts, there is a comprehensive [strategies](#strategies) chapter to the listing different ways abnormal program flow can be dealt with. For those curious about how the framework has been implementated, please jump over to the [implementation](#implementation) chapter.
 "
 
 [[:section {:title "Other Libraries"}]]
@@ -73,10 +71,10 @@ There are currently three other conditional restart libraries for clojure, in th
 "
 `raise` differs to `throw` in a few ways:
 
- - issues are of type `clojure.lang.ExceptionInfo`.
- - the payload is a `hash-map`.
- - **optional**: multiple `option` handlers can be specified.
- - **optional**: a `default` choice can be specified.
+- issues are of type `clojure.lang.ExceptionInfo`.
+- the payload is a `hash-map`.
+- **optional**: multiple `option` handlers can be specified.
+- **optional**: a `default` choice can be specified.
 "
 
 [[:section {:title "Manage Syntax"}]]
@@ -97,12 +95,12 @@ There are currently three other conditional restart libraries for clojure, in th
 
 "Issues are managed through `on` handlers within a `manage` block. If any `issue` is raised with the manage block, it is passed to each handler. There are six ways that a handler can deal with a raised issue:
 
- - directly (same as `try/catch`)
- - using `continue` to keep going with a given value
- - using `choose` to specify an option
- - using `escalate` to notify higher level managers
- - using `default` to allow the issue to resolve itself
- - using `fail` to throw an exception
+- directly (same as `try/catch`)
+- using `continue` to keep going with a given value
+- using `choose` to specify an option
+- using `escalate` to notify higher level managers
+- using `default` to allow the issue to resolve itself
+- using `fail` to throw an exception
 
 Using these six different different issue resolution directives, the programmer has the richness of language to craft complex process control flow strategies without mixing logic handling code in the middle tier. Restarts can also create new ways of thinking about the problem beyond the standard `throw/catch` mechanism and offer more elegant ways to build programs and workflows.
 "

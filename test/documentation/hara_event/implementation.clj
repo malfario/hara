@@ -9,7 +9,7 @@
 "
 When `(throw .....)` is invoked, the worker basically says: *'Dude, I quit! You deal with it'* and lets higher up managers deal with the consequences.
 "
-[[:image {:title "Lazy Worker" :src "img/work_throw.png" :height "300px"}]]
+[[:image {:title "Lazy Worker" :src "img/hara_event/work_throw.png" :height "300px"}]]
 
 [[:section {:title "The smart raise"}]]
 
@@ -28,11 +28,12 @@ When `(raise ....)` is used, the worker will attempt to notify their manager and
   => [0 :odd 2 :odd 4 :odd 6 :odd 8 :odd])
 
 "Purely from looking at the example code, it reads:
-  - perform `mapv` of `dislike-odd` over the range of 0 to 10
-  - if `:error` is raised by `dislike-odd`, tell `dislike-odd` to proceed at the point that the error was raised, using the value `:odd` instead.
+
+- perform `mapv` of `dislike-odd` over the range of 0 to 10
+- if `:error` is raised by `dislike-odd`, tell `dislike-odd` to proceed at the point that the error was raised, using the value `:odd` instead.
 "
 
-[[:image {:title "Smart Worker" :src "img/work_raise.png" :height "300px"}]]
+[[:image {:title "Smart Worker" :src "img/hara_event/work_raise.png" :height "300px"}]]
 
 "
 Anytime there is an odd input to `dislike-odd`, the code seemingly jumps out to the context of the manager and having handled the issue, the code then seemingly jumps back into the function again.
@@ -49,7 +50,7 @@ In reality, the program never left the place where `raise` was called. There was
 
 Going back to the workplace analogy, another way to manage exceptional circumstances is to have a prearranged noticeboard of what to do when things go wrong. Managers can write/override different ways to handle an issue on this board proactively. The worker, when encountering an issue, would go look at the board first to decide upon the best course of action to take. Only when there are no matching solutions to the issue will they solve it themselves or give up and quit. In this way, managers will not have to be called everytime something came up. This is the same mechanism of control that `hara.event` uses.
 "
-[[:image {:title "Proactive Management" :src "img/work_board.png" :height "300px"}]]
+[[:image {:title "Proactive Management" :src "img/hara_event/work_board.png" :height "300px"}]]
 
 
 [[:section {:title "The Issue Management Board"}]]
@@ -57,7 +58,7 @@ Going back to the workplace analogy, another way to manage exceptional circumsta
 "We look at what happens when there is such an Issue Management Board put in place. `raise` is called. The worker will look at the board, starting with lowest level manager and proceeding up the management chain to see what strategies has to be been put into place. In the case of [e.{{continue-example}}](#continue-example), there would have been a handler already registered on the board to deal with the `:error`. The worker will pass any arguments of the issue to the handler function and then return with the result.
 "
 
-[[:image {:src "img/notice_board.png" :height "300px"}]]
+[[:image {:src "img/hara_event/notice_board.png" :height "300px"}]]
 
 "
 The management does not even need to know that an exception has occured because they have been proactive.

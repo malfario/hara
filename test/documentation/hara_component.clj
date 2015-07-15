@@ -9,7 +9,7 @@
 [[:chapter {:title "Introduction"}]]
 
 "
-`hara.component` a dependency injection framework inspired by the original Stuart Sierra component [library](https://github.com/stuartsierra/component) and [talk](http://www.youtube.com/watch?v=13cmHf_kt-Q). The virtues of this type of design for composing large systems has been much lauded and is quite a common practise within enterprise applications. Doing a [search](https://www.google.com?q=stuart+sierra+component) will yield many uses of such a pattern."
+[hara.component](https://github.com/zcaudate/hara/blob/master/src/hara/component.clj) is a dependency injection framework inspired by the original Stuart Sierra component [library](https://github.com/stuartsierra/component) and [talk](http://www.youtube.com/watch?v=13cmHf_kt-Q). The virtues of this type of design for composing large systems has been much lauded and is quite a common practise within enterprise applications. Doing a [search](https://www.google.com?q=stuart+sierra+component) will yield many uses of such a pattern."
 
 [[:section {:title "Installation"}]]
 
@@ -33,11 +33,15 @@ The main reason for a reinterpretation of the original [stuartsierra/component](
 - more control was needed when working with nested systems
 - more emphasis has been placed on prettiness and readibility
 
-The focus of `hara.component` is to tease apart configuration and application topology. Configuration gives the ability to set the starting state of the entire program. Many a system become bloated due to not being able to properly manage configuration and composing systems using this library should simplify the top level aspects of your code."
+The differentiation of `hara.component` is to tease apart configuration and application topology. Configuration gives the ability to set the starting state of the entire program and should be easy as possible. Many a system become bloated due to not being able to properly manage configuration, therefore composing systems with configuration at the forefront will make for much simpler code and design. This library was build with this paradigm in mind."
 
 [[:chapter {:title "Config Driven Design"}]]
 
-"We will aim to create a system based upon a configuration file. In my experience, using components has been more of a way of thinking than memorising a set of APIs. Therefore in this guide, it is hoped that a tutorial based approach will demonstrate the core functionality within the library. We are creating a simulation based on trapping bugs in different parts of the house, then tallying up the results and displaying it through a web interface. A datastructure can be created that customises various aspects of the simulation:"
+"We will aim to create a system based upon a configuration file. As components are a very high level concept, using the pattern in code is more of a state of mind than following a set of APIs. Therefore in this documentation, it is hoped that a tutorial based approach will demonstrate the core functionality within the library."
+
+[[:section {:title "The Bug Trapper"}]]
+
+"We are creating a simulation based on trapping bugs in different parts of the house, then tallying up the results and displaying it through a web interface. A datastructure can be created that customises various aspects of the simulation:"
 
 (def config
   {:server     {:port 8090}

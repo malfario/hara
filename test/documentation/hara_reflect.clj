@@ -5,7 +5,7 @@
  [[:chapter {:title "Introduction"}]]
 
  "
- `hara.reflect` is a library for jvm reflection. It is designed to be used for testing, repl based development, and blantant hacks bypassing the jvm security mechanism. The library was originally developed as a seperate library - [iroh](https://github.com/zcaudate/iroh) but has been included as part of the larger [hara](https://github.com/zcaudate/hara) codebase."
+ [hara.reflect](https://github.com/zcaudate/hara/blob/master/src/hara/reflect.clj) is a library for jvm reflection. It is designed to be used for testing, repl based development, and blantant hacks bypassing the jvm security mechanism. The library was originally developed as a seperate library - [iroh](https://github.com/zcaudate/iroh) but has been included as part of the larger [hara](https://github.com/zcaudate/hara) codebase."
 
  [[:section {:title "Installation"}]]
 

@@ -17,7 +17,7 @@
     [1 2 (manage 3)])              ;; L1 and L0
   => [1 2 3]
 
-  [[:image {:src "img/norm_normal.png" :height "300px" :title "No Issues Flow"}]]
+  [[:image {:src "img/hara_event/norm_normal.png" :height "300px" :title "No Issues Flow"}]]
 
   [[:subsection {:title "Issue Raised"}]]
 
@@ -29,7 +29,7 @@
          (raise {:A true}))])      ;; L0
   => (raises-issue {:A true})
 
-  [[:image {:src "img/norm_unmanaged.png" :height "300px" :title "Unmanaged Issue Flow"}]])
+  [[:image {:src "img/hara_event/norm_unmanaged.png" :height "300px" :title "Unmanaged Issue Flow"}]])
 
 
 [[:section {:title "Catch"}]]
@@ -45,7 +45,7 @@
          (on :A [] :A))]           ;; H1A
    (on :B [] :B))                  ;; H2B
   => [1 2 :A]
-  [[:image {:src "img/catch_flow_a.png" :height "300px" :title "Catch on :A Flow"}]]
+  [[:image {:src "img/hara_event/catch_flow_a.png" :height "300px" :title "Catch on :A Flow"}]]
 
   [[:subsection {:title "Second Level Catch"}]]
   [[{:title "Catch on :B"}]]
@@ -56,7 +56,7 @@
    (on :B [] :B))                  ;; H2B
   => :B
 
-  [[:image {:src "img/catch_flow_b.png" :height "300px" :title "Catch on :B Flow"}]]
+  [[:image {:src "img/hara_event/catch_flow_b.png" :height "300px" :title "Catch on :B Flow"}]]
   )
 
 
@@ -79,7 +79,7 @@
    (on :B []                       ;; H2B
        (continue :3B)))
   => [1 2 :3A]
-    [[:image {:src "img/continue_flow_a.png" :height "300px" :title "Continue on :A Flow"}]]
+    [[:image {:src "img/hara_event/continue_flow_a.png" :height "300px" :title "Continue on :A Flow"}]]
 
 
   [[:subsection {:title "Second Level Continue"}]]
@@ -98,7 +98,7 @@
        (continue :3B)))
   => [1 2 :3B]
 
-  [[:image {:src "img/continue_flow_b.png" :height "300px" :title "Continue on :B Flow"}]]
+  [[:image {:src "img/hara_event/continue_flow_b.png" :height "300px" :title "Continue on :B Flow"}]]
 )
 
 
@@ -122,7 +122,7 @@
      (option :Z [] :3Z))              ;; Z
   => [1 2 :3X]
 
-    [[:image {:src "img/choose_flow_x.png" :height "300px" :title "Choose :X Flow"}]]
+    [[:image {:src "img/hara_event/choose_flow_x.png" :height "300px" :title "Choose :X Flow"}]]
 
   "However in some cases, upper level options can be accessed as in this case. This can be used to set global strategies to deal with very issues that have serious consequences if it was to go ahead.
 
@@ -142,7 +142,7 @@
    (option :Z [] :3Z))              ;; Z
   => :3Z
 
-  [[:image {:src "img/choose_flow_z.png" :height "300px" :title "Choose :Z Flow"}]]
+  [[:image {:src "img/hara_event/choose_flow_z.png" :height "300px" :title "Choose :Z Flow"}]]
 
   )
 
@@ -167,8 +167,7 @@
    (option :Z [] :3Z))               ;; Z
   => [1 2 :3X1]
 
-  [[:image {:src "img/choose_flow_x1.png" :height "300px" :title "Choose :X1 Flow"}]]
-
+  [[:image {:src "img/hara_event/choose_flow_x1.png" :height "300px" :title "Choose :X1 Flow"}]]
 
   [[:subsection {:title "Default Option"}]]
   "Specifying a 'default' option allows the raiser to
@@ -184,12 +183,12 @@
    (option :Z [] :3Z))               ;; Z
   => [1 2 :3X]
 
-  [[:image {:src "img/choose_default_x.png" :height "300px" :title "Choose Default Flow"}]]
+  [[:image {:src "img/hara_event/choose_default_x.png" :height "300px" :title "Choose Default Flow"}]]
 
   [[:subsection {:title "Overriding Defaults"}]]
 
-  "This is an example of higher-tier managers
-   overriding options"
+  "This is an example of higher-tier managers overriding options"
+  
    [[{:title "Choose Default :X2"}]]
 
   (manage                            ;; L2
@@ -201,7 +200,7 @@
     (option :X [] :3X2))             ;; X2
   => :3X2
 
-  [[:image {:src "img/choose_default_x2.png" :height "300px" :title "Choose Default :X2 Flow"}]]
+  [[:image {:src "img/hara_event/choose_default_x2.png" :height "300px" :title "Choose Default :X2 Flow"}]]
   )
 
 
@@ -210,9 +209,8 @@
 (facts
   [[:subsection {:title "Simple Escalation"}]]
 
-  "When issues are escalated, more information
-   can be added and this then is passed on to
-   higher-tier managers"
+  "When issues are escalated, more information  can be added and this then is passed on to higher-tier managers"
+  
   [[{:title "Escalate :B"}]]
   (manage                            ;; L2
    [1 2 (manage                      ;; L1
@@ -223,12 +221,10 @@
        (continue :3B)))
   => [1 2 :3B]
 
-    [[:image {:src "img/escalate_norm.png" :height "300px" :title "Escalate :B Flow"}]]
+    [[:image {:src "img/hara_event/escalate_norm.png" :height "300px" :title "Escalate :B Flow"}]]
 
   [[:subsection {:title "Escalation with Options"}]]
-  "More options can be added to escalate. When
-  these options are chosen, it will continue at the
-  point in which the issue was raised."
+  "More options can be added to escalate. When these options are chosen, it will continue at the point in which the issue was raised."
   [[{:title "Escalate :B, Choose :X"}]]
   (manage                            ;; L2
    [1 2 (manage                      ;; L1
@@ -241,7 +237,7 @@
         (choose :X)))
   => [1 2 :3X]
 
-  [[:image {:src "img/escalate_options.png" :height "300px" :title "Escalate :B, Choose :X Flow"}]])
+  [[:image {:src "img/hara_event/escalate_options.png" :height "300px" :title "Escalate :B, Choose :X Flow"}]])
 
 
 [[:section {:title "Fail"}]]
@@ -258,7 +254,7 @@
          (on :A []                 ;; H1A
              (fail :B)))])
   => (raises-issue {:A true :B true})
-  [[:image {:src "img/fail.png" :height "300px" :title "Force Fail Flow"}]]
+  [[:image {:src "img/hara_event/fail.png" :height "300px" :title "Force Fail Flow"}]]
 )
 
 
@@ -295,7 +291,7 @@
         (default)))
   => [1 2 :X]
 
-  [[:image {:src "img/escalate_default_x2.png" :height "300px" :title "Escalate :B, Choose Default Flow"}]])
+  [[:image {:src "img/hara_event/escalate_default_x2.png" :height "300px" :title "Escalate :B, Choose Default Flow"}]])
 
 [[:section {:title "Branch Using On" :tag "on-form"}]]
 (facts
