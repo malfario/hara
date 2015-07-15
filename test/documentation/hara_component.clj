@@ -1,9 +1,13 @@
-(ns documentation.hara-component)
+(ns documentation.hara-component
+  (:use midje.sweet)
+  (:require [hara.component :as component]
+            [hara.concurrent.ova :as ova])
+  (:refer-clojure :exclude [random-sample]))
 
 [[:chapter {:title "Introduction"}]]
 
 "
-`hara.component` is really a method of dependency injection has been inspired by the original Stuart Sierra component [library](https://github.com/stuartsierra/component) and [talk](http://www.youtube.com/watch?v=13cmHf_kt-Q). The virtues of this library has been much lauded and is quite a common practise within enterprise applications. Doing a [search](https://www.google.com?q=stuart+sierra+component) will yield many uses of such a pattern."
+`hara.component` a dependency injection framework inspired by the original Stuart Sierra component [library](https://github.com/stuartsierra/component) and [talk](http://www.youtube.com/watch?v=13cmHf_kt-Q). The virtues of this type of design for composing large systems has been much lauded and is quite a common practise within enterprise applications. Doing a [search](https://www.google.com?q=stuart+sierra+component) will yield many uses of such a pattern."
 
 [[:section {:title "Installation"}]]
 
@@ -26,4 +30,436 @@ The main reason for a reinterpretation of the original [stuartsierra/component](
 - added support for dealing with arrays of component
 - more control was needed when working with nested systems
 - more emphasis has been placed on prettiness and readibility
-"
+
+The focus of this library has been to tease apart configuration 
+
+
+Configuration of an application is probably the most important. In terms of the application, the configuration gives the ability to set the starting state of the entire program. Many a system become bloated due to not being able to properly manage configuration. We will aim to create a system based upon a configuration file. In my experience, using components has been more of a way of thinking than memorising a set of APIs. Therefore in this guide, it is hoped that a tutorial based approach will demonstrate the core functionality within the library."
+
+[[:chapter {:title "Config Driven Design"}]]
+
+"In this tutorial, we are creating simulation based on trapping bugs in different parts of the house, then tallying up the results and displaying it through a web interface. A datastructure can be created that customises various aspects of the simulation:"
+
+(def config
+  {:server     {:port 8081}
+   :app        {:display {:high  80
+                          :low   20
+                          :reset 100}}
+   :traps     ^{:fuzziness 0.1 :efficiency 0.6}
+               [{:location "kitchen"  :brightness 0.3
+                 :indoor true :rate 0.5}
+                {:location "bedroom"  :brightness 0.1
+                 :dampness 0.2 :indoor true :rate 0.3  :efficiency 0.2}
+                {:location "patio"    :brightness 0.5
+                 :outdoor true :rate 1.5  :efficiency 0.1}
+                {:location "bathroom" :dampness 0.3
+                 :indoor true :rate 0.2  :efficiency 0.3}]
+   :db         {}
+   :model      {:default {:fly 0.5 :ladybug 0.05
+                          :mosquito 0.35 :bee 0.1}
+                :linear  {:brightness {:bee 0.5}
+                          :dampness   {:mosquito 0.4}}
+                :toggle  {:indoor     {:fly 0.3
+                                       :mosquito 0.2}
+                          :outdoor    {:bee 0.1
+                                       :ladybug 0.1}}}})
+
+"The following sections go through in detail the design of the app. The first two sections are not really about components, but it is important in showing how to create functions based around a particular configuration. The rest of the sections take a comphrensive approach of how to configure and reason about the entire system.
+
+- [Probability Model](#probability-model) - How to calculate a bug distribution model.
+- [Sampling Model](#sampling-model) - How to sample the distribution model.
+- [Implementing Components](#implementing-components) - How to create and pretty up components so they are easy to integrate
+- [Topology](#topology) - How to create a set of functions that will take in a config and construct the system topology.
+- [System Operation](#system-composition) - The system, how to access parts of the system as well as stopping and starting." 
+
+[[:chapter {:title "Probability Model"}]]
+
+"We have a model of what percentage of bugs and depending on location, brightness and dampness, we adjust our model accordingly. So for example, we should be able to write a function `adjusted-distribution` that takes in a model and some parameter settings and spits out a probability distribution in the form of a map:"
+
+(comment
+  (adjusted-distribution {} (-> config :model))
+  => {:fly 0.5, :ladybug 0.05, :mosquito 0.35, :bee 0.1}
+
+  (adjusted-distribution {:indoor true}
+                         (-> config :model))
+  => {:fly 0.8, :ladybug 0.05, :mosquito 0.55, :bee 0.1})
+  
+
+[[:section {:title "linear-adjustment"}]]
+
+"We write a functions to adjustment for the linear increase:"
+
+(defn linear-adjustment [params linear]
+  (reduce-kv (fn [m k stats]
+               (if-let [mul (get params k)]
+                 (reduce-kv (fn [m k v]
+                              (update-in m [k] (fnil #(+ % (* mul v))
+                                                      0)))
+                            m
+                            stats)
+                 m))
+             {}
+             linear))
+
+"It can be applied to the model:"
+
+(facts
+  (linear-adjustment {:brightness 0.1}
+                     (-> config :model :linear))
+  => {:bee 0.05}
+
+  (linear-adjustment {:brightness 0.2}
+                     (-> config :model :linear))
+  => {:bee 0.1}
+
+  (linear-adjustment {:brightness 0.3}
+                     (-> config :model :linear))
+  => {:bee 0.15}
+  
+  (linear-adjustment {:dampness 0.5}
+                     (-> config :model :linear))
+  => {:mosquito 0.2})
+
+[[:section {:title "toggle-adjustment"}]]
+
+"The second function is for toggle adjustment, meaning that depending on a particular flag, we add a certain amount to the overall distribution:"
+
+(defn toggle-adjustment [params toggle]
+  (reduce-kv (fn [m k stats]
+               (if-let [mul (get params k)]
+                 (reduce-kv (fn [m k v]
+                              (update-in m [k] (fnil #(+ % v)
+                                                     0)))
+                            m
+                            stats)
+                 m))
+             {}
+             toggle))
+
+"It can be applied to the model:"
+
+(facts
+  (toggle-adjustment {:indoor true}
+                     (-> config :model :toggle))
+  => {:fly 0.3, :mosquito 0.2}
+
+  (toggle-adjustment {:outdoor true}
+                     (-> config :model :toggle))
+  => {:bee 0.1, :ladybug 0.1})
+
+[[:section {:title "add-distributions"}]]
+
+"A helper function is defined to add distributions together"
+
+(defn add-distributions
+  ([] {})
+  ([m] m)
+  ([m1 m2]
+   (reduce-kv (fn [m k v]
+                (update-in m [k] (fnil #(+ % v) 0)))
+              m1
+              m2))
+  ([m1 m2 & more]
+   (apply add-distributions (add-distributions m1 m2) more)))
+
+"The function is relatively generic and can be used to add arbitrary maps together:"
+
+(fact
+  (add-distributions {:a 0.1} {:a 0.1 :b 0.3} {:a 0.3 :c 0.3})
+  => {:a 0.5, :b 0.3, :c 0.3})
+
+[[:section {:title "adjusted-distribution"}]]
+
+"Combining the three functions, we can get an adjusted distribution based on the model taken from the config:"
+
+(defn adjusted-distribution [params {:keys [default linear toggle] :as model}]
+  (let [ladjust (linear-adjustment params linear)
+        tadjust (toggle-adjustment params toggle)]
+    (add-distributions default ladjust tadjust)))
+
+"The adjusted distributions for each trap can then be calculated:"
+
+(fact
+  (mapv #(adjusted-distribution % (-> config :model))
+        (-> config :traps))
+  => [;; kitchen
+      {:fly 0.8, :ladybug 0.05,
+       :mosquito 0.55, :bee 0.25}
+      ;; bedroom
+      {:fly 0.8, :ladybug 0.05,
+       :mosquito 0.63, :bee 0.15000000000000002}
+      ;; patio
+      {:fly 0.5, :ladybug 0.15000000000000002,
+       :mosquito 0.35, :bee 0.44999999999999996}
+      ;; bathroom
+      {:fly 0.8, :ladybug 0.05,
+       :mosquito 0.6699999999999999, :bee 0.1}])
+
+[[:chapter {:title "Sampling Model"}]]
+
+"The sampling model is easier to construct. We wish to create a function that takes in a distribution and returns a key that is proportional to the values of the map:"
+
+(comment
+  (random-sample {:a 0.5 :b 0.5})
+  => ;; either returns :a or :b
+  #(get #{:a :b} %))
+
+[[:section {:title "cumultive"}]]
+
+"culmultive takes a distribution and turns it into a range, sorted by value:"
+
+(defn cumultive [distribution]
+  (dissoc (reduce (fn [out [k v]]
+                    (let [total (::total out)
+                          ntotal (+ total v)]
+                      (assoc out
+                             k [total ntotal]
+                             ::total ntotal)))
+                  {::total 0}
+                  (sort-by val distribution))
+          ::total))
+
+"examples of its usage can be seen:"
+
+(fact
+  (cumultive {:a 0.3 :b 0.5 :c 0.2})
+  => {:c [0 0.2], :a [0.2 0.5], :b [0.5 1.0]})
+
+[[:section {:title "category"}]]
+
+"category takes a cumultive distribution and a point, return which section it belongs to:"
+
+(defn category [cumulative stat]
+  (->> cumulative
+       (keep (fn [[k [lower upper]]]
+               (if (<= lower stat upper) k)))
+       first))
+
+"examples of its usage can be seen:"
+
+(fact
+  (def dist (cumultive {:a 0.3 :b 0.5 :c 0.2}))
+  ;; {:c [0 0.2], :a [0.2 0.5], :b [0.5 1.0]} 0.1
+
+  
+  (category dist 0.1) => :c
+
+  (category dist 0.3) => :a
+
+  (category dist 0.8) => :b)
+
+[[:section {:title "random-sample"}]]
+
+"Now the `random-sample` function can be written:"
+
+(defn random-sample [distribution]
+  (let [total (apply + (vals distribution))
+        stat  (rand total)]
+    (category (cumultive distribution) stat)))
+
+"We can now use this with a probability map:"
+
+(fact
+  (random-sample {:a 0.3 :b 0.5 :c 0.2})
+  => ;; Returns either :a :b or :c
+  #(get #{:a :b :c} %))
+
+"As well as with `adjusted-model` defined in the [previous chapter](#probability-models)"
+
+(fact
+  (random-sample
+   (adjusted-distribution {:brightness 0.3 :indoor true :rate 0.5}
+                          (-> config :model)))
+  => ;; Return either :fly :ladybug :mosquito :bee
+  #(get #{:fly :ladybug :mosquito :bee} %))
+
+[[:chapter {:title "Implementing Components"}]]
+
+[[:section {:title "Model"}]]
+
+"We create a record for `Model`. The data is just a nested map but a record is used purely for printing purposes. There is quite alot of stuff in the map and we should be able to only show the necessary amount of information - in this case, we only want to know the keys of the datastructure:"
+
+(defrecord Model []
+  Object
+  (toString [obj]
+    (str "#model" (vec (keys (into {} obj))))))
+
+(defmethod print-method Model
+  [v w]
+  (.write w (str v)))
+
+"We can now use the `map->Model` function to create a nicer new on the model:"
+
+(comment
+  (map->Model (:model config))
+  ;;=> #model[:default :linear :toggle]
+)
+
+[[:section {:title "Trap"}]]
+
+"`Trap` is a component that needs to be started and stopped. It simulates a trap that knows what insect went inside the trap, what time it entered and if it had been captured. We create a basic function for one round of the trapping an insect:"
+
+(defn trap-bug [{:keys [rate efficiency fuzziness model output] :as trap}]
+  (let [pause   (long (* (+ rate
+                            (* (- (rand 1) 0.5) fuzziness))
+                         1000))]
+    (Thread/sleep pause)
+    (reset! output
+           {:time (java.util.Date.)
+            :bug (random-sample
+                  (adjusted-distribution trap model))
+            :captured (< (rand 1) efficiency)})
+    trap))
+
+"The usage for such a function can be seen below:"
+
+(fact
+  (-> (trap-bug {:rate 0.8
+                 :efficiency 0.5
+                 :fuzziness 0.1
+                 :model (:model config)
+                 :output (atom nil)})
+      :output
+      deref)
+  => (contains {:time #(instance? java.util.Date %)
+                :bug #(#{:fly :bee :ladybug :mosquito} %)
+                :captured #(instance? Boolean %)}))
+
+"We create a record that implements the `IComponent` interface, making sure that we hide keys that are not useful"
+
+(defrecord Trap []
+  Object
+  (toString [obj]
+    (let [selected [:location :output]]
+      (str "#trap" (-> (into {} obj)
+                       (select-keys selected)
+                       (update-in [:output] deref)))))
+
+  component/IComponent
+  (-start [trap]
+    (assoc trap
+           :thread (future
+                     (println (str "Starting trap in "
+                                   (:location trap) "\n"))
+                     (last (iterate trap-bug trap)))))
+
+  (-stop [{:keys [thread output] :as trap}]
+    (do
+      (println (str "Stopping trap in " (:location trap)))
+      (future-cancel thread)
+      (reset! output nil)
+      (dissoc trap :thread))))
+
+(defmethod print-method Trap
+  [v w]
+  (.write w (str v)))
+
+"Finally, we create a `trap` constructor taking a config map and outputting a `Trap` record:"
+
+(defn trap [m]
+  (assoc (map->Trap m)
+         :output (atom nil)))
+
+[[:section {:title "Partial System Testing"}]]
+
+"Having implemented the records for :traps and :model, we can test to see if our array of traps are working. It can be seen here that the call to system takes two parameters - a topology map and a configuration map. The topology map specifies functions and dependencies whilst the configuration map specifies the initial input data:"
+
+(comment
+  (def sys (-> {:traps [[trap] :model]
+                :model [map->Model]}
+               (component/system config)
+               (component/start)))
+  ;; Starting trap in patio
+  ;; Starting trap in bathroom
+  ;; Starting trap in kitchen
+  ;; Starting trap in bedroom
+
+  
+  (add-watch (-> sys :traps first :output)
+             :print-change
+             (fn [_ _ _ n]
+               (if (:captured n)
+                 (println n))))  
+  ;; {:time #inst "2015-07-15T08:21:33.690-00:00", :bug :fly, :captured true}
+  ;; {:time #inst "2015-07-15T08:21:34.216-00:00", :bug :mosquito, :captured true}
+  ;; ....
+  ;; ....
+  ;; {:time #inst "2015-07-15T08:21:36.753-00:00", :bug :fly, :captured false}
+  
+  (remove-watch (-> sys :traps first :output) :print-change)
+  ;; <CONSOLE OUTPUT STOPS>
+  
+  (component/stop sys)
+  ;;=> {:traps #arr[#trap{:location "kitchen", :output nil}
+  ;;             #trap{:location "bedroom", :output nil}
+  ;;             #trap{:location "patio", :output nil}
+  ;;             #trap{:location "bathroom", :output nil],
+  ;;    :model #model[:default :linear :toggle]}
+)
+
+[[:section {:title "App"}]]
+
+"The role of the app is to hook up the sensors to a datastore, in this case a mutable array of elements. We define two methods: `initialise-app` and `deinitialise-app`:"
+
+(defn initialise-app [{:keys [db traps display total] :as app}]  
+  (let [data (mapv (fn [trap]
+                     (select-keys trap [:location]))
+                   traps)]
+    (dosync (ova/init! db data))
+    (doseq [{:keys [location output] :as trap} traps]
+      (add-watch output :summary
+                 (fn [_ _ _ {:keys [success bug]}]
+                   (dosync (ova/!> db [:location location]
+                                   (update-in [:triggered] (fnil inc 0))
+                                   (update-in [:captured]  (fnil #(update-in % [bug] (fnil inc 0))
+                                                                 {}))))
+                   (swap! total update-in [bug] (fnil inc 0))))))
+  app)
+
+(defn deinitialise-app [{:keys [db traps total] :as app}]
+  (dosync (ova/empty! db))
+  (reset! total {})
+  (doseq [{:keys [output]} traps]
+    (remove-watch output :summary))
+  app)
+
+"Then hook it up via the `-start` and `-stop` protocols for the component architecture:"
+
+(defrecord App []
+  Object
+  (toString [app]
+    (str "#app" (-> app keys vec)))
+
+  component/IComponent
+  (-start [app]
+    (initialise-app app)
+    app)
+  
+  (-stop [app]
+    (deinitialise-app app)
+    app))
+
+(defmethod print-method App
+  [v w]
+  (.write w (str v)))
+
+(defn app [m]
+  (assoc (map->App m) :total (atom {})))
+
+[[:section {:title "App Testing"}]]
+
+"We can now do a more testing by including a couple more constructors. Note that the keys `:db`, `app` and `summary` have been added. Note the syntax for the `summary` value:"
+
+(comment
+  (def sys (-> {:traps   [[trap] :model]
+                :model   [map->Model]
+                :db      [ova/ova]
+                :app     [app :traps :db]
+                :summary [{:expose [:total]} :app]}
+               (component/system config)
+               (component/start)))
+
+
+  (:summary sys)
+  
+  (component/stop sys))

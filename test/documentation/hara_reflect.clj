@@ -434,7 +434,7 @@ The option array takes selectors and filters can be used to customise the result
 
 "Often, we need to extract out one or all elements of a class for use. `extract-to-var` and `extract-to-ns` allows for this. We see how extract-to-var works:"
 
-(fact
+(comment
   (extract-to-var 'char-at String "charAt")
 
   (mapv #(char-at "Hello" %) (range 5))
@@ -442,13 +442,13 @@ The option array takes selectors and filters can be used to customise the result
 
 "The function can also take a fully qualified symbol as well as create meta-information regarding the var itself. "
 
-(fact
+(comment
   (extract-to-var 'hello/char-at String "charAt")
 
-  (eval '(hello/char-at "Hello" 4))
+  (hello/char-at "Hello" 4)
   => \o
   
-  (eval '(meta #'hello/char-at))
+  (meta #'hello/char-at)
   => (contains {:ns #(instance? clojure.lang.Namespace %)
                 :name 'char-at
                 :arglists '[[java.lang.String int]]
@@ -458,26 +458,31 @@ The option array takes selectors and filters can be used to customise the result
 
 "`extract-to-ns` takes a class and extracts out all methods to a particular namespace, filters can be applied as seen in the [selectors](#selectors) section:"
 
-(extract-to-ns 'test.string String [:private])
-=> [#'test.string/HASHING_SEED
-    #'test.string/checkBounds
-    #'test.string/hash
-    #'test.string/hash32
-    #'test.string/indexOfSupplementary
-    #'test.string/lastIndexOfSupplementary
-    #'test.string/serialPersistentFields
-    #'test.string/serialVersionUID
-    #'test.string/value]
+(comment
+  (extract-to-ns 'test.string String [:private])
+  => [#'test.string/HASHING_SEED
+      #'test.string/checkBounds
+      #'test.string/hash
+      #'test.string/hash32
+      #'test.string/indexOfSupplementary
+      #'test.string/lastIndexOfSupplementary
+      #'test.string/serialPersistentFields
+      #'test.string/serialVersionUID
+      #'test.string/value]
 
-(fact
-  (eval '(seq (test.string/value "hello")))
-  => '(\h \e \l \l \o))
+  (seq (test.string/value "hello"))
+  => [\h \e \l \l \o])
 
-"If just the class is passed in, it will dump all methods of the class into the current namespace. This is very useful for quickly getting information about the internal structure of a class when exploring a new package."
+"If just the class is passed in, it will dump all methods of the class into the current namespace. This is very useful for quickly getting information about the internal structure of a class when exploring a new package. It is not the best idea to do this in production, but having the ability to do so whilst developing is great. We can see the `valueOf` function being called after all members in `java.lang.Long` have been extracted:"
 
-(fact
+(comment
   (extract-to-ns Long)
-
+  
+  (clojure.repl/doc valueOf)
+  ;;   -------------------------
+  ;;   documentation.hara-reflect/valueOf
+  ;;   [[java.lang.String int] [java.lang.String] [long]]
+  
   (valueOf "72" 10)
   => 72
 
