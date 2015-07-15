@@ -1,8 +1,10 @@
 (ns documentation.hara-component
   (:use midje.sweet)
   (:require [hara.component :as component]
-            [hara.concurrent.ova :as ova])
-  (:refer-clojure :exclude [random-sample]))
+            [hara.concurrent.ova :as ova]
+            [compojure.core :as routes]
+            [ring.adapter.jetty :as jetty]
+            [clj-http.client :as client]))
 
 [[:chapter {:title "Introduction"}]]
 
@@ -31,20 +33,15 @@ The main reason for a reinterpretation of the original [stuartsierra/component](
 - more control was needed when working with nested systems
 - more emphasis has been placed on prettiness and readibility
 
-The focus of this library has been to tease apart configuration 
-
-
-Configuration of an application is probably the most important. In terms of the application, the configuration gives the ability to set the starting state of the entire program. Many a system become bloated due to not being able to properly manage configuration. We will aim to create a system based upon a configuration file. In my experience, using components has been more of a way of thinking than memorising a set of APIs. Therefore in this guide, it is hoped that a tutorial based approach will demonstrate the core functionality within the library."
+The focus of `hara.component` is to tease apart configuration and application topology. Configuration gives the ability to set the starting state of the entire program. Many a system become bloated due to not being able to properly manage configuration and composing systems using this library should simplify the top level aspects of your code."
 
 [[:chapter {:title "Config Driven Design"}]]
 
-"In this tutorial, we are creating simulation based on trapping bugs in different parts of the house, then tallying up the results and displaying it through a web interface. A datastructure can be created that customises various aspects of the simulation:"
+"We will aim to create a system based upon a configuration file. In my experience, using components has been more of a way of thinking than memorising a set of APIs. Therefore in this guide, it is hoped that a tutorial based approach will demonstrate the core functionality within the library. We are creating a simulation based on trapping bugs in different parts of the house, then tallying up the results and displaying it through a web interface. A datastructure can be created that customises various aspects of the simulation:"
 
 (def config
-  {:server     {:port 8081}
-   :app        {:display {:high  80
-                          :low   20
-                          :reset 100}}
+  {:server     {:port 8090}
+   :app        {}
    :traps     ^{:fuzziness 0.1 :efficiency 0.6}
                [{:location "kitchen"  :brightness 0.3
                  :indoor true :rate 0.5}
@@ -68,9 +65,7 @@ Configuration of an application is probably the most important. In terms of the 
 
 - [Probability Model](#probability-model) - How to calculate a bug distribution model.
 - [Sampling Model](#sampling-model) - How to sample the distribution model.
-- [Implementing Components](#implementing-components) - How to create and pretty up components so they are easy to integrate
-- [Topology](#topology) - How to create a set of functions that will take in a config and construct the system topology.
-- [System Operation](#system-composition) - The system, how to access parts of the system as well as stopping and starting." 
+- [Implementing Components](#implementing-components) - How to create and pretty up components so they are easy to integrate." 
 
 [[:chapter {:title "Probability Model"}]]
 
@@ -399,7 +394,7 @@ Configuration of an application is probably the most important. In terms of the 
 
 [[:section {:title "App"}]]
 
-"The role of the app is to hook up the sensors to a datastore, in this case a mutable array of elements. We define two methods: `initialise-app` and `deinitialise-app`:"
+"The role of the app is to hook up the sensors to a datastore, in this case a mutable array of elements. We define `initialise-app` to setup watches to provide some summary and coordination:"
 
 (defn initialise-app [{:keys [db traps display total] :as app}]  
   (let [data (mapv (fn [trap]
@@ -407,14 +402,19 @@ Configuration of an application is probably the most important. In terms of the 
                    traps)]
     (dosync (ova/init! db data))
     (doseq [{:keys [location output] :as trap} traps]
-      (add-watch output :summary
-                 (fn [_ _ _ {:keys [success bug]}]
-                   (dosync (ova/!> db [:location location]
-                                   (update-in [:triggered] (fnil inc 0))
-                                   (update-in [:captured]  (fnil #(update-in % [bug] (fnil inc 0))
-                                                                 {}))))
-                   (swap! total update-in [bug] (fnil inc 0))))))
+      (add-watch
+       output :summary
+       (fn [_ _ _ {:keys [success bug]}]
+         (dosync (ova/!> db [:location location]
+                         (update-in [:triggered]
+                                    (fnil inc 0))
+                         (update-in [:captured]
+                                    (fnil #(update-in % [bug] (fnil inc 0))
+                                          {}))))
+         (swap! total update-in [bug] (fnil inc 0))))))
   app)
+
+"The opposite method `deinitialise-app` is also defined:"
 
 (defn deinitialise-app [{:keys [db traps total] :as app}]
   (dosync (ova/empty! db))
@@ -423,7 +423,7 @@ Configuration of an application is probably the most important. In terms of the 
     (remove-watch output :summary))
   app)
 
-"Then hook it up via the `-start` and `-stop` protocols for the component architecture:"
+"The two functions are then hooked up via `-start` and `-stop` protocol methods for the component architecture:"
 
 (defrecord App []
   Object
@@ -448,7 +448,7 @@ Configuration of an application is probably the most important. In terms of the 
 
 [[:section {:title "App Testing"}]]
 
-"We can now do a more testing by including a couple more constructors. Note that the keys `:db`, `app` and `summary` have been added. Note the syntax for the `summary` value:"
+"We can now do a more testing by including a couple more constructors. Note that the keys `:db`, `app` and `summary` have been added. Also see the syntax for the `:summary` topology to expose the `:total` submap from `:app`. This promotes reuse and composition of multiple systems."
 
 (comment
   (def sys (-> {:traps   [[trap] :model]
@@ -458,8 +458,117 @@ Configuration of an application is probably the most important. In terms of the 
                 :summary [{:expose [:total]} :app]}
                (component/system config)
                (component/start)))
+  ;; Starting trap in patio
+  ;; Starting trap in bathroom
+  ;; Starting trap in kitchen
+  ;; Starting trap in bedroom
 
-
-  (:summary sys)
   
-  (component/stop sys))
+  @(:summary sys) ;; first call to :summary gives a set of bugs trapped
+  ;;=> {:mosquito 101, :fly 120, :ladybug 6, :bee 28}
+
+  @(:summary sys) ;; second call to :summary gives an updated of bugs trapped
+  ;;=> {:mosquito 148, :fly 184, :ladybug 12, :bee 37}
+
+  (component/stop sys)
+  ;; Stopping trap in kitchen
+  ;; Stopping trap in bedroom
+  ;; Stopping trap in patio
+  ;; Stopping trap in bathroom
+
+  ;;=> {:app #app[:display :total],
+  ;;    :db #ova [],
+  ;;    :traps #arr[#trap{:location "kitchen",  :output nil}
+  ;;                #trap{:location "bedroom",  :output nil}
+  ;;                #trap{:location "patio",    :output nil}
+  ;;                #trap{:location "bathroom", :output nil}]
+  ;;    :model #model[:default :linear :toggle]}
+)
+
+[[:section {:title "Server"}]]
+
+"We define a very simple server with one route that just returns the summary as a string:"
+
+(defrecord Server []
+  Object
+  (toString [serv]
+    (str "#server" (-> serv keys vec)))
+
+  component/IComponent
+  (-start [{:keys [port summary] :as serv}]
+    (println (str "STARTING SERVER on port " port))
+    (assoc serv
+           :instance (jetty/run-jetty (routes/GET "*" [] (str @summary))
+                                      {:join? false
+                                       :port port})))
+  
+  (-stop [{:keys [summary instance] :as serv}]
+    (println (str "STOPPING SERVER on port " (:port serv)))
+    (.stop instance)
+    (dissoc serv :instance)))
+
+"Again, `print-method` is defined for prettiness:"
+
+(defmethod print-method Server
+  [v w]
+  (.write w (str v)))
+
+[[:section {:title "Server Testing"}]]
+
+"Again, we add an additional constructor to the system and start:"
+
+(comment
+  (def sys (-> {:traps   [[trap] :model]
+                :model   [map->Model]
+                :db      [ova/ova]
+                :app     [app :traps :db]
+                :summary [{:expose [:total]} :app]
+                :server  [map->Server :summary]}
+               (component/system config)
+               (component/start)))
+  ;; Starting trap in patio
+  ;; Starting trap in bathroom
+  ;; Starting trap in kitchen
+  ;; Starting trap in bedroom
+  ;; STARTING SERVER on PORT 8090
+  )
+
+"We can now use a client to access the summary via a http protocol"
+
+(comment
+  ;; First Time
+  (-> (client/get "http://localhost:8090/")
+      :body)
+  ;;=> "{:fly 249, :bee 55, :mosquito 187, :ladybug 19}"
+
+  
+  ;; Second Time
+  (-> (client/get "http://localhost:8090/")
+      :body)
+  ;; => "{:fly 305, :bee 70, :mosquito 227, :ladybug 26}"
+  )
+
+"Stopping is no different to before"
+
+(comment
+  (component/stop sys)
+  ;; STOPPING SERVER on PORT 8090
+  ;; Stopping trap in kitchen
+  ;; Stopping trap in bedroom
+  ;; Stopping trap in patio
+  ;; Stopping trap in bathroom
+
+  ;;=> {:app #app[:display :total],
+  ;;    :db #ova [],
+  ;;    :traps #arr[#trap{:location "kitchen",  :output nil}
+  ;;                #trap{:location "bedroom",  :output nil}
+  ;;                #trap{:location "patio",    :output nil}
+  ;;                #trap{:location "bathroom", :output nil}]
+  ;;    :model #model[:default :linear :toggle]
+  ;;    :server #server[:port]}
+
+  )
+
+
+[[:chapter {:title "The Big Picture"}]]
+
