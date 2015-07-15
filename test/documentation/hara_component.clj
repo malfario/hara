@@ -41,7 +41,13 @@ The differentiation of `hara.component` is to tease apart configuration and appl
 
 [[:section {:title "The Bug Trapper"}]]
 
-"We are creating a simulation based on trapping bugs in different parts of the house, then tallying up the results and displaying it through a web interface. A datastructure can be created that customises various aspects of the simulation:"
+"We are creating a simulation based on trapping bugs in different parts of the house, then tallying up the results and displaying it through a web interface."
+
+[[:image {:src "img/hara_component/dependency.png" :height "400px" :title "sub-system dependencies"}]]
+
+[[:section {:title "Configuration"}]]
+
+"A datastructure can be created that customises various aspects of the simulation:"
 
 (def config
   {:server     {:port 8090}
@@ -69,7 +75,7 @@ The differentiation of `hara.component` is to tease apart configuration and appl
 
 - [Probability Model](#probability-model) - How to calculate a bug distribution model.
 - [Sampling Model](#sampling-model) - How to sample the distribution model.
-- [Implementing Components](#implementing-components) - How to create and pretty up components so they are easy to integrate." 
+- [Implementing Components](#implementing-components) - How to create and pretty up components so they are easy to integrate."
 
 [[:chapter {:title "Probability Model"}]]
 
@@ -82,7 +88,7 @@ The differentiation of `hara.component` is to tease apart configuration and appl
   (adjusted-distribution {:indoor true}
                          (-> config :model))
   => {:fly 0.8, :ladybug 0.05, :mosquito 0.55, :bee 0.1})
-  
+
 
 [[:section {:title "linear-adjustment"}]]
 
@@ -114,7 +120,7 @@ The differentiation of `hara.component` is to tease apart configuration and appl
   (linear-adjustment {:brightness 0.3}
                      (-> config :model :linear))
   => {:bee 0.15}
-  
+
   (linear-adjustment {:dampness 0.5}
                      (-> config :model :linear))
   => {:mosquito 0.2})
@@ -240,7 +246,7 @@ The differentiation of `hara.component` is to tease apart configuration and appl
   (def dist (cumultive {:a 0.3 :b 0.5 :c 0.2}))
   ;; {:c [0 0.2], :a [0.2 0.5], :b [0.5 1.0]} 0.1
 
-  
+
   (category dist 0.1) => :c
 
   (category dist 0.3) => :a
@@ -373,21 +379,21 @@ The differentiation of `hara.component` is to tease apart configuration and appl
   ;; Starting trap in kitchen
   ;; Starting trap in bedroom
 
-  
+
   (add-watch (-> sys :traps first :output)
              :print-change
              (fn [_ _ _ n]
                (if (:captured n)
-                 (println n))))  
+                 (println n))))
   ;; {:time #inst "2015-07-15T08:21:33.690-00:00", :bug :fly, :captured true}
   ;; {:time #inst "2015-07-15T08:21:34.216-00:00", :bug :mosquito, :captured true}
   ;; ....
   ;; ....
   ;; {:time #inst "2015-07-15T08:21:36.753-00:00", :bug :fly, :captured false}
-  
+
   (remove-watch (-> sys :traps first :output) :print-change)
   ;; <CONSOLE OUTPUT STOPS>
-  
+
   (component/stop sys)
   ;;=> {:traps #arr[#trap{:location "kitchen", :output nil}
   ;;             #trap{:location "bedroom", :output nil}
@@ -400,7 +406,7 @@ The differentiation of `hara.component` is to tease apart configuration and appl
 
 "The role of the app is to hook up the sensors to a datastore, in this case a mutable array of elements. We define `initialise-app` to setup watches to provide some summary and coordination:"
 
-(defn initialise-app [{:keys [db traps display total] :as app}]  
+(defn initialise-app [{:keys [db traps display total] :as app}]
   (let [data (mapv (fn [trap]
                      (select-keys trap [:location]))
                    traps)]
@@ -438,7 +444,7 @@ The differentiation of `hara.component` is to tease apart configuration and appl
   (-start [app]
     (initialise-app app)
     app)
-  
+
   (-stop [app]
     (deinitialise-app app)
     app))
@@ -467,7 +473,7 @@ The differentiation of `hara.component` is to tease apart configuration and appl
   ;; Starting trap in kitchen
   ;; Starting trap in bedroom
 
-  
+
   @(:summary sys) ;; first call to :summary gives a set of bugs trapped
   ;;=> {:mosquito 101, :fly 120, :ladybug 6, :bee 28}
 
@@ -491,6 +497,13 @@ The differentiation of `hara.component` is to tease apart configuration and appl
 
 [[:section {:title "Server"}]]
 
+"The server requires a couple of external dependencies:"
+
+(comment
+  (require '[compojure.core :as routes]
+           '[ring.adapter.jetty :as jetty]
+           '[clj-http.client :as client]))
+
 "We define a very simple server with one route that just returns the summary as a string:"
 
 (defrecord Server []
@@ -505,7 +518,7 @@ The differentiation of `hara.component` is to tease apart configuration and appl
            :instance (jetty/run-jetty (routes/GET "*" [] (str @summary))
                                       {:join? false
                                        :port port})))
-  
+
   (-stop [{:keys [summary instance] :as serv}]
     (println (str "STOPPING SERVER on port " (:port serv)))
     (.stop instance)
@@ -545,7 +558,7 @@ The differentiation of `hara.component` is to tease apart configuration and appl
       :body)
   ;;=> "{:fly 249, :bee 55, :mosquito 187, :ladybug 19}"
 
-  
+
   ;; Second Time
   (-> (client/get "http://localhost:8090/")
       :body)
@@ -574,4 +587,3 @@ The differentiation of `hara.component` is to tease apart configuration and appl
   )
 
 [[:chapter {:title "The Big Picture"}]]
-

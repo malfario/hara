@@ -68,9 +68,7 @@ The management does not even need to know that an exception has occured because 
 
 "Whilst the `raise/continue` mechanism was decribed in brief, a bit more explanation is required to understand how different forms of jumps occur. The 5 special forms are implemented as data-structures:"
 
-[[{:numbered false}]]
-[[:code
-  "
+(comment
   (defmacro continue [& body]
     `{::type :continue ::value (do ~@body)})
 
@@ -83,16 +81,13 @@ The management does not even need to know that an exception has occured because 
   (defmacro fail
     ([] {::type :fail})
     ([contents]
-       `{::type :fail ::contents ~contents}))
-"]]
+       `{::type :fail ::contents ~contents})))
 
 "`escalate` is not shown because it a bit more complex as options and defaults can. Essentially, it is still just a data structure.
 
 The `raise` macro calls `raise-loop` which looks at the `::type` signature of the result returned by the `on` handler."
 
-[[{:numbered false}]]
-[[:code
-  "
+(comment
   (defn raise-loop [issue managers optmap]
     (... code ...
          (condp = (::type res)
@@ -103,7 +98,7 @@ The `raise` macro calls `raise-loop` which looks at the `::type` signature of th
            :escalate (raise-escalate issue res managers optmap)
            (raise-catch mgr res)))
 
-    ... code ...)"]]
+    ... code ...))
 
 "In the case of `:continue`, it can be seen that the function just returns `(::value res)`. The function in which `raise` was called proceeds without ever jumping anywhere.
 
@@ -132,20 +127,18 @@ In the case of other forms, there are different handlers to handle each case. If
 "When `raise-loop` gets a non-special form value back from a function handler in the manager it will call `raise-catch`, which will create a `catch` signal and actually throw it. The signal is just a clojure.lang.ExceptionInfo. The signal has a `::target`, which is the `:id` of the manager. It also has `::value`, which is the original result from `on`."
 
 [[{:numbered false}]]
-[[:code
-  "
+(comment
   (defn- raise-catch [manager value]
     (throw (create-catch-signal (:id manager) value)))
 
   (defn- create-catch-signal
     [target value]
-    (ex-info \"catch\" {::signal :catch ::target target ::value value}))"]]
+    (ex-info \"catch\" {::signal :catch ::target target ::value value})))
 
 "Going back to the `manage` block, it can be seen that `manage` will catch any `clojure.lang.ExceptionInfo` objects thrown. When a signal is thrown from lower functions, it will be caught and `manage-signal` is then called. If the target does not match the :id, then the exception is rethrown. If the exception has `::signal` of `:catch` then the manager will return `(::value data)`."
 
-[[{:numbered false}]]
-[[:code
-  "(defn manage-signal [manager ex]
+(comment
+  (defn manage-signal [manager ex]
     (let [data (ex-data ex)]
       (cond (not= (:id manager) (::target data))
             (throw ex)
@@ -155,7 +148,7 @@ In the case of other forms, there are different handlers to handle each case. If
             (= :catch (::signal data))
             (::value data)
 
-            :else (throw ex))))"]]
+            :else (throw ex)))))
 
 [[:section {:title "Implementing Choose"}]]
 
@@ -163,25 +156,22 @@ In the case of other forms, there are different handlers to handle each case. If
 
 Choose also requires that a signal be sent, but the target will now be a lookup on the optmap given an option label. The signal is very similar to the `catch` signal.
 "
-[[{:numbered false}]]
-[[:code
-  "(defn- create-choose-signal
+(comment
+  (defn- create-choose-signal
     [target label args]
-     (ex-info \"choose\" {::signal :choose ::target target ::label label ::args args}))"]]
+     (ex-info \"choose\" {::signal :choose ::target target ::label label ::args args})))
 
 "The part that processes `:choose` is shown in `manage-signal`:"
 
-[[{:numbered false}]]
-[[:code
-  "
- (defn manage-signal
-  ...
+(comment
+  (defn manage-signal
+     ...
        (= :choose (::signal data))
        (let [label (::label data)
              f (get (:options manager) label)
              args (::args data)]
          (manage-apply f args label))
-  ...)"]]
+    ...))
 
 [[:section {:title "Implementing the Rest"}]]
 
