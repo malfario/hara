@@ -50,7 +50,7 @@ If the previous author had taken shortcuts in design, those private keywords tur
 
 "Holds the java view of the Class declaration, staying true to the class and its members. It will show all methods and fields defined within a Class."
 
-(fact 
+(comment
   (query-class 1 [:name])
   => '("MAX_VALUE" "MIN_VALUE" "SIZE" "TYPE" "bitCount" "byteValue" "compare" "compareTo" "decode" "doubleValue" "equals" "floatValue" "getChars" "getLong" "hashCode" "highestOneBit" "intValue" "longValue" "lowestOneBit" "new" "numberOfLeadingZeros" "numberOfTrailingZeros" "parseLong" "reverse" "reverseBytes" "rotateLeft" "rotateRight" "serialVersionUID" "shortValue" "signum" "stringSize" "toBinaryString" "toHexString" "toOctalString" "toString" "toUnsignedString" "value" "valueOf"))
 
@@ -189,7 +189,7 @@ The option array takes selectors and filters can be used to customise the result
 
 "Input parameters can be filtered through specifying the number of inputs:"
 
-(fact
+(comment
   (query-class Long [:name :params 2])
   => [{:name "compare", :params [Long/TYPE Long/TYPE]}
       {:name "compareTo", :params [Long Long]}
@@ -208,7 +208,7 @@ The option array takes selectors and filters can be used to customise the result
 
 "Exact inputs can be specified by using a vector with input types:"
 
-(fact
+(comment
   (query-class Long [:name :params [Long/TYPE]])
   => [{:name "bitCount", :params [Long/TYPE]}
       {:name "highestOneBit", :params [Long/TYPE]}
@@ -230,7 +230,7 @@ The option array takes selectors and filters can be used to customise the result
 
 "Using a vector with `:any` as the first input will output all functions with any of the types as input arguments"
 
-(fact
+(comment
   (query-class Long [:name [:any String Long]])
   => ["bitCount" "compare" "decode" "getChars" "getLong" "highestOneBit" "lowestOneBit" "new" "numberOfLeadingZeros" "numberOfTrailingZeros" "parseLong" "reverse" "reverseBytes" "rotateLeft" "rotateRight" "signum" "stringSize" "toBinaryString" "toHexString" "toOctalString" "toString" "toUnsignedString" "valueOf"])
 
@@ -272,47 +272,47 @@ The option array takes selectors and filters can be used to customise the result
 [[:subsection {:title "Modifier Examples"}]]
 
 "Find all the fields in `java.lang.Long`:"
-(fact
+(comment
   (query-class Long [:name :field])
   => ["MAX_VALUE" "MIN_VALUE" "SIZE" "TYPE" "serialVersionUID" "value"])
 
 "Find all the static fields in `java.lang.Long`:"
-(fact
+(comment
   (query-class Long [:name :static :field])
   => ["MAX_VALUE" "MIN_VALUE" "SIZE" "TYPE" "serialVersionUID"])
 
 "Find all the non-static fields in `java.lang.Long`:"
-(fact
+(comment
   (query-class Long [:name :instance :field])
   => ["value"])
 
 "Find all public fields in `java.lang.Long`:"
-(fact
+(comment
   (query-class Long [:name :public :field])
   => ["MAX_VALUE" "MIN_VALUE" "SIZE" "TYPE"])
 
 "Find all private members in `java.lang.Long`:"
-(fact
+(comment
   (query-class Long [:name :private])
   => ["serialVersionUID" "toUnsignedString" "value"])
 
 "Find all private fields in `java.lang.Long`:"
-(fact
+(comment
   (query-class Long [:name :private :field])
   => ["serialVersionUID" "value"])
 
 "Find all private methods in `java.lang.Long`:"
-(fact
+(comment
   (query-class Long [:name :private :method])
   => ["toUnsignedString"])
 
 "Find all protected members in `java.lang.Long`:"
-(fact
+(comment
   (query-class Long [:name :protected])
   => [])
 
 "Find all members in `java.lang.Long` with no security attribute:"
-(fact
+(comment
   (query-class Long [:name :plain])
   => ["getChars" "stringSize"])
 
@@ -320,7 +320,7 @@ The option array takes selectors and filters can be used to customise the result
 
 "Return types signatures can be filtered by giving a class in the options, again all filters can be mixed and matched as needed. In the following example, we query for the name of all methods having a return type of `Long/TYPE`:"
 
-(fact
+(comment
   (query-class Long [:name :type :method Long/TYPE])
   => [{:name "highestOneBit", :type Long/TYPE}
       {:name "longValue", :type Long/TYPE}
@@ -349,7 +349,7 @@ The option array takes selectors and filters can be used to customise the result
 
 "`delegate` does what `bean` does but instead of manipulating fields through accessor functions, it directly gives field access to the underlying object. This way, one can set and get values from any object, regardless of permission model. `delegate` is used most often to look at the entire state of an object as well as to set the fields of an object to a particular initial state for testing. In the following example, we will change the value of a normally immutable string"
 
-(fact
+(comment
   (def a "hello")
   a => "hello"
 
