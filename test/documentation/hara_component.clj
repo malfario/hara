@@ -622,7 +622,7 @@ The syntax for the `:summary` key should be further explained. What `component/s
   [{:keys [db summary] :as serv}]
   (routes/routes
     (routes/GET "/total" [] (str @summary))
-    (routes/GET "/db" []    (str (persist db)))))
+    (routes/GET "/db" []    (str (persistent! db)))))
 
 "It is very easy to redefine topology to include the extra dependency:"
 
