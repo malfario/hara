@@ -133,7 +133,7 @@ In the case of other forms, there are different handlers to handle each case. If
 
   (defn- create-catch-signal
     [target value]
-    (ex-info \"catch\" {::signal :catch ::target target ::value value})))
+    (ex-info "catch" {::signal :catch ::target target ::value value})))
 
 "Going back to the `manage` block, it can be seen that `manage` will catch any `clojure.lang.ExceptionInfo` objects thrown. When a signal is thrown from lower functions, it will be caught and `manage-signal` is then called. If the target does not match the :id, then the exception is rethrown. If the exception has `::signal` of `:catch` then the manager will return `(::value data)`."
 
@@ -159,7 +159,7 @@ Choose also requires that a signal be sent, but the target will now be a lookup 
 (comment
   (defn- create-choose-signal
     [target label args]
-     (ex-info \"choose\" {::signal :choose ::target target ::label label ::args args})))
+     (ex-info "choose" {::signal :choose ::target target ::label label ::args args})))
 
 "The part that processes `:choose` is shown in `manage-signal`:"
 

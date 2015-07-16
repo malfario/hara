@@ -37,13 +37,22 @@ The differentiation of `hara.component` is to tease apart configuration and appl
 
 [[:chapter {:title "Config Driven Design"}]]
 
-"We will aim to create a system based upon a configuration file. As components are a very high level concept, using the pattern in code is more of a state of mind than following a set of APIs. Therefore in this documentation, it is hoped that a tutorial based approach will demonstrate the core functionality within the library."
+"We will aim to create a system based upon a configuration file. As components are a very high level concept, using the pattern in code is more of a state of mind than following a set of APIs. Therefore in this documentation, it is hoped that a tutorial based approach will demonstrate the core functionality within the library. We seperate the guide into the following sections
+
+- [Probability Model](#probability-model) - How to calculate a bug distribution model.
+- [Sampling Model](#sampling-model) - How to sample the distribution model.
+- [Implementing Components](#implementing-components) - How to create and pretty up components so they are easy to integrate.
+- [The Big Picture](#the-big-picture) - How to think about building and extending systems
+
+The first two chapters are not really about components, but it is important in showing how to create functions based around a particular configuration. The rest of the sections take a comphrensive approach of how to configure and reason about entire systems based on the component approach."
 
 [[:section {:title "The Bug Trapper"}]]
 
-"We are creating a simulation based on trapping bugs in different parts of the house, then tallying up the results and displaying it through a web interface."
+"We are creating a simulation based on trapping bugs in different parts of the house, then tallying up the results and displaying it through a web interface. We can see how the sub-systems connect together in the diagram below:"
 
 [[:image {:src "img/hara_component/dependency.png" :height "400px" :title "sub-system dependencies"}]]
+
+"At the very bottom is a statistical model for generating events ie, how often an insect would be likely to appear given a certain set of conditions such as brightness, dampness, if it is indoors or outdoors, etc. This is used by a number of `traps`, which are an array of devices that simulates events of an insect going into the trap. An insect may or may not be captured by the trap itself and this is also tallied. The `app` itself tracks events over time by putting results into a *'database'* and the server takes live results and outputs a string via http."
 
 [[:section {:title "Configuration"}]]
 
@@ -70,12 +79,6 @@ The differentiation of `hara.component` is to tease apart configuration and appl
                                        :mosquito 0.2}
                           :outdoor    {:bee 0.1
                                        :ladybug 0.1}}}})
-
-"The following sections go through in detail the design of the app. The first two sections are not really about components, but it is important in showing how to create functions based around a particular configuration. The rest of the sections take a comphrensive approach of how to configure and reason about the entire system.
-
-- [Probability Model](#probability-model) - How to calculate a bug distribution model.
-- [Sampling Model](#sampling-model) - How to sample the distribution model.
-- [Implementing Components](#implementing-components) - How to create and pretty up components so they are easy to integrate."
 
 [[:chapter {:title "Probability Model"}]]
 
@@ -367,12 +370,13 @@ The differentiation of `hara.component` is to tease apart configuration and appl
 
 [[:section {:title "Partial System Testing"}]]
 
-"Having implemented the records for `:traps` and `:model`, we can test to see if our array of traps are working. It can be seen here that the call to system takes two parameters - a topology map and a configuration map. The topology map specifies functions and dependencies whilst the configuration map specifies the initial input data. Note that to specify contruction of an array of components just put the constructor in an additional vector:"
+"Having implemented the records for `:traps` and `:model`, we can test to see if our array of traps are working. The call to system takes two parameters - a topology map and a configuration map. The topology map specifies functions and dependencies whilst the configuration map specifies the initial input data. Note that to specify contruction of an array of components put the constructor in an additional vector:"
 
 (comment
-  (def sys (-> {:traps [[trap] :model]
-                :model [map->Model]}
-               (component/system config)
+  (def topology {:traps [[trap] :model]
+                 :model [map->Model]})
+
+  (def sys (-> (component/system toplogy config)
                (component/start)))
   ;; Starting trap in patio
   ;; Starting trap in bathroom
@@ -404,7 +408,9 @@ The differentiation of `hara.component` is to tease apart configuration and appl
 
 [[:section {:title "App"}]]
 
-"The role of the app is to hook up the sensors to a datastore, in this case a mutable array of elements. We define `initialise-app` to setup watches to provide some summary and coordination:"
+"The role of the app is to hook up the sensors to a datastore, in this case an [ova](hara-concurrent-ova.html), a mutable array of elements. We define `initialise-app` to setup watches to provide some summary and coordination:"
+
+(require '[hara.concurrent.ova :as ova])
 
 (defn initialise-app [{:keys [db traps display total] :as app}]
   (let [data (mapv (fn [trap]
@@ -458,15 +464,18 @@ The differentiation of `hara.component` is to tease apart configuration and appl
 
 [[:section {:title "App Testing"}]]
 
-"We can now do a more testing by including a couple more constructors. Note that the keys `:db`, `app` and `summary` have been added. Also see the syntax for the `:summary` topology to expose the `:total` submap from `:app`. This promotes reuse and composition of multiple systems."
+"We can now do a more testing by including a couple more constructors. Note that the keys `:db`, `app` and `summary` have been added. Also see the syntax for the `:summary` topology to expose the `:total` submap from `:app`.
+
+The syntax for the `:summary` key should be further explained. What `component/start` sees a initialisation of {:expose [:total]}, it take the first dependency (in this case, `:app`), gets the `:total` submap and exposes it as `:summary` in the system map. The value of `:expose` can be either a vector (for nested map supprt) or a function for more generic operations. This promotes reuse and composition of multiple systems."
 
 (comment
-  (def sys (-> {:traps   [[trap] :model]
-                :model   [map->Model]
-                :db      [ova/ova]
-                :app     [app :traps :db]
-                :summary [{:expose [:total]} :app]}
-               (component/system config)
+  (def topology {:traps   [[trap] :model]
+                 :model   [map->Model]
+                 :db      [ova/ova]
+                 :app     [app :traps :db]
+                 :summary [{:expose [:total]} :app]})
+
+  (def sys (-> (component/system topology config)
                (component/start)))
   ;; Starting trap in patio
   ;; Starting trap in bathroom
@@ -506,6 +515,10 @@ The differentiation of `hara.component` is to tease apart configuration and appl
 
 "We define a very simple server with one route that just returns the summary as a string:"
 
+(defn make-routes
+  [{:keys [summary] :as serv}]
+  (routes/GET "*" [] (str @summary)))
+
 (defrecord Server []
   Object
   (toString [serv]
@@ -515,7 +528,7 @@ The differentiation of `hara.component` is to tease apart configuration and appl
   (-start [{:keys [port summary] :as serv}]
     (println (str "STARTING SERVER on port " port))
     (assoc serv
-           :instance (jetty/run-jetty (routes/GET "*" [] (str @summary))
+           :instance (jetty/run-jetty (make-routes serv)
                                       {:join? false
                                        :port port})))
 
@@ -550,7 +563,7 @@ The differentiation of `hara.component` is to tease apart configuration and appl
   ;; STARTING SERVER on PORT 8090
   )
 
-"We can now use a client to access the summary via a http protocol"
+"We can now use a client to access the summary via a http protocol:"
 
 (comment
   ;; First Time
@@ -583,7 +596,56 @@ The differentiation of `hara.component` is to tease apart configuration and appl
   ;;                #trap{:location "bathroom", :output nil}]
   ;;    :model #model[:default :linear :toggle]
   ;;    :server #server[:port]}
-
-  )
+)
 
 [[:chapter {:title "The Big Picture"}]]
+
+[[:section {:title "Summary"}]]
+
+"We have created the bug trapping system based on our [dependency diagram](#sub-system-dependencies). We can visualize the essential components that make up our system in the diagram below:"
+
+[[:image {:src "img/hara_component/system.png" :width "600px" :title "the system"}]]
+
+"The constructors and the dependencies form our system topology whilst the data that initialised our system form our config. There are significant advantages of doing this:
+
+- The final code is almost the same as the diagram of the system.
+- There is an isometric correspondence between process and data.
+- It clearly seperates data (which is normally loaded from a file) from process.
+- It keeps all the initialisations in a single place.
+- Systems can be built incrementally in the way that we have just done."
+
+[[:section {:title "Further Extension"}]]
+
+"Say we needed to add more functionality to our system, in which we define the `make-routes` method to add an endpoint giving us information about the status of the datastore:"
+
+(defn make-routes
+  [{:keys [db summary] :as serv}]
+  (routes/routes
+    (routes/GET "/total" [] (str @summary))
+    (routes/GET "/db" []    (str (persist db)))))
+
+"It is very easy to redefine topology to include the extra dependency:"
+
+(comment
+  (def toplogy {:traps   [[trap] :model]
+                :model   [map->Model]
+                :db      [ova/ova]
+                :app     [app :traps :db]
+                :summary [{:expose [:total]} :app]
+                :server  [map->Server :summary :db]}) ;; note the extra `:db` key
+
+  (def sys (-> (component/system topology config)
+               (component/start))))
+
+"We can again visualize the extended system:"
+
+[[:image {:src "img/hara_component/system2.png" :width "600px" :title "the extended system"}]]
+
+[[:chapter {:title "Links and Resources"}]]
+
+"
+Here are some more links and resources on the web:
+
+- [stuartsierra/component](https://github.com/stuartsierra/component) - original library
+- [just a bit more structure](http://z.caudate.me/hara-component-just-a-bit-more-structure/) - the announcement on my blog
+"
