@@ -55,10 +55,51 @@ There are currently three other conditional restart libraries for clojure, in th
 - [swell](https://github.com/hugoduncan/swell) and [conditions](https://github.com/bwo/conditions) have been written to work with [slingshot](https://github.com/scgilardi/slingshot).
 "
 
-[[:section {:title "Raise Syntax"}]]
+[[:chapter {:title "Event Management"}]]
+
+[[:section {:title "Listeners and Managers"}]]
 
 "
-`hara.event` provide richer semantics for resolution of *Type 2* exceptions. Instead of `throw`, a new form `raise` is introduced ([e.{{raise-syntax}}](#raise-syntax)).
+In any program, we see the following patterns
+
+- side effects occur within both abnormal and normal program flow (usually logging)
+- side-effecting libraries coupled to the main logic (logback, email systems, alerts)
+- usually some sort of logging has to be done on abnormal program flow
+
+`hara.event` provides for listeners and managers:
+
+- Listeners act on events they have jurisdiction over for both `signal` and `raise` calls. All listeners participate.
+- Managers act in a hierarchical fashion where if an issue is raised, the closest manager will handle the issue.
+
+An example is provided below:
+"
+
+[[:image {:src "img/hara_event/event_pathway.png" :title "example pathways" :width "600px"}]]
+
+"
+The only difference between `signal` and `raise` calls is that `signal` does not trigger `manage` handlers. Both calls will trigger any compatible listener. The listers and managers act in a horizontal/vertical or only/all fashion to provide for better decoupilng of functionality within the code base. 
+"
+
+[[:section {:title "Signal Syntax"}]]
+
+"`signal` typically just informs its listeners with a given set of information:"
+
+(comment
+  (signal {:everything-is-good true :input-data 3})
+  )
+
+[[:section {:title "Listener Syntax"}]]
+
+"`signal` typically just informs its listeners with a given set of information:"
+
+(comment
+  (deflistener print-listener :log
+    data
+    (println data)))
+
+[[:section {:title "Raise Syntax"}]]
+
+"Instead of `throw`, a new form `raise` is introduced ([e.{{raise-syntax}}](#raise-syntax)):
 "
 
 (comment
@@ -120,3 +161,12 @@ Using these six different different issue resolution directives, the programmer 
 [[:chapter {:title "Implementation"}]]
 
 [[:file {:src "test/documentation/hara_event/implementation.clj"}]]
+
+[[:chapter {:title "Links and Resources"}]]
+
+"
+Here are some more links and resources on the web:
+
+- [stuartsierra/component](https://github.com/stuartsierra/component) - original library
+- [just a bit more structure](http://z.caudate.me/hara-component-just-a-bit-more-structure/) - the announcement on my blog
+"

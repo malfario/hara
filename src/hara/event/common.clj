@@ -1,5 +1,6 @@
 (ns hara.event.common
   (:require [hara.common.checks :refer [hash-map?]]
+            [hara.common.primitives :refer [T]]
             [hara.data.map :as map]
             [hara.data.seq :as seq]
             [hara.common.primitives :refer [uuid]]))
@@ -121,3 +122,8 @@
                    (symbol? bindings)    [bindings]
                    :else (throw (Exception. (str "bindings " bindings " should be a vector, hashmap or symbol"))))]
     `(fn ~bind ~@body)))
+
+(defn checker-form [checker]
+  (if (= '_ checker)
+    `T
+    checker))
