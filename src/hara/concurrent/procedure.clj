@@ -10,15 +10,20 @@
 
 (defonce ^:dynamic *default-registry* (data/registry))
 
-(defn instance
-    ([name id] (instance *default-registry* name id))
-    ([registry name id]
-     (get-in @registry [name id])))
+(defn list-instances
+  ([name] (list-instances *default-registry* name))
+  ([registry name]
+   (vals (get-in @registry name))))
+
+(defn get-instance
+  ([name id] (get-instance *default-registry* name id))
+  ([registry name id]
+   (get-in @registry [name id])))
 
 (defn kill
     ([name id] (kill *default-registry* name id))
     ([registry name id]
-     (if-let [{:keys [thread]} (instance registry name id)]
+     (if-let [{:keys [thread]} (get-instance registry name id)]
        (do (cond (future? thread)
                  (future-cancel thread)
 

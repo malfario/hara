@@ -22,7 +22,9 @@
    :ticker   {}})
 
 (defn scheduler
-    ([handlers] (scheduler handlers {}))
+  "creates a schedular from handlers, or both handlers and config"
+  {:added "2.2"}
+  ([handlers] (scheduler handlers {}))
     ([handlers config] (scheduler handlers config {}))
     ([handlers config global]
      (component/system
@@ -38,23 +40,49 @@
       "scheduler")))
 
 (defn create
+  "function for use with the component framework."
+  {:added "2.2"}
   [handlers]
   (fn [config]
     (scheduler handlers {} config)))
 
-(defn start! [scheduler]
+(defn start!
+  "starts the scheduler"
+  {:added "2.2"}
+  [scheduler]
   (component/start scheduler))
 
-(defn stop! [scheduler]
+(defn stop!
+  "stops the scheduler"
+  {:added "2.2"}
+  [scheduler]
   (component/stop scheduler))
 
-(defn stopped? [scheduler]
+(defn stopped?
+  "checks to see if the scheduler is stopped"
+  {:added "2.2"}
+  [scheduler]
   (component/stopped? (:clock scheduler)))
 
-(defn running? [scheduler]
+(defn running?
+  "checks to see if the scheduler is running"
+  {:added "2.2"}
+  [scheduler]
   (component/started? (:clock scheduler)))
 
-(defn simulate [scheduler {:keys [start end step pause mode]}]
+(defn simulate
+  "simulates the scheduler running for a certain interval:
+
+  (simulate
+   (scheduler {:print-task {:handler (fn [t params instance]
+                                       (println t params))
+                            :schedule \"/2 * * * * * *\"
+                            :params   {:value \"hello world\"}}})
+   {:start (java.util.Date. 0)
+    :end   (java.util.Date. 100000)
+    :pause 10})"
+  {:added "2.2"}
+  [scheduler {:keys [start end step pause mode]}]
   (swap! (-> scheduler :clock :state) assoc :disabled true)
   (let [scheduler (component/start scheduler)
         tz   (-> scheduler :clock :meta :region)
@@ -76,12 +104,19 @@
     (swap! (-> scheduler :clock :state) dissoc :disabled)
     (component/stop scheduler)))
 
-(defn uptime [scheduler]
+(defn uptime
+  "checks to see how long the scheduler has been running"
+  {:added "2.2"}
+  [scheduler]
   (if-let [start (-> scheduler :clock deref :start-time)]
     (-  (System/currentTimeMillis)
         (time/to-long start))))
 
-(defn task [scheduler name]
+(defn list-tasks [scheduler]
+  (persistent! (-> scheduler :array :handlers)))
+
+(defn get-task
+  [scheduler name]
   (first (ova/select (-> scheduler :array :handlers) [:name name])))
 
 (defn enable-task [scheduler name]
@@ -92,84 +127,24 @@
   (dosync (ova/smap! (-> scheduler :array :handlers) [:name name]
                      assoc :disabled true)))
 
-(comment
-  
-  (def sch1 (component/start ((create
-                               {:print-task (fn [t params]
-                                              (println t params)
-                                              (Thread/sleep 10000))})
-                              {:array {:print-task {:schedule "/2 * * * * * *"
-                                                    :params  {:hello "world"}}}})))
+(defn list-instances
+  [scheduler name]
+  (-> (get-task scheduler name)
+      :registry
+      :store
+      deref
+      (get name)
+      vals))
 
-  (disable-task sch1 :print-task)
-  (task sch1 :print-task)
-  (ova/select (-> sch1 :array :handlers) [:name :print-task])
-  
-  (uptime sch1)
-  (component/stop sch1)
-  
-  (defn scheduler [])
-  
-  (system {:array <>
-           :clock <>}
+(defn shutdown!
+  [scheduler]
+  (doall (for [tsk  (list-tasks scheduler)
+               inst (procedure/list-instances (:registry tsk))]
+           (procedure/kill (:registry tsk) (:name tsk) (:id inst))))
+  (stop! scheduler))
 
-          {:array <>
-           :clock <>}
-          
-          "schedular")
+(defn restart!
+  [scheduler]
+  (shutdown! scheduler)
+  (start! scheduler))
 
-  
-  (simulate
-   (scheduler
-    {:print-task (fn [t params instance]
-                   (println t params))}
-    {:print-task {:schedule "/2 * * * * * *"
-                  :params   {:value "hello world"}}})
-   {:start (java.util.Date. 0)
-    :end   (java.util.Date. 100000)
-    :pause 10})
-
-  
-
-  (def sch (component/start (scheduler {:print-task (fn [t params]
-                                                      (println "PRINTING:" t params))}
-                                       {:print-task {:schedule "/2 * * * * * *"
-                                                     :params  {:hello "world"}}})))
-
-  (def sch (component/start
-            (scheduler {:print-task {:handler (fn [t params instance]
-                                                (println "PRINTING:" (:id instance) params))
-                                     :schedule "/2 * * * * * *"
-                                     :params  {:hello "world"}}})))
-
-  (component/stop sch)
-  
-  
-  
-  
-  (type (read-string "java.util.Date"))
-  (schedule tasks)
-  => scheduler
-
-  (defn scheduler [])
-
-  (defn stop [])
-
-  (defn start [])
-
-
-  (topology {:scheduler new-scheduler})
-
-  (def options {:type  #{:util-date :time-instant}
-                :interval <NUM>})
-  
-  (def handlers {:print-task   {:handler (fn [dt params] "hello" (:value params))}
-                 :file-task    (fn [dt] "hello" dt)
-                 :simple-task  (fn [] (println "hello world"))})
-  
-  (def topology {:scheduler  (scheduler handler data config)})
-
-  (def config   {:scheduler  {:print-task {:schedule "0-2 * * * * *"
-                                           :params   {:value "hello world"}}}})
-  
-  )

@@ -26,9 +26,9 @@
   (persistent! (ova [1 2 3 4]))
   => [1 2 3 4])
 
-[[:subsection {:title "reinit!"}]]
+[[:subsection {:title "init!"}]]
 
-"`reinit!` resets the data elements in an ova to another set of values. Any change in the ova requires it to be wrapped in a `dosync` macro."
+"`init!` resets the data elements in an ova to another set of values. Any change in the ova requires it to be wrapped in a `dosync` macro."
 
 
 (fact

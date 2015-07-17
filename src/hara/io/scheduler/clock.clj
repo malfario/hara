@@ -5,7 +5,17 @@
             [hara.component :as component]
             [hara.io.scheduler.tab :as tab]))
 
-(defn clock-loop [clock recur?]
+(defn clock-loop
+  "updates the clock tick, if `recur?` is true, then it keeps running
+  (-> (:clock scheduler/*defaults*)
+      (clock)
+      (clock-loop false))
+  ;;=> #clock {:start-time nil,
+  ;;           :current-time #inst \"2015-07-16T15:24:42.608-00:00\",
+  ;;           :running false}
+  "
+  {:added "2.2"}
+  [clock recur?]
   (if (not (:disabled @clock))
     (let [current-array  (:current-array @clock)
           region         (-> clock :meta :region)
@@ -30,20 +40,30 @@
           (if (< 0 sleep-time)
             (Thread/sleep sleep-time)
             (Thread/sleep interval))))
-      (if (and recur? )
-        (recur clock true)))))
+      (if recur? 
+        (recur clock recur?)
+        clock))))
 
-(defn clock-stopped? [clock]
+(defn clock-stopped?
+  "checks if the clock has stopped"
+  {:added "2.2"}
+  [clock]
   (let [thread (:thread @clock)]
       (or (nil? thread)
           (true? thread)
           (future-done? thread)
           (future-cancelled? thread))))
 
-(defn clock-started? [clock]
+(defn clock-started?
+  "checks if the clock has started"
+  {:added "2.2"}
+  [clock]
   (not (clock-stopped? clock)))
 
-(defn clock-start [clock]
+(defn clock-start
+  "starts the clock"
+  {:added "2.2"}
+  [clock]
   (if (clock-stopped? clock)
     (swap! (:state clock) assoc
            :start-time (time/now (-> clock :meta :type) (-> clock :region :meta))
@@ -51,7 +71,10 @@
     (event/signal [:log {:msg "The clock is already running"}]))
   clock)
 
-(defn clock-stop [clock]
+(defn clock-stop
+  "stops the clock"
+  {:added "2.2"}
+  [clock]
   (if-not (clock-stopped? clock)
     (swap! (:state clock)
            (fn [m]
@@ -91,13 +114,19 @@
   (.write w (str v)))
 
 (defn clock
-  ([] (clock nil))
-  ([meta]
-   (Clock. (-> meta
-               (update-in [:type] (fn [x] (if (string? x)
-                                            (Class/forName x)
-                                            x))))
-           (atom {:thread          nil
-                  :start-time      nil
-                  :current-time    nil
-                  :current-array   nil}))))
+  "creates an instance of a clock
+  (clock (:clock scheduler/*defaults*))
+  ;;=> #clock {:start-time nil,
+  ;;           :current-time nil,
+  ;;           :running false}
+  "
+  {:added "2.2"}
+  [meta]
+  (Clock. (-> meta
+              (update-in [:type] (fn [x] (if (string? x)
+                                           (Class/forName x)
+                                           x))))
+          (atom {:thread          nil
+                 :start-time      nil
+                 :current-time    nil
+                 :current-array   nil})))

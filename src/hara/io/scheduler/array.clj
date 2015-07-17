@@ -40,11 +40,12 @@
 (defn initialise [{:keys [handlers registry cache ticker] :as arr}]
   ;; watch for changes in ticker
   (add-watch ticker :trigger
-             (fn [_ _ _ {:keys [time array params instance]}]
+             (fn [_ _ _ {:keys [time array params instance] :as result}]
+               ;;(./pprint result)
                (doseq [handler (persistent! handlers)]
                  (if (and (tab/match-array? array (:schedule-array handler))
                           (not (:disabled handler)))
-                   (handler time params instance)))))
+                   (handler time (or params {}) instance)))))
   ;; update registry
   (dosync (ova/map! handlers assoc-in [:registry] registry)
           (ova/map! handlers assoc-in [:cache] cache))
