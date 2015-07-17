@@ -10,7 +10,7 @@
 (defn list-instances
   ([name] (list-instances *default-registry* name))
   ([registry name]
-   (vals (get-in @registry name))))
+   (vals (get @registry name))))
 
 (defn get-instance
   ([name id] (get-instance *default-registry* name id))

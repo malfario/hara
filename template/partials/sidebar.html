@@ -1,0 +1,57 @@
+<div id="sidebar-wrapper">
+  <ul class="sidebar">
+    <li class="sidebar-main">
+      <a ng-click="toggleSidebar()">
+        <span style="padding-left:20px">MENU</span>
+        <!--img src="img/logo.png" height=40 style="padding-left:70px"-->
+        <span ng-hide="toggle" class="menu-icon glyphicon glyphicon-transfer"></span>
+      </a>
+    </li>
+    <li class="sidebar-list">
+      <a href="/">home <span class="menu-icon fa fa-home"></span></a>
+    </li>
+    <!--li class="sidebar-list">
+      <a href="api.html">api reference <span class="menu-icon fa fa-bank"></span></a>
+    </li-->
+    <li class="sidebar-title"><span>guides</span></li>
+    <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-component">&bull;<span class="submenu-item">component</span></a>
+    </li>
+    <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-concurrent-ova.html">&bull;<span class="submenu-item">concurrent.ova</span></a>
+    </li>
+    <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-event.html">&bull;<span class="submenu-item">event</span></a>
+    </li>
+    <!--li class="sidebar-list" ng-show="toggle">
+      <a href="hara-io-watch.html">&bull;<span class="submenu-item">io.watch</span></a>
+    </li-->
+    <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-io-scheduler.html">&bull;<span class="submenu-item">io.scheduler</span></a>
+    </li>
+    <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-reflect.html">&bull;<span class="submenu-item">reflect</span></a>
+    </li>
+
+    <li class="sidebar-title"><span>links</span></li>
+    <li class="sidebar-list">
+      <a href="http://www.gitter.im/zcaudate/hara" target="_blank">support <span class="menu-icon fa fa-support"></span></a>
+    </li>
+    <li class="sidebar-list">
+      <a href="https://github.com/zcaudate/hara" target="_blank">source code<span class="menu-icon fa fa-github"></span></a>
+    </li>
+
+  </ul>
+  <div class="sidebar-footer">
+    <div class="col-xs-6">
+      <a href="https://github.com/zcaudate/hara" target="_blank">
+        Github
+      </a>
+    </div>
+    <div class="col-xs-6">
+      <a href="https://gitter.com/zcaudate/hara">
+        Support
+      </a>
+    </div>
+  </div>
+</div>

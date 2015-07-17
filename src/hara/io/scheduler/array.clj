@@ -2,6 +2,7 @@
   (:require [hara.io.scheduler.tab :as tab]
             [hara.concurrent.ova :as ova]
             [hara.concurrent.procedure :as procedure]
+            [hara.concurrent.procedure.registry :as registry]
             [hara.component :as component]))
 
 (defrecord TaskArray []
@@ -41,7 +42,6 @@
   ;; watch for changes in ticker
   (add-watch ticker :trigger
              (fn [_ _ _ {:keys [time array params instance] :as result}]
-               ;;(./pprint result)
                (doseq [handler (persistent! handlers)]
                  (if (and (tab/match-array? array (:schedule-array handler))
                           (not (:disabled handler)))

@@ -1,4 +1,4 @@
-(defproject im.chit/hara "2.2.0-SNAPSHOT"
+(defproject im.chit/hara "2.2.0"
   :description "code patterns and utilities"
   :url "https://github.com/zcaudate/hara"
   :license {:name "The MIT License"
@@ -18,14 +18,20 @@
                   :owners [{:name    "Chris Zheng"
                             :email   "z@caudate.me"
                             :website "http://z.caudate.me"}]
+                  :template {:path "template"
+                             :copy ["assets"]
+                             :defaults {:sidebar [:file "partials/sidebar.html"]
+                                        :footer  [:file "partials/footer.html"]
+                                        :navbar  :navigation
+                                        :article :article}}
                   :paths ["test/documentation"]
                   :files {"index"
                           {:type :html
-                           :template {:article "home.html"}
+                           :template "home.html"
                            :title "home"}
-                          "api"
-                          {:input "test/documentation/hara_api.clj"
-                           :title "api examples"}
+                          ;"api"
+                          ;{:input "test/documentation/hara_api.clj"
+                          ; :title "api examples"}
                           "hara-component"
                           {:input "test/documentation/hara_component.clj"
                            :title "hara.component"
@@ -34,18 +40,18 @@
                           {:input "test/documentation/hara_concurrent_ova.clj"
                            :title "hara.concurrent.ova"
                            :subtitle "shared mutable state for multi-threaded applications"}
-                          "hara-concurrent-procedure"
-                          {:input "test/documentation/hara_concurrent_procedure.clj"
-                           :title "hara.concurrent.procedure"
-                           :subtitle ""}
+                          ;"hara-concurrent-procedure"
+                          ;{:input "test/documentation/hara_concurrent_procedure.clj"
+                          ; :title "hara.concurrent.procedure"
+                          ; :subtitle ""}
                           "hara-event"
                           {:input "test/documentation/hara_event.clj"
                            :title "hara.event"
                            :subtitle "event signalling and conditional restart"}
-                          "hara-io-watch"
-                          {:input "test/documentation/hara_io_watch.clj"
-                           :title "hara.io.watch"
-                           :subtitle "watch for filesystem changes"}
+                          ;"hara-io-watch"
+                          ;{:input "test/documentation/hara_io_watch.clj"
+                          ; :title "hara.io.watch"
+                          ; :subtitle "watch for filesystem changes"}
                           "hara-io-scheduler"
                           {:input "test/documentation/hara_io_scheduler.clj"
                            :title "hara.io.scheduler"

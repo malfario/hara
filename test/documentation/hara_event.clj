@@ -77,7 +77,7 @@ An example is provided below:
 [[:image {:src "img/hara_event/event_pathway.png" :title "example pathways" :width "600px"}]]
 
 "
-The only difference between `signal` and `raise` calls is that `signal` does not trigger `manage` handlers. Both calls will trigger any compatible listener. The listers and managers act in a horizontal/vertical or only/all fashion to provide for better decoupilng of functionality within the code base. 
+The only difference between `signal` and `raise` calls is that `signal` does not trigger `manage` handlers. Both calls will trigger any compatible listener. The listers and managers act in a horizontal/vertical or only/all fashion to provide for better decoupilng of functionality within the code base.
 "
 
 [[:section {:title "Signal Syntax"}]]
@@ -167,6 +167,7 @@ Using these six different different issue resolution directives, the programmer 
 "
 Here are some more links and resources on the web:
 
-- [stuartsierra/component](https://github.com/stuartsierra/component) - original library
-- [just a bit more structure](http://z.caudate.me/hara-component-just-a-bit-more-structure/) - the announcement on my blog
+- [beyond exception handling](http://www.gigamonkeys.com/book/beyond-exception-handling-conditions-and-restarts.html) - Peter Seibel's chapter on conditional restarts
+- [why exceptions should cascade like stylesheets](http://z.caudate.me/why-exceptions-are-like-stylesheets/) - original article on the philosophy behind [ribol](http://www.github.com/zcaudate/ribol)
+- [the power of abstraction](http://www.youtube.com/watch?v=GDVAHA0oyJU) - excellent talk by Barbara Liskov
 "

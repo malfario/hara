@@ -22,7 +22,7 @@
 "
 When working and understanding encapsulated code, the best way is to expose everything first, then to test each piece of functionality in a controlled way. Finally only when all the pieces are known, then work out a strategy for code refactoring/rewriting.
 
-Although private and protected keywords have their uses in java, they may also be considered functionality obsfucators. They are complete hinderences when a developer attempts do something to the code base that the previous author had not intended - one of them being to understand what is going on underneath. 
+Although private and protected keywords have their uses in java, they may also be considered functionality obsfucators. They are complete hinderences when a developer attempts do something to the code base that the previous author had not intended - one of them being to understand what is going on underneath.
 
 If the previous author had taken shortcuts in design, those private keywords turn one of those over-protective parents that get in the way of the growth of their children. Taking inspiration from clj-wallhack, here are some primary use cases for the library:
 
@@ -41,7 +41,7 @@ If the previous author had taken shortcuts in design, those private keywords tur
 
 "There are two different calls for querying - `query-instance` and `query-class`. They have the same listing and filtering mechanisms but they do things a little differently. Both has the same structure, given as follows:"
 
-(comment  
+(comment
   (query-<command> <obj> [<option> ...]))
 
 ""
@@ -96,7 +96,7 @@ If the previous author had taken shortcuts in design, those private keywords tur
 
 "Now we can use as if it is any other function:"
 
-(fact  
+(fact
   (min-value Long)
   => -9223372036854775808)
 
@@ -126,7 +126,7 @@ If the previous author had taken shortcuts in design, those private keywords tur
   (value-of 100) => "100" ; long
   (value-of 3.9) => "3.9" ; double
 
-  
+
   (let [arr (make-array Character/TYPE 5)
         _   (doall (map-indexed (fn [i v]
                                   (aset arr i v))
@@ -154,10 +154,10 @@ The option array takes selectors and filters can be used to customise the result
 (fact
   (query-class Long [:name "MIN_VALUE" :#])
   => "MIN_VALUE"
-  
+
   (query-class Long [:params "MIN_VALUE" :#])
   => [java.lang.Class]
-  
+
   (query-class Long [:params :name "MIN_VALUE" :#])
   => {:name "MIN_VALUE", :params [java.lang.Class]})
 
@@ -176,10 +176,10 @@ The option array takes selectors and filters can be used to customise the result
 (fact
   (query-class Long [:name "value"])
   => '("value")
-  
+
   (query-class Long [:name #"value"])
   => '("value" "valueOf")
-  
+
   (query-class Long [:name #"VALUE"])
   => '("MAX_VALUE" "MIN_VALUE"))
 
@@ -358,7 +358,7 @@ The option array takes selectors and filters can be used to customise the result
   => (contains {:hash 99162322,
                 :hash32 0,
                 :value #(instance? (Class/forName "[C") %)})
-  
+
   (:hash a*)   ; values can be accessed just like bean
   => 99162322
 
@@ -389,7 +389,7 @@ The option array takes selectors and filters can be used to customise the result
   => (contains {:name "clojure.lang.PersistentArrayMap"
                 :hash number?
                 :modifiers #{:instance :public :class}})
-  
+
   (class-info (zipmap (range 10) (range 10)))
   => (contains {:name "clojure.lang.PersistentHashMap",
                 :hash number?
@@ -447,7 +447,7 @@ The option array takes selectors and filters can be used to customise the result
 
   (hello/char-at "Hello" 4)
   => \o
-  
+
   (meta #'hello/char-at)
   => (contains {:ns #(instance? clojure.lang.Namespace %)
                 :name 'char-at
@@ -477,14 +477,25 @@ The option array takes selectors and filters can be used to customise the result
 
 (comment
   (extract-to-ns Long)
-  
+
   (clojure.repl/doc valueOf)
   ;;   -------------------------
   ;;   documentation.hara-reflect/valueOf
   ;;   [[java.lang.String int] [java.lang.String] [long]]
-  
+
   (valueOf "72" 10)
   => 72
 
   (valueOf "72" 16)
   => 114)
+
+[[:chapter {:title "Links and Resources"}]]
+
+"
+Projects using `hara.reflect`:
+
+- [cloxp](https://github.com/cloxp) - smalltalk like environment for clojure
+- [gita](https://github.com/zcaudate/gita) - introspective wrapper for jgit
+- [ultra](https://github.com/venantius/ultra) - plugin for a superior development environment
+
+"

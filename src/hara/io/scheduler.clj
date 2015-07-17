@@ -91,12 +91,12 @@
         type (-> scheduler :clock :meta :type)
         start-val (time/to-long start)
         end-val   (time/to-long end)
-        step      (cond (nil? step) 1000
+        step      (cond (nil? step) 1
                         (number? step) step
-                        :else (time/to-long step))
+                        :else (long (/ (time/to-long step) 1000)))
         pause     (or pause 0)
         mode      (or mode :sync)
-        timespan  (range start-val end-val step)]
+        timespan  (range start-val end-val (* 1000 step))]
     (doseq [t-val timespan]
       (let [t (time/from-long type t-val tz)]
         (reset! (:ticker scheduler)
@@ -116,7 +116,8 @@
 
 (defn list-tasks
   "lists all tasks in the scheduler"
-  {:added "2.2"} [scheduler]
+  {:added "2.2"}
+  [scheduler]
   (persistent! (-> scheduler :array :handlers)))
 
 (defn get-task
@@ -139,24 +140,60 @@
   (dosync (ova/smap! (-> scheduler :array :handlers) [:name name]
                      assoc :disabled true)))
 
+(defn trigger!
+  "manually executes a task, bypassing the scheduler"
+  {:added "2.2"}
+  ([scheduler name]
+   (let [tz   (-> scheduler :clock :meta :region)
+         type (-> scheduler :clock :meta :type)]
+     (trigger! scheduler name (time/now type tz))))
+  ([scheduler name key]
+   (if-let [{:keys [params] :as task} (get-task scheduler name)]
+     ((-> task
+          (assoc :registry (:registry scheduler)))
+      key params {}))))
+
 (defn list-instances
   "lists all running instances of a tasks in the scheduler"
   {:added "2.2"}
-  [scheduler name]
-  (-> (get-task scheduler name)
-      :registry
-      :store
-      deref
-      (get name)
-      vals))
+  ([scheduler]
+   (for [tsk  (list-tasks scheduler)
+         inst (list-instances scheduler (:name tsk))]
+     inst))
+  ([scheduler name]
+   (-> scheduler
+       :registry
+       :store
+       deref
+       (get name)
+       vals)))
+
+(defn kill-instance
+  "kills a single instance of the running task"
+  {:added "2.2"}
+  [scheduler name id]
+  (registry/kill (:registry scheduler) name id))
+
+(defn kill-instances
+  "kills all instances of the running task"
+  {:added "2.2"}
+  [{:keys [registry] :as scheduler} name]
+  (doall (for [inst (registry/list-instances registry name)]
+           (registry/kill registry name (:id inst)))))
+
+(defn kill-all
+  "kills all instances of all tasks in the scheduler"
+  {:added "2.2"}
+  [{:keys [registry] :as scheduler}]
+  (doall (for [tsk  (list-tasks scheduler)
+               inst (registry/list-instances registry (:name tsk))]
+           (registry/kill registry (:name tsk) (:id inst)))))
 
 (defn shutdown!
   "forcibly shuts down the scheduler, immediately killing all running threads"
   {:added "2.2"}
   [scheduler]
-  (doall (for [tsk  (list-tasks scheduler)
-               inst (registry/list-instances (:registry tsk))]
-           (registry/kill (:registry tsk) (:name tsk) (:id inst))))
+  (kill-all scheduler)
   (stop! scheduler))
 
 (defn restart!
