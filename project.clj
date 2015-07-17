@@ -5,8 +5,8 @@
             :url "http://http://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.6.0"]]
   :profiles {:dev {:dependencies [[midje "1.6.3"]
-                                  [compojure "1.1.5"]
-                                  [ring "1.2.0"]
+                                  [compojure "1.4.0"]
+                                  [ring "1.4.0"]
                                   [clj-http "1.1.2"]]
                    :plugins [[lein-midje "3.1.3"]
                              [lein-midje-doc "0.0.23"]
@@ -23,10 +23,6 @@
                           {:type :html
                            :template {:article "home.html"}
                            :title "home"}
-                          "orientation"
-                          {:input "test/midje_doc/hara/orientation.clj"
-                           :title "hara in small pieces"
-                           :link {:auto-number false}}
                           "api"
                           {:input "test/documentation/hara_api.clj"
                            :title "api examples"}

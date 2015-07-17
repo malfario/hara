@@ -23,53 +23,75 @@
 ^{:refer hara.io.scheduler/running? :added "2.2"}
 (fact "checks to see if the scheduler is running")
 
-^{:refer hara.io.scheduler/uptime :added "2.2"}
-(fact "checks to see how long the scheduler has been running")
-
 ^{:refer hara.io.scheduler/simulate :added "2.2"}
-(comment "simulates the scheduler running for a certain interval:"
+(fact "simulates the scheduler running for a certain interval:"
 
   (simulate
    (scheduler {:print-task {:handler (fn [t params instance]
-                                       (println t params))
+                                       (str t params))
                             :schedule "/2 * * * * * *"
                             :params   {:value "hello world"}}})
    {:start (java.util.Date. 0)
     :end   (java.util.Date. 100000)
     :pause 10}))
 
+^{:refer hara.io.scheduler/uptime :added "2.2"}
+(fact "checks to see how long the scheduler has been running")
+
+^{:refer hara.io.scheduler/list-tasks :added "2.2"}
+(fact "lists all tasks in the scheduler")
+
+^{:refer hara.io.scheduler/get-task :added "2.2"}
+(fact "retruns a specific task in the scheduler")
+
+^{:refer hara.io.scheduler/enable-task :added "2.2"}
+(fact "enables a specific task in the scheduler")
+
+^{:refer hara.io.scheduler/disable-task :added "2.2"}
+(fact "disables a specific task in the scheduler")
+
+^{:refer hara.io.scheduler/list-instances :added "2.2"}
+(fact "lists all running instances of a tasks in the scheduler")
+
+^{:refer hara.io.scheduler/shutdown! :added "2.2"}
+(fact "forcibly shuts down the scheduler, immediately killing all running threads")
+
+^{:refer hara.io.scheduler/restart! :added "2.2"}
+(fact "restarts the scheduler after a forced shutdown")
+
+
+
 
 (comment
-  
   (def sch1 (component/start ((create
                                {:print-task (fn [t params]
                                               (println t params)
                                               (Thread/sleep 10000))})
-                              {:array {:print-task {:schedule "/2 * * * * * *"                         
+                              {:array {:print-task {:schedule "/2 * * * * * *"
                                                     :params  {:hello "world"}}}})))
 
   (disable-task sch1 :print-task)
   (get-task sch1 :print-task)
   (ova/select (-> sch1 :array :handlers) [:name :print-task])
-  
+
   (uptime sch1)
   (component/stop sch1)
   (component/start sch1)
-  
+
   (defn scheduler [])
-  
+
   (system {:array <>
            :clock <>}
 
           {:array <>
            :clock <>}
-          
+
           "schedular")
 
-  
-  
 
-  
+
+
+
 
   (def sch (component/start (scheduler {:print-task (fn [t params]
                                                       ;(println "PRINTING:" t params)
@@ -77,7 +99,7 @@
                                        {:print-task {:schedule "/2 * * * * * *"
                                                      :params  {:hello "world"}}})))
 
-  (def sch 
+  (def sch
     (scheduler {:print-task {:handler (fn [t params instance]
                                         (Thread/sleep 100000)
                                         (println "PRINTING:" (:id instance) params))
@@ -94,28 +116,28 @@
 
   (component/start sch)
   (component/stop sch)
-  
-  
-  
-  
+
+
+
+
   (type (read-string "java.util.Date"))
   (schedule tasks)
   => scheduler
 
-  
+
 
   (topology {:scheduler new-scheduler})
 
   (def options {:type  #{:util-date :time-instant}
                 :interval <NUM>})
-  
+
   (def handlers {:print-task   {:handler (fn [dt params] "hello" (:value params))}
                  :file-task    (fn [dt] "hello" dt)
                  :simple-task  (fn [] (println "hello world"))})
-  
+
   (def topology {:scheduler  (scheduler handler data config)})
 
   (def config   {:scheduler  {:print-task {:schedule "0-2 * * * * *"
                                            :params   {:value "hello world"}}}})
-  
+
   )

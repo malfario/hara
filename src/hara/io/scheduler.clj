@@ -5,7 +5,9 @@
             [hara.concurrent
              [ova :as ova]
              [procedure :as procedure]]
-            [hara.concurrent.procedure.data :as data]
+            [hara.concurrent.procedure
+             [data :as data]
+             [registry :as registry]]
             [hara.data.nested :as nested]
             [hara.io.scheduler
              [array :as array]
@@ -75,7 +77,7 @@
 
   (simulate
    (scheduler {:print-task {:handler (fn [t params instance]
-                                       (println t params))
+                                       (str t params))
                             :schedule \"/2 * * * * * *\"
                             :params   {:value \"hello world\"}}})
    {:start (java.util.Date. 0)
@@ -112,22 +114,34 @@
     (-  (System/currentTimeMillis)
         (time/to-long start))))
 
-(defn list-tasks [scheduler]
+(defn list-tasks
+  "lists all tasks in the scheduler"
+  {:added "2.2"} [scheduler]
   (persistent! (-> scheduler :array :handlers)))
 
 (defn get-task
+  "retruns a specific task in the scheduler"
+  {:added "2.2"}
   [scheduler name]
   (first (ova/select (-> scheduler :array :handlers) [:name name])))
 
-(defn enable-task [scheduler name]
+(defn enable-task
+  "enables a specific task in the scheduler"
+  {:added "2.2"}
+  [scheduler name]
   (dosync (ova/smap! (-> scheduler :array :handlers) [:name name]
                      dissoc :disabled)))
 
-(defn disable-task [scheduler name]
+(defn disable-task
+  "disables a specific task in the scheduler"
+  {:added "2.2"}
+  [scheduler name]
   (dosync (ova/smap! (-> scheduler :array :handlers) [:name name]
                      assoc :disabled true)))
 
 (defn list-instances
+  "lists all running instances of a tasks in the scheduler"
+  {:added "2.2"}
   [scheduler name]
   (-> (get-task scheduler name)
       :registry
@@ -137,14 +151,17 @@
       vals))
 
 (defn shutdown!
+  "forcibly shuts down the scheduler, immediately killing all running threads"
+  {:added "2.2"}
   [scheduler]
   (doall (for [tsk  (list-tasks scheduler)
-               inst (procedure/list-instances (:registry tsk))]
-           (procedure/kill (:registry tsk) (:name tsk) (:id inst))))
+               inst (registry/list-instances (:registry tsk))]
+           (registry/kill (:registry tsk) (:name tsk) (:id inst))))
   (stop! scheduler))
 
 (defn restart!
+  "restarts the scheduler after a forced shutdown"
+  {:added "2.2"}
   [scheduler]
   (shutdown! scheduler)
   (start! scheduler))
-
