@@ -74,7 +74,7 @@ In any program, we see the following patterns
 An example is provided below:
 "
 
-[[:image {:src "img/hara_event/event_pathway.png" :title "example pathways" :width "600px"}]]
+[[:image {:src "img/hara_event/event_pathway.png" :title "example pathways" :width "100%"}]]
 
 "
 The only difference between `signal` and `raise` calls is that `signal` does not trigger `manage` handlers. Both calls will trigger any compatible listener. The listers and managers act in a horizontal/vertical or only/all fashion to provide for better decoupilng of functionality within the code base.

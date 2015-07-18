@@ -20,13 +20,13 @@
 "
 `hara.io.scheduler` aims to provide an easy and intuitive way of specifying, testing and managing scheduled tasks. Much emphasis has been placed upon task management, the ability to inspect and kill running tasks as well as simulation, the ability to shorten time so that the scheduler can quickly run tests over and over again. These two features make for a very simple to use, but powerful package for dealing with cron-like tasks.
 
-The library was originally developed as [cronj](https://www.github.com/zcaudate/cronj) but has now been included as part of the larger [hara](https://www.github.com/zcaudate/hara) codebase. The innards have been more clearly abstracted though building with [hara.component](hara-component.html). Whilst the dependency on [clj-time](https://www.github.com/clj-time/clj-time) is now option. Another feature that has been added is the ability to control a task's execution model, done through building on top of a [procedure](hara-concurrent-procedure.html).
+The library was originally developed as [cronj](https://www.github.com/zcaudate/cronj) but has now been included as part of the larger [hara](https://www.github.com/zcaudate/hara) codebase. The innards have been more clearly abstracted though building with [hara.component](hara-component.html). Whilst the dependency on [clj-time](https://www.github.com/clj-time/clj-time) is now option. Another feature that has been added is the ability to control a task's execution model, done through building on top of [concurrent.procedure](https://github.com/zcaudate/hara/blob/master/src/hara/concurrent/procedure.clj).
 "
 
 [[:section {:title "Other Libraries"}]]
 
 "
-`hara.io.scheduler` is just on of many scheduling libraries in the clojure world including:
+`hara.io.scheduler` is just one of many scheduling libraries in the clojure world including:
 
 - [at-at](https://github.com/overtone/at-at)
 - [chime](https://github.com/james-henderson/chime)
@@ -132,7 +132,7 @@ Because the `clock` module is been completely decoupled from the task array it w
   ;; > Hello There :  #inst "2015-07-17T06:26:44.000-00:00"
 
   ... wait 2 secs ...
-  
+
   ;; > Hello There :  #inst "2015-07-17T06:26:46.000-00:00"
 
   ... wait 2 secs ...
@@ -142,7 +142,7 @@ Because the `clock` module is been completely decoupled from the task array it w
   ... wait 2 secs ...
 
   ;; > Hello There :  #inst "2015-07-17T06:26:50.000-00:00"
-  
+
   (stop! sch) ;; OUTPUT STOPS
   )
 
@@ -155,7 +155,7 @@ Because the `clock` module is been completely decoupled from the task array it w
   ;; > Hello There :  #inst "2015-07-17T06:26:44.000-00:00"
 
   ... wait 2 secs ...
-  
+
   ;; > Hello There :  #inst "2015-07-17T06:26:46.000-00:00"
 
   ... wait 2 secs ...
@@ -165,7 +165,7 @@ Because the `clock` module is been completely decoupled from the task array it w
   ... wait 2 secs ...
 
   ;; > Hello There :  #inst "2015-07-17T06:26:50.000-00:00"
-  
+
   (def sch1 (component/stop sch)) ;; OUTPUT STOPS
   )
 
@@ -359,7 +359,7 @@ It can be seen that we can simulate the actual speed of outputs by keeping the s
 
 "We can kill them individually using `kill-instance`:"
 
-(fact  
+(fact
   (kill-instance sch2 :l1 :first-run)
   => true
 
@@ -368,7 +368,7 @@ It can be seen that we can simulate the actual speed of outputs by keeping the s
 
 "We can kill all instances of a particular task using `kill-instances`:"
 
-(fact  
+(fact
   (kill-instances sch2 :l1)
   => [true true]
 
@@ -383,14 +383,14 @@ It can be seen that we can simulate the actual speed of outputs by keeping the s
   (trigger! sch2 :l1)
   (Thread/sleep 100)
   (trigger! sch2 :l1)
-  
+
   (trigger! sch2 :l2)
   (Thread/sleep 100)
   (trigger! sch2 :l2)
   (Thread/sleep 100)
   (trigger! sch2 :l2)
 
-  
+
   (count (list-instances sch2 :l1))
   => 3
 
@@ -412,10 +412,10 @@ It can be seen that we can simulate the actual speed of outputs by keeping the s
 (comment
 
   (start! sch2)
-  
+
 
   ... wait a moment and see how many instances are running...
-  
+
   (count (list-instances sch2 :l1))
   => 10
 
@@ -439,7 +439,7 @@ It can be seen that we can simulate the actual speed of outputs by keeping the s
   => 145
 
   ... so we have to kill them manually ...
-  
+
   (kill-all sch2)
   => [true true true true
       ...
@@ -457,9 +457,9 @@ It can be seen that we can simulate the actual speed of outputs by keeping the s
 
   (start! sch2)
 
-  
+
   ... and again we wait ...
-  
+
   (count (list-instances sch2))
   => 10
 
@@ -471,7 +471,7 @@ It can be seen that we can simulate the actual speed of outputs by keeping the s
 
   (count (list-instances sch2))
   => 0)
-   
+
 "`restart!` does the same as `shutdown!` but just starts up the system again once it has been stopped."
 
 [[:chapter {:title "Links and Resources"}]]

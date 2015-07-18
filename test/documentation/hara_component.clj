@@ -604,7 +604,7 @@ The syntax for the `:summary` key should be further explained. What `component/s
 
 "We have created the bug trapping system based on our [dependency diagram](#sub-system-dependencies). We can visualize the essential components that make up our system in the diagram below:"
 
-[[:image {:src "img/hara_component/system.png" :width "600px" :title "the system"}]]
+[[:image {:src "img/hara_component/system.png" :width "100%" :title "the system"}]]
 
 "The constructors and the dependencies form our system topology whilst the data that initialised our system form our config. There are significant advantages of doing this:
 
@@ -639,7 +639,7 @@ The syntax for the `:summary` key should be further explained. What `component/s
 
 "We can again visualize the extended system:"
 
-[[:image {:src "img/hara_component/system2.png" :width "600px" :title "the extended system"}]]
+[[:image {:src "img/hara_component/system2.png" :width "100%" :title "the extended system"}]]
 
 [[:chapter {:title "Links and Resources"}]]
 
