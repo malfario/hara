@@ -1,0 +1,531 @@
+
+
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <meta name="google" value="notranslate">
+
+
+    <title>component</title>
+
+    
+  <link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/languages/clojure.min.js"></script>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/magula.min.css">
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular.min.js"></script>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-cookies.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
+  <script type="text/javascript" src="js/angular-highlightjs.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="css/rdash.min.css">
+  <link rel="stylesheet" type="text/css" href="css/scrollspy.css">
+
+
+  <script>
+    window.console = window.console || function(t) {};
+    window.open = function(){ console.log("window.open is disabled."); };
+    window.print   = function(){ console.log("window.print is disabled."); };
+  </script>
+
+  <script>
+  angular.module('app',['ui.bootstrap', 'ngCookies', 'hljs']);
+
+  function rdLoading(){var d={restrict:"AE",template:'<div class="loading"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>'};return d}angular.module("app").directive("rdLoading",rdLoading);
+  function rdWidgetBody(){var d={requires:"^rdWidget",scope:{loading:"@?",classes:"@?"},transclude:!0,template:'<div class="widget-body" ng-class="classes"><rd-loading ng-show="loading"></rd-loading><div ng-hide="loading" class="widget-content" ng-transclude></div></div>',restrict:"E"};return d}angular.module("app").directive("rdWidgetBody",rdWidgetBody);
+  function rdWidgetFooter(){var e={requires:"^rdWidget",transclude:!0,template:'<div class="widget-footer" ng-transclude></div>',restrict:"E"};return e}angular.module("app").directive("rdWidgetFooter",rdWidgetFooter);
+  function rdWidgetTitle(){var e={requires:"^rdWidget",scope:{title:"@",icon:"@"},transclude:!0,template:'<div class="widget-header"><i class="fa" ng-class="icon"></i> {{title}} <div class="pull-right" ng-transclude></div></div>',restrict:"E"};return e}angular.module("app").directive("rdWidgetHeader",rdWidgetTitle);
+  function rdWidget(){var d={transclude:!0,template:'<div class="widget" ng-transclude></div>',restrict:"EA"};return d}angular.module("app").directive("rdWidget",rdWidget);
+  function AlertsCtrl(e){e.alerts=[{type:"success",msg:"Thanks for visiting! Feel free to create pull requests to improve the dashboard!"},{type:"danger",msg:"Found a bug? Create an issue with as many details as you can."}],e.addAlert=function(){e.alerts.push({msg:"Another alert!"})},e.closeAlert=function(t){e.alerts.splice(t,1)}}angular.module("app").controller("AlertsCtrl",["$scope",AlertsCtrl]);
+  function MasterCtrl(t,e){var o=992;t.getWidth=function(){return window.innerWidth},t.$watch(t.getWidth,function(g){t.toggle=g>=o?angular.isDefined(e.get("toggle"))?e.get("toggle")?!0:!1:!0:!1}),t.toggleSidebar=function(){t.toggle=!t.toggle,e.put("toggle",t.toggle)},window.onresize=function(){t.$apply()}}angular.module("app").controller("MasterCtrl",["$scope","$cookieStore",MasterCtrl]);
+
+  </script>
+  </head>
+
+  <body ng-app="app" ng-controller="MasterCtrl" data-spy="scroll" data-target=".scrollspy">
+    <div id="page-wrapper" ng-class="{'open': toggle}" ng-cloak>
+      <!-- Sidebar -->
+      <div id="sidebar-wrapper">
+  <ul class="sidebar">
+    <li class="sidebar-main">
+      <a ng-click="toggleSidebar()">
+        <span style="padding-left:20px">MENU</span>
+        <!--img src="img/logo.png" height=40 style="padding-left:70px"-->
+        <span ng-hide="toggle" class="menu-icon glyphicon glyphicon-transfer"></span>
+      </a>
+    </li>
+    <li class="sidebar-list">
+      <a href="/">home <span class="menu-icon fa fa-home"></span></a>
+    </li>
+    <!--li class="sidebar-list">
+      <a href="api.html">api reference <span class="menu-icon fa fa-bank"></span></a>
+    </li-->
+    <li class="sidebar-title"><span>guides</span></li>
+    <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-component">&bull;<span class="submenu-item">component</span></a>
+    </li>
+    <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-concurrent-ova.html">&bull;<span class="submenu-item">concurrent.ova</span></a>
+    </li>
+    <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-event.html">&bull;<span class="submenu-item">event</span></a>
+    </li>
+    <!--li class="sidebar-list" ng-show="toggle">
+      <a href="hara-io-watch.html">&bull;<span class="submenu-item">io.watch</span></a>
+    </li-->
+    <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-io-scheduler.html">&bull;<span class="submenu-item">io.scheduler</span></a>
+    </li>
+    <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-reflect.html">&bull;<span class="submenu-item">reflect</span></a>
+    </li>
+
+    <li class="sidebar-title"><span>links</span></li>
+    <li class="sidebar-list">
+      <a href="http://www.gitter.im/zcaudate/hara" target="_blank">support <span class="menu-icon fa fa-support"></span></a>
+    </li>
+    <li class="sidebar-list">
+      <a href="https://github.com/zcaudate/hara" target="_blank">source code<span class="menu-icon fa fa-github"></span></a>
+    </li>
+
+  </ul>
+  <div class="sidebar-footer">
+    <div class="col-xs-6">
+      <a href="https://github.com/zcaudate/hara" target="_blank">
+        Github
+      </a>
+    </div>
+    <div class="col-xs-6">
+      <a href="https://gitter.com/zcaudate/hara">
+        Support
+      </a>
+    </div>
+  </div>
+</div>
+
+      <!-- End Sidebar -->
+
+      <div id="content-wrapper">
+        <div class="page-content">
+
+          <div class="container">
+            <div class="row">
+
+              <div class="col-md-7">
+                <div class="jumbotron">
+                  <div class="container">
+                    <h1>component</h1>
+                    <h4>constructing composable systems</h4>
+                  </div>
+                </div><!--end of .jumbotron-->
+
+                <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/component.clj'>hara.component</a> is a dependency injection framework inspired by the original Stuart Sierra component <a href='https://github.com/stuartsierra/component'>library</a> and <a href='http://www.youtube.com/watch?v=13cmHf&#95;kt-Q'>talk</a>. The virtues of this type of design for composing large systems has been much lauded and is quite a common practise within enterprise applications. Doing a <a href='https://www.google.com?q=stuart+sierra+component'>search</a> will yield many uses of such a pattern.</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.component &quot;2.2.0&quot;&#93;
+</code></pre></div><div class="paragraph"><p>All functions are in the <code>hara.component</code> namespace.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(require '[hara.component :as component])</div></section><section class="section" id="motivation"><h3 class="section">1.2  &nbsp;&nbsp; Motivation</h3><div class="paragraph"><p>The main reason for a reinterpretation of the original <a href='https://github.com/stuartsierra/component'>stuartsierra/component</a> was for a couple reasons:</p><ul><li>the <code>component/Lifecycle</code> protocol did not expose <code>started?</code> and <code>stopped?</code> methods</li><li>the new library has been designed to work well with configuration files</li><li>dependencies are now not required to be explicitly defined</li><li>added support for dealing with arrays of component</li><li>more control was needed when working with nested systems</li><li>more emphasis has been placed on prettiness and readibility</li></ul><p>The differentiation of <code>hara.component</code> is to tease apart configuration and application topology. Configuration gives the ability to set the starting state of the entire program and should be easy as possible. Many a system become bloated due to not being able to properly manage configuration, therefore composing systems with configuration at the forefront will make for much simpler code and design. This library was build with this paradigm in mind.</p></div></section></section><section class="chapter" id="config-driven-design"><h2 class="chapter">2  &nbsp;&nbsp; Config Driven Design</h2><div class="group"><div class="paragraph"><p>We will aim to create a system based upon a configuration file. As components are a very high level concept, using the pattern in code is more of a state of mind than following a set of APIs. Therefore in this documentation, it is hoped that a tutorial based approach will demonstrate the core functionality within the library. We seperate the guide into the following sections</p><ul><li><a href='#probability-model'>Probability Model</a> - How to calculate a bug distribution model.</li><li><a href='#sampling-model'>Sampling Model</a> - How to sample the distribution model.</li><li><a href='#implementing-components'>Implementing Components</a> - How to create and pretty up components so they are easy to integrate.</li><li><a href='#the-big-picture'>The Big Picture</a> - How to think about building and extending systems</li></ul><p>The first two chapters are not really about components, but it is important in showing how to create functions based around a particular configuration. The rest of the sections take a comphrensive approach of how to configure and reason about entire systems based on the component approach.</p></div></div><section class="section" id="the-bug-trapper"><h3 class="section">2.1  &nbsp;&nbsp; The Bug Trapper</h3><div class="paragraph"><p>We are creating a simulation based on trapping bugs in different parts of the house, then tallying up the results and displaying it through a web interface. We can see how the sub-systems connect together in the diagram below:</p></div><div class="figure"><a name="sub-system-dependencies"></a><div class="img"><img height="400px" src="img/hara_component/dependency.png" /></div><h4><i>fig.1  &nbsp;-&nbsp; sub-system dependencies</i></h4></div><div class="paragraph"><p>At the very bottom is a statistical model for generating events ie, how often an insect would be likely to appear given a certain set of conditions such as brightness, dampness, if it is indoors or outdoors, etc. This is used by a number of <code>traps</code>, which are an array of devices that simulates events of an insect going into the trap. An insect may or may not be captured by the trap itself and this is also tallied. The <code>app</code> itself tracks events over time by putting results into a <em>'database'</em> and the server takes live results and outputs a string via http.</p></div></section><section class="section" id="configuration"><h3 class="section">2.2  &nbsp;&nbsp; Configuration</h3><div class="paragraph"><p>A datastructure can be created that customises various aspects of the simulation:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(def config
+  {:server     {:port 8090}
+   :app        {}
+   :traps     ^{:fuzziness 0.1 :efficiency 0.6}
+               [{:location &quot;kitchen&quot;  :brightness 0.3
+                 :indoor true :rate 0.5}
+                {:location &quot;bedroom&quot;  :brightness 0.1
+                 :dampness 0.2 :indoor true :rate 0.3  :efficiency 0.2}
+                {:location &quot;patio&quot;    :brightness 0.5
+                 :outdoor true :rate 1.5  :efficiency 0.1}
+                {:location &quot;bathroom&quot; :dampness 0.3
+                 :indoor true :rate 0.2  :efficiency 0.3}]
+   :db         {}
+   :model      {:default {:fly 0.5 :ladybug 0.05
+                          :mosquito 0.35 :bee 0.1}
+                :linear  {:brightness {:bee 0.5}
+                          :dampness   {:mosquito 0.4}}
+                :toggle  {:indoor     {:fly 0.3
+                                       :mosquito 0.2}
+                          :outdoor    {:bee 0.1
+                                       :ladybug 0.1}}}})</div></section></section><section class="chapter" id="probability-model"><h2 class="chapter">3  &nbsp;&nbsp; Probability Model</h2><div class="group"><div class="paragraph"><p>We have a model of what percentage of bugs and depending on location, brightness and dampness, we adjust our model accordingly. So for example, we should be able to write a function <code>adjusted-distribution</code> that takes in a model and some parameter settings and spits out a probability distribution in the form of a map:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(adjusted-distribution {} (-&gt; config :model))
+=&gt; {:fly 0.5, :ladybug 0.05, :mosquito 0.35, :bee 0.1}
+
+(adjusted-distribution {:indoor true}
+                       (-&gt; config :model))
+=&gt; {:fly 0.8, :ladybug 0.05, :mosquito 0.55, :bee 0.1}</div></div><section class="section" id="linear-adjustment"><h3 class="section">3.1  &nbsp;&nbsp; linear-adjustment</h3><div class="paragraph"><p>We write a functions to adjustment for the linear increase:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(defn linear-adjustment [params linear]
+  (reduce-kv (fn [m k stats]
+               (if-let [mul (get params k)]
+                 (reduce-kv (fn [m k v]
+                              (update-in m [k] (fnil #(+ % (* mul v))
+                                                      0)))
+                            m
+                            stats)
+                 m))
+             {}
+             linear))</div><div class="paragraph"><p>It can be applied to the model:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(linear-adjustment {:brightness 0.1}
+                   (-&gt; config :model :linear))
+=&gt; {:bee 0.05}
+
+(linear-adjustment {:brightness 0.2}
+                   (-&gt; config :model :linear))
+=&gt; {:bee 0.1}
+
+(linear-adjustment {:brightness 0.3}
+                   (-&gt; config :model :linear))
+=&gt; {:bee 0.15}
+
+(linear-adjustment {:dampness 0.5}
+                   (-&gt; config :model :linear))
+=&gt; {:mosquito 0.2}</div></section><section class="section" id="toggle-adjustment"><h3 class="section">3.2  &nbsp;&nbsp; toggle-adjustment</h3><div class="paragraph"><p>The second function is for toggle adjustment, meaning that depending on a particular flag, we add a certain amount to the overall distribution:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(defn toggle-adjustment [params toggle]
+  (reduce-kv (fn [m k stats]
+               (if-let [mul (get params k)]
+                 (reduce-kv (fn [m k v]
+                              (update-in m [k] (fnil #(+ % v)
+                                                     0)))
+                            m
+                            stats)
+                 m))
+             {}
+             toggle))</div><div class="paragraph"><p>It can be applied to the model:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(toggle-adjustment {:indoor true}
+                   (-&gt; config :model :toggle))
+=&gt; {:fly 0.3, :mosquito 0.2}
+
+(toggle-adjustment {:outdoor true}
+                   (-&gt; config :model :toggle))
+=&gt; {:bee 0.1, :ladybug 0.1}</div></section><section class="section" id="add-distributions"><h3 class="section">3.3  &nbsp;&nbsp; add-distributions</h3><div class="paragraph"><p>A helper function is defined to add distributions together</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(defn add-distributions
+  ([] {})
+  ([m] m)
+  ([m1 m2]
+   (reduce-kv (fn [m k v]
+                (update-in m [k] (fnil #(+ % v) 0)))
+              m1
+              m2))
+  ([m1 m2 &amp; more]
+   (apply add-distributions (add-distributions m1 m2) more)))</div><div class="paragraph"><p>The function is relatively generic and can be used to add arbitrary maps together:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(add-distributions {:a 0.1} {:a 0.1 :b 0.3} {:a 0.3 :c 0.3})
+=&gt; {:a 0.5, :b 0.3, :c 0.3}</div></section><section class="section" id="adjusted-distribution"><h3 class="section">3.4  &nbsp;&nbsp; adjusted-distribution</h3><div class="paragraph"><p>Combining the three functions, we can get an adjusted distribution based on the model taken from the config:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(defn adjusted-distribution [params {:keys [default linear toggle] :as model}]
+  (let [ladjust (linear-adjustment params linear)
+        tadjust (toggle-adjustment params toggle)]
+    (add-distributions default ladjust tadjust)))</div><div class="paragraph"><p>The adjusted distributions for each trap can then be calculated:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(mapv #(adjusted-distribution % (-&gt; config :model))
+      (-&gt; config :traps))
+=&gt; [;; kitchen
+    {:fly 0.8, :ladybug 0.05,
+     :mosquito 0.55, :bee 0.25}
+    ;; bedroom
+    {:fly 0.8, :ladybug 0.05,
+     :mosquito 0.63, :bee 0.15000000000000002}
+    ;; patio
+    {:fly 0.5, :ladybug 0.15000000000000002,
+     :mosquito 0.35, :bee 0.44999999999999996}
+    ;; bathroom
+    {:fly 0.8, :ladybug 0.05,
+     :mosquito 0.6699999999999999, :bee 0.1}]</div></section></section><section class="chapter" id="sampling-model"><h2 class="chapter">4  &nbsp;&nbsp; Sampling Model</h2><div class="group"><div class="paragraph"><p>The sampling model is easier to construct. We wish to create a function that takes in a distribution and returns a key that is proportional to the values of the map:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(random-sample {:a 0.5 :b 0.5})
+=&gt; ;; either returns :a or :b
+#(get #{:a :b} %)</div></div><section class="section" id="cumultive"><h3 class="section">4.1  &nbsp;&nbsp; cumultive</h3><div class="paragraph"><p>culmultive takes a distribution and turns it into a range, sorted by value:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(defn cumultive [distribution]
+  (dissoc (reduce (fn [out [k v]]
+                    (let [total (::total out)
+                          ntotal (+ total v)]
+                      (assoc out
+                             k [total ntotal]
+                             ::total ntotal)))
+                  {::total 0}
+                  (sort-by val distribution))
+          ::total))</div><div class="paragraph"><p>examples of its usage can be seen:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(cumultive {:a 0.3 :b 0.5 :c 0.2})
+=&gt; {:c [0 0.2], :a [0.2 0.5], :b [0.5 1.0]}</div></section><section class="section" id="category"><h3 class="section">4.2  &nbsp;&nbsp; category</h3><div class="paragraph"><p>category takes a cumultive distribution and a point, return which section it belongs to:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(defn category [cumulative stat]
+  (-&gt;&gt; cumulative
+       (keep (fn [[k [lower upper]]]
+               (if (&lt;= lower stat upper) k)))
+       first))</div><div class="paragraph"><p>examples of its usage can be seen:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(def dist (cumultive {:a 0.3 :b 0.5 :c 0.2}))
+;; {:c [0 0.2], :a [0.2 0.5], :b [0.5 1.0]} 0.1
+
+
+(category dist 0.1) =&gt; :c
+
+(category dist 0.3) =&gt; :a
+
+(category dist 0.8) =&gt; :b</div></section><section class="section" id="random-sample"><h3 class="section">4.3  &nbsp;&nbsp; random-sample</h3><div class="paragraph"><p>Now the <code>random-sample</code> function can be written:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(defn random-sample [distribution]
+  (let [total (apply + (vals distribution))
+        stat  (rand total)]
+    (category (cumultive distribution) stat)))</div><div class="paragraph"><p>We can now use this with a probability map:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(random-sample {:a 0.3 :b 0.5 :c 0.2})
+=&gt; ;; Returns either :a :b or :c
+#(get #{:a :b :c} %)</div><div class="paragraph"><p>As well as with <code>adjusted-model</code> defined in the <a href='#probability-models'>previous chapter</a></p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(random-sample
+ (adjusted-distribution {:brightness 0.3 :indoor true :rate 0.5}
+                        (-&gt; config :model)))
+=&gt; ;; Return either :fly :ladybug :mosquito :bee
+#(get #{:fly :ladybug :mosquito :bee} %)</div></section></section><section class="chapter" id="implementing-components"><h2 class="chapter">5  &nbsp;&nbsp; Implementing Components</h2><section class="section" id="model"><h3 class="section">5.1  &nbsp;&nbsp; Model</h3><div class="paragraph"><p>We create a record for <code>Model</code>. The data is just a nested map but a record is used purely for printing purposes. There is quite alot of stuff in the map and we should be able to only show the necessary amount of information - in this case, we only want to know the keys of the datastructure:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(defrecord Model []
+  Object
+  (toString [obj]
+    (str &quot;#model&quot; (vec (keys (into {} obj))))))
+
+(defmethod print-method Model
+  [v w]
+  (.write w (str v)))</div><div class="paragraph"><p>We can now use the <code>map-&gt;Model</code> function to create a nicer new on the model:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(map-&gt;Model (:model config))
+;;=&gt; #model[:default :linear :toggle]</div></section><section class="section" id="trap"><h3 class="section">5.2  &nbsp;&nbsp; Trap</h3><div class="paragraph"><p><code>Trap</code> is a component that needs to be started and stopped. It simulates a trap that knows what insect went inside the trap, what time it entered and if it had been captured. We create a basic function for one round of the trapping an insect:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(defn trap-bug [{:keys [rate efficiency fuzziness model output] :as trap}]
+  (let [pause   (long (* (+ rate
+                            (* (- (rand 1) 0.5) fuzziness))
+                         1000))]
+    (Thread/sleep pause)
+    (reset! output
+           {:time (java.util.Date.)
+            :bug (random-sample
+                  (adjusted-distribution trap model))
+            :captured (&lt; (rand 1) efficiency)})
+    trap))</div><div class="paragraph"><p>The usage for such a function can be seen below:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(-&gt; (trap-bug {:rate 0.8
+               :efficiency 0.5
+               :fuzziness 0.1
+               :model (:model config)
+               :output (atom nil)})
+    :output
+    deref)
+=&gt; (contains {:time #(instance? java.util.Date %)
+              :bug #(#{:fly :bee :ladybug :mosquito} %)
+              :captured #(instance? Boolean %)})</div><div class="paragraph"><p>We create a record that implements the <code>IComponent</code> interface, making sure that we hide keys that are not useful</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(defrecord Trap []
+  Object
+  (toString [obj]
+    (let [selected [:location :output]]
+      (str &quot;#trap&quot; (-&gt; (into {} obj)
+                       (select-keys selected)
+                       (update-in [:output] deref)))))
+
+  component/IComponent
+  (-start [trap]
+    (assoc trap
+           :thread (future
+                     (println (str &quot;Starting trap in &quot;
+                                   (:location trap) &quot;&#92;n&quot;))
+                     (last (iterate trap-bug trap)))))
+
+  (-stop [{:keys [thread output] :as trap}]
+    (do
+      (println (str &quot;Stopping trap in &quot; (:location trap)))
+      (future-cancel thread)
+      (reset! output nil)
+      (dissoc trap :thread))))
+
+(defmethod print-method Trap
+  [v w]
+  (.write w (str v)))</div><div class="paragraph"><p>Finally, we create a <code>trap</code> constructor taking a config map and outputting a <code>Trap</code> record:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(defn trap [m]
+  (assoc (map-&gt;Trap m)
+         :output (atom nil)))</div></section><section class="section" id="partial-system-testing"><h3 class="section">5.3  &nbsp;&nbsp; Partial System Testing</h3><div class="paragraph"><p>Having implemented the records for <code>:traps</code> and <code>:model</code>, we can test to see if our array of traps are working. The call to system takes two parameters - a topology map and a configuration map. The topology map specifies functions and dependencies whilst the configuration map specifies the initial input data. Note that to specify contruction of an array of components put the constructor in an additional vector:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(def topology {:traps [[trap] :model]
+               :model [map-&gt;Model]})
+
+(def sys (-&gt; (component/system toplogy config)
+             (component/start)))
+;; Starting trap in patio
+;; Starting trap in bathroom
+;; Starting trap in kitchen
+;; Starting trap in bedroom
+
+
+(add-watch (-&gt; sys :traps first :output)
+           :print-change
+           (fn [_ _ _ n]
+             (if (:captured n)
+               (println n))))
+;; {:time #inst &quot;2015-07-15T08:21:33.690-00:00&quot;, :bug :fly, :captured true}
+;; {:time #inst &quot;2015-07-15T08:21:34.216-00:00&quot;, :bug :mosquito, :captured true}
+;; ....
+;; ....
+;; {:time #inst &quot;2015-07-15T08:21:36.753-00:00&quot;, :bug :fly, :captured false}
+
+(remove-watch (-&gt; sys :traps first :output) :print-change)
+;; &lt;CONSOLE OUTPUT STOPS&gt;
+
+(component/stop sys)
+;;=&gt; {:traps #arr[#trap{:location &quot;kitchen&quot;, :output nil}
+;;             #trap{:location &quot;bedroom&quot;, :output nil}
+;;             #trap{:location &quot;patio&quot;, :output nil}
+;;             #trap{:location &quot;bathroom&quot;, :output nil],
+;;    :model #model[:default :linear :toggle]}</div></section><section class="section" id="app"><h3 class="section">5.4  &nbsp;&nbsp; App</h3><div class="paragraph"><p>The role of the app is to hook up the sensors to a datastore, in this case an <a href='hara-concurrent-ova.html'>ova</a>, a mutable array of elements. We define <code>initialise-app</code> to setup watches to provide some summary and coordination:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(require '[hara.concurrent.ova :as ova])
+
+(defn initialise-app [{:keys [db traps display total] :as app}]
+  (let [data (mapv (fn [trap]
+                     (select-keys trap [:location]))
+                   traps)]
+    (dosync (ova/init! db data))
+    (doseq [{:keys [location output] :as trap} traps]
+      (add-watch
+       output :summary
+       (fn [_ _ _ {:keys [success bug]}]
+         (dosync (ova/!&gt; db [:location location]
+                         (update-in [:triggered]
+                                    (fnil inc 0))
+                         (update-in [:captured]
+                                    (fnil #(update-in % [bug] (fnil inc 0))
+                                          {}))))
+         (swap! total update-in [bug] (fnil inc 0))))))
+  app)</div><div class="paragraph"><p>The opposite method <code>deinitialise-app</code> is also defined:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(defn deinitialise-app [{:keys [db traps total] :as app}]
+  (dosync (ova/empty! db))
+  (reset! total {})
+  (doseq [{:keys [output]} traps]
+    (remove-watch output :summary))
+  app)</div><div class="paragraph"><p>The two functions are then hooked up via <code>-start</code> and <code>-stop</code> protocol methods for the component architecture:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(defrecord App []
+  Object
+  (toString [app]
+    (str &quot;#app&quot; (-&gt; app keys vec)))
+
+  component/IComponent
+  (-start [app]
+    (initialise-app app)
+    app)
+
+  (-stop [app]
+    (deinitialise-app app)
+    app))
+
+(defmethod print-method App
+  [v w]
+  (.write w (str v)))
+
+(defn app [m]
+  (assoc (map-&gt;App m) :total (atom {})))</div></section><section class="section" id="app-testing"><h3 class="section">5.5  &nbsp;&nbsp; App Testing</h3><div class="paragraph"><p>We can now do a more testing by including a couple more constructors. Note that the keys <code>:db</code>, <code>app</code> and <code>summary</code> have been added. Also see the syntax for the <code>:summary</code> topology to expose the <code>:total</code> submap from <code>:app</code>.</p><p>The syntax for the <code>:summary</code> key should be further explained. What <code>component/start</code> sees a initialisation of {:expose [:total]}, it take the first dependency (in this case, <code>:app</code>), gets the <code>:total</code> submap and exposes it as <code>:summary</code> in the system map. The value of <code>:expose</code> can be either a vector (for nested map supprt) or a function for more generic operations. This promotes reuse and composition of multiple systems.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(def topology {:traps   [[trap] :model]
+               :model   [map-&gt;Model]
+               :db      [ova/ova]
+               :app     [app :traps :db]
+               :summary [{:expose [:total]} :app]})
+
+(def sys (-&gt; (component/system topology config)
+             (component/start)))
+;; Starting trap in patio
+;; Starting trap in bathroom
+;; Starting trap in kitchen
+;; Starting trap in bedroom
+
+
+@(:summary sys) ;; first call to :summary gives a set of bugs trapped
+;;=&gt; {:mosquito 101, :fly 120, :ladybug 6, :bee 28}
+
+@(:summary sys) ;; second call to :summary gives an updated of bugs trapped
+;;=&gt; {:mosquito 148, :fly 184, :ladybug 12, :bee 37}
+
+(component/stop sys)
+;; Stopping trap in kitchen
+;; Stopping trap in bedroom
+;; Stopping trap in patio
+;; Stopping trap in bathroom
+
+;;=&gt; {:app #app[:display :total],
+;;    :db #ova [],
+;;    :traps #arr[#trap{:location &quot;kitchen&quot;,  :output nil}
+;;                #trap{:location &quot;bedroom&quot;,  :output nil}
+;;                #trap{:location &quot;patio&quot;,    :output nil}
+;;                #trap{:location &quot;bathroom&quot;, :output nil}]
+;;    :model #model[:default :linear :toggle]}</div></section><section class="section" id="server"><h3 class="section">5.6  &nbsp;&nbsp; Server</h3><div class="paragraph"><p>The server requires a couple of external dependencies:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(require '[compojure.core :as routes]
+         '[ring.adapter.jetty :as jetty]
+         '[clj-http.client :as client])</div><div class="paragraph"><p>We define a very simple server with one route that just returns the summary as a string:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(defn make-routes
+  [{:keys [summary] :as serv}]
+  (routes/GET &quot;*&quot; [] (str @summary)))
+
+(defrecord Server []
+  Object
+  (toString [serv]
+    (str &quot;#server&quot; (-&gt; serv keys vec)))
+
+  component/IComponent
+  (-start [{:keys [port summary] :as serv}]
+    (println (str &quot;STARTING SERVER on port &quot; port))
+    (assoc serv
+           :instance (jetty/run-jetty (make-routes serv)
+                                      {:join? false
+                                       :port port})))
+
+  (-stop [{:keys [summary instance] :as serv}]
+    (println (str &quot;STOPPING SERVER on port &quot; (:port serv)))
+    (.stop instance)
+    (dissoc serv :instance)))</div><div class="paragraph"><p>Again, <code>print-method</code> is defined for prettiness:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(defmethod print-method Server
+  [v w]
+  (.write w (str v)))</div></section><section class="section" id="server-testing"><h3 class="section">5.7  &nbsp;&nbsp; Server Testing</h3><div class="paragraph"><p>Again, we add an additional constructor to the system and start:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(def sys (-&gt; {:traps   [[trap] :model]
+              :model   [map-&gt;Model]
+              :db      [ova/ova]
+              :app     [app :traps :db]
+              :summary [{:expose [:total]} :app]
+              :server  [map-&gt;Server :summary]}
+             (component/system config)
+             (component/start)))
+;; Starting trap in patio
+;; Starting trap in bathroom
+;; Starting trap in kitchen
+;; Starting trap in bedroom
+;; STARTING SERVER on PORT 8090
+  </div><div class="paragraph"><p>We can now use a client to access the summary via a http protocol:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">;; First Time
+(-&gt; (client/get &quot;http://localhost:8090/&quot;)
+    :body)
+;;=&gt; &quot;{:fly 249, :bee 55, :mosquito 187, :ladybug 19}&quot;
+
+
+;; Second Time
+(-&gt; (client/get &quot;http://localhost:8090/&quot;)
+    :body)
+;; =&gt; &quot;{:fly 305, :bee 70, :mosquito 227, :ladybug 26}&quot;
+  </div><div class="paragraph"><p>Stopping is no different to before</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(component/stop sys)
+;; STOPPING SERVER on PORT 8090
+;; Stopping trap in kitchen
+;; Stopping trap in bedroom
+;; Stopping trap in patio
+;; Stopping trap in bathroom
+
+;;=&gt; {:app #app[:display :total],
+;;    :db #ova [],
+;;    :traps #arr[#trap{:location &quot;kitchen&quot;,  :output nil}
+;;                #trap{:location &quot;bedroom&quot;,  :output nil}
+;;                #trap{:location &quot;patio&quot;,    :output nil}
+;;                #trap{:location &quot;bathroom&quot;, :output nil}]
+;;    :model #model[:default :linear :toggle]
+;;    :server #server[:port]}</div></section></section><section class="chapter" id="the-big-picture"><h2 class="chapter">6  &nbsp;&nbsp; The Big Picture</h2><section class="section" id="summary"><h3 class="section">6.1  &nbsp;&nbsp; Summary</h3><div class="paragraph"><p>We have created the bug trapping system based on our <a href='#sub-system-dependencies'>dependency diagram</a>. We can visualize the essential components that make up our system in the diagram below:</p></div><div class="figure"><a name="the-system"></a><div class="img"><img src="img/hara_component/system.png" width="100%" /></div><h4><i>fig.2  &nbsp;-&nbsp; the system</i></h4></div><div class="paragraph"><p>The constructors and the dependencies form our system topology whilst the data that initialised our system form our config. There are significant advantages of doing this:</p><ul><li>The final code is almost the same as the diagram of the system.</li><li>There is an isometric correspondence between process and data.</li><li>It clearly seperates data (which is normally loaded from a file) from process.</li><li>It keeps all the initialisations in a single place.</li><li>Systems can be built incrementally in the way that we have just done.</li></ul></div></section><section class="section" id="further-extension"><h3 class="section">6.2  &nbsp;&nbsp; Further Extension</h3><div class="paragraph"><p>Say we needed to add more functionality to our system, in which we define the <code>make-routes</code> method to add an endpoint giving us information about the status of the datastore:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(defn make-routes
+  [{:keys [db summary] :as serv}]
+  (routes/routes
+    (routes/GET &quot;/total&quot; [] (str @summary))
+    (routes/GET &quot;/db&quot; []    (str (persistent! db)))))</div><div class="paragraph"><p>It is very easy to redefine topology to include the extra dependency:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(def toplogy {:traps   [[trap] :model]
+              :model   [map-&gt;Model]
+              :db      [ova/ova]
+              :app     [app :traps :db]
+              :summary [{:expose [:total]} :app]
+              :server  [map-&gt;Server :summary :db]}) ;; note the extra `:db` key
+
+(def sys (-&gt; (component/system topology config)
+             (component/start)))</div><div class="paragraph"><p>We can again visualize the extended system:</p></div><div class="figure"><a name="the-extended-system"></a><div class="img"><img src="img/hara_component/system2.png" width="100%" /></div><h4><i>fig.3  &nbsp;-&nbsp; the extended system</i></h4></div></section></section><section class="chapter" id="links-and-resources"><h2 class="chapter">7  &nbsp;&nbsp; Links and Resources</h2><div class="group"><div class="paragraph"><p>Here are some more links and resources on the web:</p><ul><li><a href='https://github.com/stuartsierra/component'>stuartsierra/component</a> - original library</li><li><a href='http://z.caudate.me/hara-component-just-a-bit-more-structure/'>just a bit more structure</a> - the announcement on my blog</li></ul></div></div></section>
+              </div>
+
+              <div class="col-md-3">
+                <ul id="nav" class="scrollspy nav hidden-xs hidden-sm" data-spy="affix">
+                  <li class="contents">
+                      <h4>NAVIGATION</h4>
+                  </li>
+                  <li><a href="#introduction">1  &nbsp;&nbsp; Introduction</a><ul class="nav"><li><a href="#installation">1.1  &nbsp;&nbsp; Installation</a></li><li><a href="#motivation">1.2  &nbsp;&nbsp; Motivation</a></li></ul></li><li><a href="#config-driven-design">2  &nbsp;&nbsp; Config Driven Design</a><ul class="nav"><li><a href="#the-bug-trapper">2.1  &nbsp;&nbsp; The Bug Trapper</a></li><li><a href="#configuration">2.2  &nbsp;&nbsp; Configuration</a></li></ul></li><li><a href="#probability-model">3  &nbsp;&nbsp; Probability Model</a><ul class="nav"><li><a href="#linear-adjustment">3.1  &nbsp;&nbsp; linear-adjustment</a></li><li><a href="#toggle-adjustment">3.2  &nbsp;&nbsp; toggle-adjustment</a></li><li><a href="#add-distributions">3.3  &nbsp;&nbsp; add-distributions</a></li><li><a href="#adjusted-distribution">3.4  &nbsp;&nbsp; adjusted-distribution</a></li></ul></li><li><a href="#sampling-model">4  &nbsp;&nbsp; Sampling Model</a><ul class="nav"><li><a href="#cumultive">4.1  &nbsp;&nbsp; cumultive</a></li><li><a href="#category">4.2  &nbsp;&nbsp; category</a></li><li><a href="#random-sample">4.3  &nbsp;&nbsp; random-sample</a></li></ul></li><li><a href="#implementing-components">5  &nbsp;&nbsp; Implementing Components</a><ul class="nav"><li><a href="#model">5.1  &nbsp;&nbsp; Model</a></li><li><a href="#trap">5.2  &nbsp;&nbsp; Trap</a></li><li><a href="#partial-system-testing">5.3  &nbsp;&nbsp; Partial System Testing</a></li><li><a href="#app">5.4  &nbsp;&nbsp; App</a></li><li><a href="#app-testing">5.5  &nbsp;&nbsp; App Testing</a></li><li><a href="#server">5.6  &nbsp;&nbsp; Server</a></li><li><a href="#server-testing">5.7  &nbsp;&nbsp; Server Testing</a></li></ul></li><li><a href="#the-big-picture">6  &nbsp;&nbsp; The Big Picture</a><ul class="nav"><li><a href="#summary">6.1  &nbsp;&nbsp; Summary</a></li><li><a href="#further-extension">6.2  &nbsp;&nbsp; Further Extension</a></li></ul></li><li><a href="#links-and-resources">7  &nbsp;&nbsp; Links and Resources</a></li>
+                  <li class="contents">
+                  </li>
+                </ul>
+              </div>
+
+            </div>
+
+            </div><!--end of .row-->
+          </div><!--end of .container-->
+
+          <section class="application">
+            
+            <!--div class="container">
+              <h2>Come and Join Us</h2>
+              <div class="row">
+              </div>
+            </div-->
+          </section>
+        </div>
+      </div>
+</body>
+
+<script>
+  $('#nav').affix({
+    offset: {
+        top: $('#nav').offset().top,
+        bottom: $('footer').outerHeight(true) + $('.application').outerHeight(true) + 40
+    }});
+</script>
+
+
+<script>
+  if (document.location.search.match(/type=embed/gi)) {
+    window.parent.postMessage("resize", "*");
+  }
+</script>
+</body>
+</html>

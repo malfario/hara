@@ -11,23 +11,22 @@
 
     
   <link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
 
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/languages/clojure.min.js"></script>
-
-  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
-  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
-
-  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular.min.js"></script>
-  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
-  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-cookies.min.js"></script>
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/magula.min.css">
-  
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular.min.js"></script>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-cookies.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
   <script type="text/javascript" src="js/angular-highlightjs.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="css/scrollspy.css">
+
   <link rel="stylesheet" type="text/css" href="css/rdash.min.css">
+  <link rel="stylesheet" type="text/css" href="css/scrollspy.css">
 
 
   <script>
@@ -65,9 +64,9 @@
     <li class="sidebar-list">
       <a href="/">home <span class="menu-icon fa fa-home"></span></a>
     </li>
-    <li class="sidebar-list">
+    <!--li class="sidebar-list">
       <a href="api.html">api reference <span class="menu-icon fa fa-bank"></span></a>
-    </li>
+    </li-->
     <li class="sidebar-title"><span>guides</span></li>
     <li class="sidebar-list" ng-show="toggle">
       <a href="hara-component">&bull;<span class="submenu-item">component</span></a>
@@ -119,7 +118,7 @@
           <div class="container">
 
 <div class="row">
-   <div class="col-xs-12">
+   <div class="col-xs-10">
 		<rd-widget>
 			<rd-widget-body>
 				<div class="title" style="margin: 0 auto">
@@ -132,7 +131,7 @@
 
 <div class="row hidden-xs hidden-sm hidden-md">
 
-	<div class="col-xs-4">
+	<div class="col-xs-5">
 		<rd-widget>
 			<rd-widget-body>
 			<div class="widget-icon blue pull-left">
@@ -144,7 +143,19 @@
 		</rd-widget>
 	</div>
 
-	<div class="col-xs-4">
+  <div class="col-xs-5">
+		<rd-widget>
+			<rd-widget-body>
+			<div class="widget-icon green pull-left">
+				<i class="fa fa-leaf"></i>
+			</div>
+      <div class="title">Organic</div>
+      <div class="comment">Steadily grown since 2012.</div>
+    </rd-widget-body>
+		</rd-widget>
+	</div>
+
+	<div class="col-xs-5">
 		<rd-widget>
 			<rd-widget-body>
 			<div class="widget-icon red pull-left">
@@ -156,21 +167,22 @@
 		</rd-widget>
 	</div>
 
-	<div class="col-xs-4">
+  <div class="col-xs-5">
 		<rd-widget>
 			<rd-widget-body>
-			<div class="widget-icon green pull-left">
-				<i class="fa fa-leaf"></i>
+			<div class="widget-icon black pull-left">
+				<i class="fa fa-chain"></i>
 			</div>
-      <div class="title">Organic</div>
-      <div class="comment">Steadily grown since 2012.</div>
+      <div class="title">Robust</div>
+      <div class="comment">Hardened through usage.</div>
     </rd-widget-body>
 		</rd-widget>
 	</div>
+
 </div>
 
 <div class="row">
-	<div class="col-xs-12 col-md-6">
+	<div class="col-xs-10 col-md-5">
 		<rd-widget>
       <rd-widget-body>
 				<div class="title">Installation</div>
@@ -178,18 +190,18 @@
 				<div class="comment">In your <code>project.clj</code> add the following to include the entire <code>hara</code> library:</div>
         <div class="comment">&nbsp;</div>
         <div hljs language="clojure">
-[im.chit/hara "2.1.12"]</div>
+[im.chit/hara "2.2.0"]</div>
         <div class="comment">&nbsp;</div>
 				<div class="comment">Include selected functionality by including the specific package. For example, if the <code>hara.io.watch</code> namespace is required, use the following instead:</div>
         <div class="comment">&nbsp;</div>
         <div hljs language="clojure">
-[im.chit/hara.io.watch "2.1.12"]</div>
+[im.chit/hara.io.watch "2.2.0"]</div>
     <div class="comment">&nbsp;</div>
 			</rd-widget-body>
 		</rd-widget>
 	</div>
 
-  <div class="col-xs-12 col-md-6">
+  <div class="col-xs-10 col-md-5">
   	<rd-widget>
       <rd-widget-body>
   			<div class="title">Usage</div>
@@ -213,28 +225,32 @@
 
 <div class="row">
 
-  <div class="col-xs-12 col-md-6">
+  <div class="col-xs-10 col-md-5">
   	<rd-widget>
       <rd-widget-body>
   			<div class="title">Guides</div>
         <div class="comment">&nbsp;</div>
         <div class="comment">Tutorials and comprehensive guides on specific modules with a focus on how the functionality is used within a larger system:</div>
         <div class="comment">&nbsp;</div>
-  			<div class="comment"><a href="#/component">component</a> - composable systems</div>
+  			<div class="comment"><a href="hara-component.html">component</a> - constructing composable systems</div>
         <div class="comment">&nbsp;</div>
-  			<div class="comment"><a href="#/io-watch">io.watch</a> - file watcher</div>
+  			<div class="comment"><a href="hara-component-ova.html">concurrent.ova</a> - shared mutable state for multi-threaded applications</div>
         <div class="comment">&nbsp;</div>
-  			<div class="comment"><a href="#/namespace">namespace</a> - utilities for manipulating namespaces</div>
+  			<div class="comment"><a href="hara-event.html">event</a> - event signalling and conditional restart</div>
         <div class="comment">&nbsp;</div>
-  			<div class="comment"><a href="#/ova">ova</a> - thread safe, reactive array</div>
+  			<div class="comment"><a href="hara-io-scheduler.html">io.scheduler</a> - easy and intuitive task scheduling</div>
+        <!--div class="comment">&nbsp;</div>
+  			<div class="comment"><a href="#/io-watch">io.watch</a> - file watcher</div-->
+        <!--div class="comment">&nbsp;</div>
+  			<div class="comment"><a href="#/namespace">namespace</a> - utilities for manipulating namespaces</div-->
         <div class="comment">&nbsp;</div>
-  			<div class="comment"><a href="#/reflect">reflect</a> - object introspection</div>
+  			<div class="comment"><a href="hara-reflect.html">reflect</a> - java reflection made easy</div>
         <div class="comment">&nbsp;</div>
   		</rd-widget-body>
   	</rd-widget>
   </div>
 
-  <div class="col-xs-12 col-md-6">
+  <div class="col-xs-10 col-md-5">
   	<rd-widget>
       <rd-widget-body>
   			<div class="title">Articles</div>
@@ -257,7 +273,7 @@
 </div>
 
 <div class="row">
-  <div class="col-xs-12 col-md-6">
+  <div class="col-xs-10 col-md-5">
   	<rd-widget>
       <rd-widget-body>
   			<div class="title">Resources</div>
@@ -275,16 +291,9 @@
 
         </div>
       </div>
+    </div>
+  </div>
 </body>
-
-<script>
-  $('#nav').affix({
-    offset: {
-        top: $('#nav').offset().top,
-        bottom: $('footer').outerHeight(true) + $('.application').outerHeight(true) + 40
-    }});
-</script>
-
 
 <script>
   if (document.location.search.match(/type=embed/gi)) {

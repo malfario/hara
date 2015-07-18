@@ -1,0 +1,631 @@
+
+
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <meta name="google" value="notranslate">
+
+
+    <title>concurrent.ova</title>
+
+    
+  <link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/languages/clojure.min.js"></script>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/magula.min.css">
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular.min.js"></script>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-cookies.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
+  <script type="text/javascript" src="js/angular-highlightjs.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="css/rdash.min.css">
+  <link rel="stylesheet" type="text/css" href="css/scrollspy.css">
+
+
+  <script>
+    window.console = window.console || function(t) {};
+    window.open = function(){ console.log("window.open is disabled."); };
+    window.print   = function(){ console.log("window.print is disabled."); };
+  </script>
+
+  <script>
+  angular.module('app',['ui.bootstrap', 'ngCookies', 'hljs']);
+
+  function rdLoading(){var d={restrict:"AE",template:'<div class="loading"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>'};return d}angular.module("app").directive("rdLoading",rdLoading);
+  function rdWidgetBody(){var d={requires:"^rdWidget",scope:{loading:"@?",classes:"@?"},transclude:!0,template:'<div class="widget-body" ng-class="classes"><rd-loading ng-show="loading"></rd-loading><div ng-hide="loading" class="widget-content" ng-transclude></div></div>',restrict:"E"};return d}angular.module("app").directive("rdWidgetBody",rdWidgetBody);
+  function rdWidgetFooter(){var e={requires:"^rdWidget",transclude:!0,template:'<div class="widget-footer" ng-transclude></div>',restrict:"E"};return e}angular.module("app").directive("rdWidgetFooter",rdWidgetFooter);
+  function rdWidgetTitle(){var e={requires:"^rdWidget",scope:{title:"@",icon:"@"},transclude:!0,template:'<div class="widget-header"><i class="fa" ng-class="icon"></i> {{title}} <div class="pull-right" ng-transclude></div></div>',restrict:"E"};return e}angular.module("app").directive("rdWidgetHeader",rdWidgetTitle);
+  function rdWidget(){var d={transclude:!0,template:'<div class="widget" ng-transclude></div>',restrict:"EA"};return d}angular.module("app").directive("rdWidget",rdWidget);
+  function AlertsCtrl(e){e.alerts=[{type:"success",msg:"Thanks for visiting! Feel free to create pull requests to improve the dashboard!"},{type:"danger",msg:"Found a bug? Create an issue with as many details as you can."}],e.addAlert=function(){e.alerts.push({msg:"Another alert!"})},e.closeAlert=function(t){e.alerts.splice(t,1)}}angular.module("app").controller("AlertsCtrl",["$scope",AlertsCtrl]);
+  function MasterCtrl(t,e){var o=992;t.getWidth=function(){return window.innerWidth},t.$watch(t.getWidth,function(g){t.toggle=g>=o?angular.isDefined(e.get("toggle"))?e.get("toggle")?!0:!1:!0:!1}),t.toggleSidebar=function(){t.toggle=!t.toggle,e.put("toggle",t.toggle)},window.onresize=function(){t.$apply()}}angular.module("app").controller("MasterCtrl",["$scope","$cookieStore",MasterCtrl]);
+
+  </script>
+  </head>
+
+  <body ng-app="app" ng-controller="MasterCtrl" data-spy="scroll" data-target=".scrollspy">
+    <div id="page-wrapper" ng-class="{'open': toggle}" ng-cloak>
+      <!-- Sidebar -->
+      <div id="sidebar-wrapper">
+  <ul class="sidebar">
+    <li class="sidebar-main">
+      <a ng-click="toggleSidebar()">
+        <span style="padding-left:20px">MENU</span>
+        <!--img src="img/logo.png" height=40 style="padding-left:70px"-->
+        <span ng-hide="toggle" class="menu-icon glyphicon glyphicon-transfer"></span>
+      </a>
+    </li>
+    <li class="sidebar-list">
+      <a href="/">home <span class="menu-icon fa fa-home"></span></a>
+    </li>
+    <!--li class="sidebar-list">
+      <a href="api.html">api reference <span class="menu-icon fa fa-bank"></span></a>
+    </li-->
+    <li class="sidebar-title"><span>guides</span></li>
+    <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-component">&bull;<span class="submenu-item">component</span></a>
+    </li>
+    <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-concurrent-ova.html">&bull;<span class="submenu-item">concurrent.ova</span></a>
+    </li>
+    <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-event.html">&bull;<span class="submenu-item">event</span></a>
+    </li>
+    <!--li class="sidebar-list" ng-show="toggle">
+      <a href="hara-io-watch.html">&bull;<span class="submenu-item">io.watch</span></a>
+    </li-->
+    <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-io-scheduler.html">&bull;<span class="submenu-item">io.scheduler</span></a>
+    </li>
+    <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-reflect.html">&bull;<span class="submenu-item">reflect</span></a>
+    </li>
+
+    <li class="sidebar-title"><span>links</span></li>
+    <li class="sidebar-list">
+      <a href="http://www.gitter.im/zcaudate/hara" target="_blank">support <span class="menu-icon fa fa-support"></span></a>
+    </li>
+    <li class="sidebar-list">
+      <a href="https://github.com/zcaudate/hara" target="_blank">source code<span class="menu-icon fa fa-github"></span></a>
+    </li>
+
+  </ul>
+  <div class="sidebar-footer">
+    <div class="col-xs-6">
+      <a href="https://github.com/zcaudate/hara" target="_blank">
+        Github
+      </a>
+    </div>
+    <div class="col-xs-6">
+      <a href="https://gitter.com/zcaudate/hara">
+        Support
+      </a>
+    </div>
+  </div>
+</div>
+
+      <!-- End Sidebar -->
+
+      <div id="content-wrapper">
+        <div class="page-content">
+
+          <div class="container">
+            <div class="row">
+
+              <div class="col-md-7">
+                <div class="jumbotron">
+                  <div class="container">
+                    <h1>concurrent.ova</h1>
+                    <h4>shared mutable state for multi-threaded applications</h4>
+                  </div>
+                </div><!--end of .jumbotron-->
+
+                <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p>An <code>ova</code> represents a mutable array of elements. It has been designed especially for dealing with shared mutable state in multi-threaded applications. Clojure uses <code>refs</code> and <code>atoms</code> off the shelf to resolve this issue but left out methods to deal with arrays of shared elements. <code>ova</code> has been specifically designed for the following use case:</p><ul><li>Elements (usually clojure maps) can be added or removed from an array</li><li>Element data are accessible and mutated from several threads.</li><li>Array itself can also be mutated from several threads.</li></ul></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.concurrent.ova &quot;2.2.0&quot;&#93;
+</code></pre></div><div class="paragraph"><p>All functions are in the <code>hara.concurrent.ova</code> namespace.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(use 'hara.concurrent.ova)</div></section><section class="section" id="motivation"><h3 class="section">1.2  &nbsp;&nbsp; Motivation</h3><div class="paragraph"><p>Coordination in multi-threaded applications have always been a pain. Most times situations are usally co-ordinated using a external cache store like redis. <code>hara.concurrent.ova</code> provides an easy to use interface for array data. Alought is no where near as fully featured as a database/cache, it has a small footprint and is small. The actual <code>ova</code> datastructure is a <code>ref</code> containing a <code>vector</code> containing ref. The library comes with a whole bundle of goodies to deal with mutation:</p><ul><li>Clean element selection and array manipulation syntax.</li><li>Watches for both the array and array elements.</li><li>Designed to play nicely with <code>dosync</code> and <code>refs</code>.</li><li>Written in pure clojure, no external dependencies.</li></ul></div></section></section><section class="chapter" id="walkthrough"><h2 class="chapter">2  &nbsp;&nbsp; Walkthrough</h2><section class="section" id="constructor"><h3 class="section">2.1  &nbsp;&nbsp; Constructor</h3><div class="paragraph"><p>The key to <code>ova</code> lies in the ease of manipulating the postions of elements within an array as well as updating the elements themselves. We begin by constructing and displaying an ova.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(def ov
+  (ova [{:val 1} {:val 2}
+        {:val 3} {:val 4}]))
+
+(-&gt; ov class str)
+=&gt; &quot;class hara.concurrent.ova.Ova&quot;</div></section><section class="section" id="dereferencing"><h3 class="section">2.2  &nbsp;&nbsp; Dereferencing</h3><div class="paragraph"><p>An <code>ova</code> is a <code>ref</code> of a <code>vector</code> of <code>refs</code>. They are dereferenced accordingly:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(mapv deref (deref ov))
+=&gt; [{:val 1} {:val 2}
+    {:val 3} {:val 4}]
+
+(&lt;&lt; ov)                     ;; Shorthand
+=&gt; [{:val 1} {:val 2}
+    {:val 3} {:val 4}]</div></section><section class="section" id="append----insert----concat"><h3 class="section">2.3  &nbsp;&nbsp; Append / Insert / Concat</h3><div class="paragraph"><p>Adding elements to the ova is very straight forward:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(&lt;&lt; (append! ov {:val 6}))         ;; Append
+=&gt; [{:val 1} {:val 2} {:val 3}
+    {:val 4} {:val 6}]
+
+(&lt;&lt; (insert! ov {:val 5} 4))       ;; Insert
+=&gt; [{:val 1} {:val 2} {:val 3}
+    {:val 4} {:val 5} {:val 6}]
+
+(&lt;&lt; (concat! ov [{:val 7}          ;; Concat
+                 {:val 8}]))
+=&gt; [{:val 1} {:val 2} {:val 3}
+    {:val 4} {:val 5} {:val 6}
+    {:val 7} {:val 8}]</div></section><section class="section" id="select"><h3 class="section">2.4  &nbsp;&nbsp; Select</h3><div class="paragraph"><p>Where <code>ova</code> really shines is in the mechanism by which elements are selected. There are abundant ways of selecting elements - by index, by sets, by vectors, by predicates and by lists. The specific mechanism will be described more clearly in later sections.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(select ov 0)                      ;; By Index
+=&gt; #{{:val 1}}
+
+(select ov #{0 1})                 ;; By Set of Index
+=&gt; #{{:val 1} {:val 2}}
+
+(select ov {:val 3})               ;; By Item
+=&gt; #{{:val 3}}
+
+(select ov #{{:val 3} {:val 4}})   ;; By Set of Items
+=&gt; #{{:val 3} {:val 4}}
+
+(select ov #(-&gt; % :val even?))     ;; By Predicate
+=&gt; #{{:val 2} {:val 4}
+     {:val 6} {:val 8}}
+
+(select ov '(:val even?))          ;; By List
+=&gt; #{{:val 2} {:val 4}
+     {:val 6} {:val 8}}
+
+(select ov [:val 3])               ;; By Vector/Value
+=&gt; #{{:val 3}}
+
+(select ov [:val #{1 2 3}])       ;; By Vector/Set
+=&gt; #{{:val 1} {:val 2} {:val 3}}
+
+(select ov [:val '(&lt; 4)])         ;; By Vector/List
+=&gt; #{{:val 1} {:val 2} {:val 3}}
+
+(select ov [:val even?            ;; By Vector/Predicate/List
+            :val '(&gt; 4)])
+=&gt; #{{:val 6} {:val 8}}</div></section><section class="section" id="remove----filter"><h3 class="section">2.5  &nbsp;&nbsp; Remove / Filter</h3><div class="paragraph"><p><code>remove!</code> and <code>filter!</code> also use the same mechanism as <code>select</code>:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(&lt;&lt; (remove! ov 7))               ;; Index Notation
+=&gt; [{:val 1} {:val 2} {:val 3}
+    {:val 4} {:val 5} {:val 6}
+    {:val 7}]
+
+(&lt;&lt; (filter! ov #{1 2 3 4 5 6}))  ;; Set Notation
+=&gt; [{:val 2} {:val 3} {:val 4}
+    {:val 5} {:val 6} {:val 7}]
+
+(&lt;&lt; (filter! ov [:val odd?]))     ;; Vector/Fn Notation
+=&gt; [{:val 3} {:val 5} {:val 7}]
+
+(&lt;&lt; (remove! ov [:val '(&gt; 3)]))   ;; List Notation
+=&gt; [{:val 3}]</div></section><section class="section" id="sorting"><h3 class="section">2.6  &nbsp;&nbsp; Sorting</h3><div class="paragraph"><p>The <code>sort!</code> functions allows elements in the ova to be rearranged. The function becomes clearer to read with access and comparison defined seperately (last example).</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(def ov (ova (map (fn [n] {:val n})
+                  (range 8))))
+
+(&lt;&lt; ov)
+=&gt; [{:val 0} {:val 1} {:val 2}
+    {:val 3} {:val 4} {:val 5}
+    {:val 6} {:val 7}]
+
+(&lt;&lt; (sort! ov (fn [a b]          ;; Fn
+                (&gt; (:val a)
+                   (:val b)))))
+=&gt; [{:val 7} {:val 6} {:val 5}
+    {:val 4} {:val 3} {:val 2}
+    {:val 1} {:val 0}]
+
+(&lt;&lt; (sort! ov [:val] &lt;))         ;; Accessor/Comparater
+=&gt; [{:val 0} {:val 1} {:val 2}
+    {:val 3} {:val 4} {:val 5}
+    {:val 6} {:val 7}]</div></section><section class="section" id="manipulation"><h3 class="section">2.7  &nbsp;&nbsp; Manipulation</h3><div class="paragraph"><p>Using the same mechanism as <code>select</code>, bulk update of elements within the <code>ova</code> can be performed in a succint manner:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(def ov (ova (map (fn [n] {:val n})
+                  (range 4))))
+
+(&lt;&lt; ov)
+=&gt; [{:val 0} {:val 1} {:val 2} {:val 3}]
+
+(&lt;&lt; (map! ov update-in [:val] inc))        ;; map! updates all elements
+=&gt; [{:val 1} {:val 2} {:val 3} {:val 4}]
+
+(&lt;&lt; (smap! ov [:val odd?]                  ;; update only odd elements
+           update-in [:val] #(+ 10 %)))
+=&gt; [{:val 11} {:val 2} {:val 13} {:val 4}]
+
+(&lt;&lt; (smap! ov 0 update-in                     ;; update element at index 0
+        [:val] #(- % 10)))
+=&gt; [{:val 1} {:val 2} {:val 13} {:val 4}]
+
+(&lt;&lt; (smap! ov [:val 13]                       ;; update element with :val of 13
+        update-in [:val] #(- % 10)))
+=&gt; [{:val 1} {:val 2} {:val 3} {:val 4}]
+
+(&lt;&lt; (smap! ov [:val even?]                    ;; assoc new data to even :vals
+        assoc-in [:x :y :z] 10))
+=&gt; [{:val 1} {:val 2 :x {:y {:z 10}}}
+    {:val 3} {:val 4 :x {:y {:z 10}}}]
+
+(&lt;&lt; (smap! ov [:x :y :z] dissoc :x))          ;; dissoc :x for elements with nested [:x :y :z] keys
+=&gt; [{:val 1} {:val 2} {:val 3} {:val 4}]
+  </div></section><section class="section" id="ova-watch"><h3 class="section">2.8  &nbsp;&nbsp; Ova Watch</h3><div class="paragraph"><p>Because a ova is simply a ref, it can be watched for changes</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(def ov (ova [0 1 2 3 4 5]))
+
+(def output (atom []))
+(add-watch ov
+           :old-new
+           (fn [ov k p n]
+             (swap! output conj [(mapv deref p)
+                                 (mapv deref n)])))
+
+(do (dosync (sort! ov &gt;))
+    (deref output))
+=&gt; [[[0 1 2 3 4 5]
+     [5 4 3 2 1 0]]]</div></section><section class="section" id="element-watch"><h3 class="section">2.9  &nbsp;&nbsp; Element Watch</h3><div class="paragraph"><p>Entire elements of the ova can be watched. A more substantial example can be seen in the <a href='#scoreboard-example'>scoreboard example</a>:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(def ov (ova [0 1 2 3 4 5]))
+
+(def output (atom []))
+
+(watch/add      ;; key, ova, ref, previous, next
+    ov :elem-old-new
+    (fn [k o r p n]
+      (swap! output conj [p n])))
+
+(&lt;&lt; (!! ov 0 :zero))
+=&gt; [:zero 1 2 3 4 5]
+
+(deref output)
+=&gt; [[0 :zero]]
+
+(&lt;&lt; (!! ov 3 :three))
+=&gt; [:zero 1 2 :three 4 5]
+
+(deref output)
+=&gt; [[0 :zero] [3 :three]]</div><section class="subsection" id="element-change-watch"><h4 class="subsection">2.9.1  &nbsp;&nbsp; Element Change Watch</h4><div class="paragraph"><p>The <code>add-elem-change-watch</code> function can be used to only notify when an element has changed.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(def ov (ova [0 1 2 3 4 5]))
+
+(def output (atom []))
+
+(watch/add   ;; key, ova, ref, previous, next
+   ov :elem-old-new
+   (fn [k o r p n]
+     (swap! output conj [p n]))
+   {:select identity
+    :diff true})
+
+(do (&lt;&lt; (!! ov 0 :zero))  ;; a pair is added to output
+    (deref output))
+=&gt; [[0 :zero]]
+
+(do (&lt;&lt; (!! ov 0 0))      ;; another pair is added to output
+    (deref output))
+=&gt; [[0 :zero] [:zero 0]]
+
+(do (&lt;&lt; (!! ov 0 0))      ;; no change to output
+    (deref output))
+=&gt; [[0 :zero] [:zero 0]]</div></section></section><section class="section" id="clojure-protocols"><h3 class="section">2.10  &nbsp;&nbsp; Clojure Protocols</h3><div class="paragraph"><p><code>ova</code> implements the sequence protocol so it is compatible with all the bread and butter methods.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(def ov (ova (map (fn [n] {:val n})
+                  (range 8))))
+
+(seq ov)
+=&gt; '({:val 0} {:val 1} {:val 2}
+     {:val 3} {:val 4} {:val 5}
+     {:val 6} {:val 7})
+
+(map #(update-in % [:val] inc) ov)
+=&gt; '({:val 1} {:val 2} {:val 3}
+     {:val 4} {:val 5} {:val 6}
+     {:val 7} {:val 8})
+
+(last ov)
+=&gt; {:val 7}
+
+(count ov)
+=&gt; 8
+
+(get ov 0)
+=&gt; {:val 0}
+
+(nth ov 3)
+=&gt; {:val 3}
+
+(ov 0)
+=&gt; {:val 0}
+
+(ov [:val] #{1 2 3}) ;; Gets the first that matches
+=&gt; {:val 1}</div></section></section><section class="chapter" id="api"><h2 class="chapter">3  &nbsp;&nbsp; API</h2><section class="section" id="basics"><h3 class="section">3.1  &nbsp;&nbsp; Basics</h3><section class="subsection" id="ova"><h4 class="subsection">3.1.1  &nbsp;&nbsp; ova</h4><div class="paragraph"><p>An <code>ova</code> deals with data in a vector. The data can be anything but it is recommended that the data are clojure maps.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(def ov (ova [1 2 3 4]))
+
+(def ov (ova [{:id :a1 :score 10 :name &quot;Bill&quot;  :gender :m :nationality :aus}
+               {:id :a2 :score 15 :name &quot;John&quot;  :gender :m :nationality :aus}]))
+
+(def ov (ova [{:type &quot;form&quot; :data {:sex :m :age 23}}
+               {:type &quot;form&quot; :data {:sex :f :age 24}}]))</div></section><section class="subsection" id="persistent"><h4 class="subsection">3.1.2  &nbsp;&nbsp; persistent!</h4><div class="paragraph"><p>Since <code>ova.core.Ova</code> implements the <code>clojure.lang.ITransientCollection</code> interface, it can be made persistent with <code>persistent!</code>.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(persistent! (ova [1 2 3 4]))
+=&gt; [1 2 3 4]</div></section><section class="subsection" id="init"><h4 class="subsection">3.1.3  &nbsp;&nbsp; init!</h4><div class="paragraph"><p><code>init!</code> resets the data elements in an ova to another set of values. Any change in the ova requires it to be wrapped in a <code>dosync</code> macro.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(def ov (ova [1 2 3 4]))
+(dosync (init! ov [5 6 7 8 9]))
+(persistent! ov)
+=&gt; [5 6 7 8 9]</div></section><section class="subsection" id=""><h4 class="subsection">3.1.4  &nbsp;&nbsp; <<</h4><div class="paragraph"><p>The output macro is a shorthand for outputting the value of <code>ova</code> after a series of transformations. There is an implicit <code>dosync</code> block within the macro.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(&lt;&lt; (def ov (ova [1 2 3 4]))
+    (init! ov [5 6 7 8 9]))
+=&gt; [5 6 7 8 9]</div></section></section><section class="section" id="clojure"><h3 class="section">3.2  &nbsp;&nbsp; Clojure</h3><div class="paragraph"><p>Built-in operations supported including (but not limited to):</p><ul><li><code>map</code>, <code>reduce</code>, <code>first</code>, <code>next</code>, <code>nth</code> and many more <code>seq</code> operations<ul><li><code>get</code>, <code>contains?</code></li><li><code>deref</code></li><li><code>add-watch</code>, <code>remove-watch</code></li><li><code>pop!</code>, <code>push!</code>, <code>conj!</code></li></ul></li></ul></div></section><section class="section" id="query"><h3 class="section">3.3  &nbsp;&nbsp; Query</h3><div class="paragraph"><p>Where ova shines is in the various ways that elements can be selected. It is best to define some data that can be queried:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(def players
+  (ova [{:id :a1 :score 10 :info {:name &quot;Bill&quot;  :gender :m :nationality :aus}}
+        {:id :a2 :score 15 :info {:name &quot;John&quot;  :gender :m :nationality :aus}}
+        {:id :a3 :score 15 :info {:name &quot;Dave&quot;  :gender :m :nationality :aus}}
+        {:id :a4 :score 11 :info {:name &quot;Henry&quot; :gender :m :nationality :usa}}
+        {:id :a5 :score 20 :info {:name &quot;Scott&quot; :gender :m :nationality :usa}}
+        {:id :a6 :score 13 :info {:name &quot;Tom&quot;   :gender :m :nationality :usa}}
+        {:id :a7 :score 15 :info {:name &quot;Jill&quot;  :gender :f :nationality :aus}}
+        {:id :a8 :score 19 :info {:name &quot;Sally&quot; :gender :f :nationality :usa}}
+        {:id :a9 :score 13 :info {:name &quot;Rose&quot;  :gender :f :nationality :aus}}]))</div><section class="subsection" id="select"><h4 class="subsection">3.3.1  &nbsp;&nbsp; select</h4><div class="paragraph"><h5>Index:</h5></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(select players 0)
+=&gt; #{{:id :a1 :score 10 :info {:name &quot;Bill&quot;  :gender :m :nationality :aus}}}</div><div class="paragraph"><h5>Predicates:</h5></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(select players #(= (:id %) :a1))
+=&gt; #{{:id :a1 :score 10 :info {:name &quot;Bill&quot;  :gender :m :nationality :aus}}}</div><div class="paragraph"><h5>List Predicates:</h5></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(select players '(:id (= :a1)))
+=&gt; #{{:id :a1 :score 10 :info {:name &quot;Bill&quot;  :gender :m :nationality :aus}}}</div><div class="paragraph"><h5>Vector Predicates:</h5></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(select players [:id :a1])
+=&gt; #{{:id :a1 :score 10 :info {:name &quot;Bill&quot;  :gender :m :nationality :aus}}}
+
+(select players [:score even?])
+=&gt; #{{:id :a1 :score 10 :info {:name &quot;Bill&quot;  :gender :m :nationality :aus}}
+     {:id :a5 :score 20 :info {:name &quot;Scott&quot; :gender :m :nationality :usa}}}
+
+(select players [:score '(&lt; 13)])
+=&gt; #{{:id :a1 :score 10 :info {:name &quot;Bill&quot;  :gender :m :nationality :aus}}
+     {:id :a4 :score 11 :info {:name &quot;Henry&quot; :gender :m :nationality :usa}}}
+
+(select players [:score 13 [:info :gender] :f])
+=&gt; #{{:id :a9 :score 13 :info {:name &quot;Rose&quot;  :gender :f :nationality :aus}}}</div><div class="paragraph"><h5>Sets:</h5></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(select players #{1 2})
+=&gt; #{{:id :a2 :score 15 :info {:name &quot;John&quot;  :gender :m :nationality :aus}}
+     {:id :a3 :score 15 :info {:name &quot;Dave&quot;  :gender :m :nationality :aus}}}
+
+(select players #{[:score even?] [:score 13 [:info :gender] :f]})
+=&gt; #{{:id :a1 :score 10 :info {:name &quot;Bill&quot;  :gender :m :nationality :aus}}
+     {:id :a5 :score 20 :info {:name &quot;Scott&quot; :gender :m :nationality :usa}}
+     {:id :a9 :score 13 :info {:name &quot;Rose&quot;  :gender :f :nationality :aus}}}</div></section><section class="subsection" id="selectv"><h4 class="subsection">3.3.2  &nbsp;&nbsp; selectv</h4><div class="paragraph"><p><code>selectv</code> is the same as <code>select</code> except it returns a vector instead of a set.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(selectv players #{[:score even?] [:score 13 [:info :gender] :f]})
+=&gt; (just [{:id :a1 :score 10 :info {:name &quot;Bill&quot;  :gender :m :nationality :aus}}
+          {:id :a5 :score 20 :info {:name &quot;Scott&quot; :gender :m :nationality :usa}}
+          {:id :a9 :score 13 :info {:name &quot;Rose&quot;  :gender :f :nationality :aus}}]
+         :in-any-order)</div></section><section class="subsection" id="fn"><h4 class="subsection">3.3.3  &nbsp;&nbsp; fn</h4><div class="paragraph"><p><code>ova</code> implements the <code>clojure.lang.IFn</code> interface and so can be called with select parameters. It can be used to return elements within an array. Additionally, if an element has an :id tag, it will search based on the :id tag.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(players 0)
+=&gt; {:id :a1 :score 10 :info {:name &quot;Bill&quot;  :gender :m :nationality :aus}}
+
+(players 1)
+=&gt; {:id :a2 :score 15 :info {:name &quot;John&quot;  :gender :m :nationality :aus}}
+
+(players :a3)
+=&gt; {:id :a3 :score 15 :info {:name &quot;Dave&quot;  :gender :m :nationality :aus}}
+
+(:a3 players)
+=&gt; {:id :a3 :score 15 :info {:name &quot;Dave&quot;  :gender :m :nationality :aus}}
+
+(ov :a10)
+=&gt; nil</div></section></section><section class="section" id="array-operations"><h3 class="section">3.4  &nbsp;&nbsp; Array Operations</h3><section class="subsection" id="append"><h4 class="subsection">3.4.1  &nbsp;&nbsp; append!</h4><div class="paragraph"><p><code>append!</code> adds additional elements to the end:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(&lt;&lt; (append! (ova [1 2 3 4])
+             5 6 7 8))
+=&gt; [1 2 3 4 5 6 7 8]</div></section><section class="subsection" id="concat"><h4 class="subsection">3.4.2  &nbsp;&nbsp; concat!</h4><div class="paragraph"><p><code>concat!</code> joins an array at the end:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(&lt;&lt; (concat! (ova [1 2 3 4])
+             [5 6 7 8]))
+=&gt; [1 2 3 4 5 6 7 8]</div></section><section class="subsection" id="insert"><h4 class="subsection">3.4.3  &nbsp;&nbsp; insert!</h4><div class="paragraph"><p><code>insert!</code> allows elements to be inserted.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(&lt;&lt; (insert! (ova [:a :b :c :e :f])
+             :d 3))
+ =&gt; [:a :b :c :d :e :f]</div></section><section class="subsection" id="empty"><h4 class="subsection">3.4.4  &nbsp;&nbsp; empty!</h4><div class="paragraph"><p><code>empty!</code> clears all elements</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(&lt;&lt; (empty! (ova [:a :b :c :d])))
+=&gt; []</div></section><section class="subsection" id="remove"><h4 class="subsection">3.4.5  &nbsp;&nbsp; remove!</h4><div class="paragraph"><p><code>remove!</code> will selectively remove elements from the <code>ova</code>. The query syntax can be used</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(&lt;&lt; (remove! (ova [:a :b :c :d])
+             '(= :a)))
+=&gt; [:b :c :d]
+
+(&lt;&lt; (remove! (ova [1 2 3 4 5 6 7 8 9])
+             #{'(&lt; 3) '(&gt; 6)}))
+=&gt; [3 4 5 6]</div></section><section class="subsection" id="filter"><h4 class="subsection">3.4.6  &nbsp;&nbsp; filter!</h4><div class="paragraph"><p><code>filter!</code> performs the opposite of <code>remove!</code>. It will keep all elements in the array that matches the query.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(&lt;&lt; (filter! (ova [:a :b :c :d])
+             '(= :a)))
+=&gt; [:a]
+
+(&lt;&lt; (filter! (ova [1 2 3 4 5 6 7 8 9])
+           #{'(&lt; 3) '(&gt; 6)}))
+=&gt; [1 2 7 8 9]</div></section><section class="subsection" id="sort"><h4 class="subsection">3.4.7  &nbsp;&nbsp; sort!</h4><div class="paragraph"><p><code>sort!</code> arranges the array in order of the comparator. It can take only a comparator, or a selector/comparator combination.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(&lt;&lt; (sort! (ova [9 8 7 6 5 4 3 2 1])
+           &lt;))
+=&gt; [1 2 3 4 5 6 7 8 9]
+
+(&lt;&lt; (sort! (ova [1 2 3 4 5 6 7 8 9])
+           identity &gt;))
+=&gt; [9 8 7 6 5 4 3 2 1]</div></section><section class="subsection" id="reverse"><h4 class="subsection">3.4.8  &nbsp;&nbsp; reverse!</h4><div class="paragraph"><p><code>reverse!</code> arranges array elements in reverse</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(&lt;&lt; (reverse! (ova [1 2 3 4 5 6 7 8 9])))
+=&gt; [9 8 7 6 5 4 3 2 1]</div></section></section><section class="section" id="element-operations"><h3 class="section">3.5  &nbsp;&nbsp; Element Operations</h3><div class="paragraph"><p>Element operations are specific to manipulating the elements within the array.</p></div><section class="subsection" id=""><h4 class="subsection">3.5.1  &nbsp;&nbsp; !!</h4><div class="paragraph"><p><code>!!</code> sets the value of all selected indices to a specified value.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(&lt;&lt; (!! (ova [1 2 3 4 5 6 7 8 9]) 0 0))
+=&gt; [0 2 3 4 5 6 7 8 9]
+
+
+(&lt;&lt; (!! (ova [1 2 3 4 5 6 7 8 9]) odd? 0))
+=&gt; [0 2 0 4 0 6 0 8 0]
+
+
+(&lt;&lt; (!! (ova [1 2 3 4 5 6 7 8 9]) '(&gt; 4) 0))
+=&gt; [1 2 3 4 0 0 0 0 0]</div></section><section class="subsection" id="map"><h4 class="subsection">3.5.2  &nbsp;&nbsp; map!</h4><div class="paragraph"><p><code>map!</code> performs an operation on every element.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(&lt;&lt; (map! (ova [1 2 3 4 5 6 7 8 9])
+          inc))
+=&gt; [2 3 4 5 6 7 8 9 10]</div></section><section class="subsection" id="smap"><h4 class="subsection">3.5.3  &nbsp;&nbsp; smap!</h4><div class="paragraph"><p><code>smap!</code> performs an operation only on selected elements</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(&lt;&lt; (smap! (ova [1 2 3 4 5 6 7 8 9])
+           odd? inc))
+=&gt; [2 2 4 4 6 6 8 8 10]</div></section><section class="subsection" id="map-indexed"><h4 class="subsection">3.5.4  &nbsp;&nbsp; map-indexed!</h4><div class="paragraph"><p><code>map-indexed!</code> performs an operation with the element index as the second parameter on every element</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(&lt;&lt; (map-indexed! (ova [1 2 3 4 5 6 7 8 9])
+                  +))
+=&gt; [1 3 5 7 9 11 13 15 17]</div></section><section class="subsection" id="smap-indexed"><h4 class="subsection">3.5.5  &nbsp;&nbsp; smap-indexed!</h4><div class="paragraph"><p><code>smap-indexed!</code> performs an operation with the element index as the second parameter on selected elements</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(&lt;&lt; (smap-indexed! (ova [1 2 3 4 5 6 7 8 9])
+                   odd? +))
+=&gt; [1 2 5 4 9 6 13 8 17]</div></section><section class="subsection" id=""><h4 class="subsection">3.5.6  &nbsp;&nbsp; !></h4><div class="paragraph"><p>The threading array performs a series of operations on selected elements.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(&lt;&lt; (!&gt; (ova [1 2 3 4 5 6 7 8 9])
+        odd?
+        (* 10)
+        (+ 5)))
+=&gt; [15 2 35 4 55 6 75 8 95]</div></section></section><section class="section" id="element-watch-2"><h3 class="section">3.6  &nbsp;&nbsp; Element Watch</h3><div class="paragraph"><p>Watches can be set up so that. Instead of a normal ref/atom watch where there are four inputs to the watch function, the Element watch requires an additional input to distinguish which array a change has occured. The function signature looks like:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(fn [k o r p v]  ;; key, ova, ref, prev, current
+  (... do something ...))</div><section class="subsection" id="get-elem-watch"><h4 class="subsection">3.6.1  &nbsp;&nbsp; get-elem-watch</h4><div class="paragraph"><p><code>get-elem-watches</code> takes as input an <code>ova</code> and returns a map of element watches and their keys.</p></div></section><section class="subsection" id="add-elem-watch"><h4 class="subsection">3.6.2  &nbsp;&nbsp; add-elem-watch</h4><div class="paragraph"><p><code>add-elem-watch</code> adds a watch function on all elements of an <code>ova</code>.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(def ov     (ova [1 2 3 4]))
+(def watch  (atom []))
+(def cj-fn  (fn  [k o r p v]  ;; key, ova, ref, prev, current
+              (swap! watch conj [p v])))
+
+(watch/add ov :conj cj-fn) ;; add watch
+(keys (watch/list ov))    ;; get watches
+=&gt; [:conj]
+
+(&lt;&lt; (map! ov + 10))   ;; elements in ov are manipulated
+=&gt; [11 12 13 14]
+
+(sort @watch)
+=&gt; [[1 11] [2 12] [3 13] [4 14]]</div></section><section class="subsection" id="remove-elem-watch"><h4 class="subsection">3.6.3  &nbsp;&nbsp; remove-elem-watch</h4><div class="paragraph"><p><code>remove-elem-watch</code> cleares the element watch function to a <code>ova</code>.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(watch/clear ov :conj)
+(keys (watch/list ov))
+=&gt; nil</div></section><section class="subsection" id="add-elem-change-watch"><h4 class="subsection">3.6.4  &nbsp;&nbsp; add-elem-change-watch</h4><div class="paragraph"><p><code>add-elem-change-watch</code> only updates when part of the array changes. This is a really useful abstraction when the element is a big nested map. This is the same as <code>add-elem-watch</code> though an additional selector is needed to determine if the expected part of the element has change. Its usage can be seen in the <a href='#scoreboard-example'>example</a></p></div></section></section></section><section class="chapter" id="selection"><h2 class="chapter">4  &nbsp;&nbsp; Selection</h2><div class="group"><div class="paragraph"><p>There are a number of ways elements in an <code>ova</code> can be selected. The library uses custom syntax to provide a shorthand for element selection. We use the function <code>indices</code> in order to give an examples of how searches can be expressed. Most of the functions like <code>select</code>, <code>remove!</code>, <code>filter!</code>, <code>smap!</code>, <code>smap-indexed!</code>, and convenience macros are all built on top of the <code>indices</code> function and so can be used accordingly once the convention is understood.</p></div></div><section class="section" id="by-index"><h3 class="section">4.1  &nbsp;&nbsp; by index</h3><div class="paragraph"><p>The most straight-forward being the index itself, represented using a number.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(def ov (ova [{:v 0, :a {:c 4}}    ;; 0
+              {:v 1, :a {:d 3}}    ;; 1
+              {:v 2, :b {:c 2}}    ;; 2
+              {:v 3, :b {:d 1}}])) ;; 3
+
+(indices ov)           ;; return all indices
+=&gt; [0 1 2 3]
+
+(indices ov 0)         ;; return indices of the 0th element
+=&gt; [0]
+
+(indices ov 10)        ;; return indices of the 10th element
+=&gt; []</div></section><section class="section" id="by-value"><h3 class="section">4.2  &nbsp;&nbsp; by value</h3><div class="paragraph"><p>A less common way is to search for indices by value.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(indices ov            ;; return indices of elements matching term
+         {:v 0 :a {:c 4}})
+=&gt; [0]</div></section><section class="section" id="by-predicate"><h3 class="section">4.3  &nbsp;&nbsp; by predicate</h3><div class="paragraph"><p>Most of the time, predicates are used. They allow selection of any element returning a non-nil value when evaluated against the predicate. Predicates can take the form of functions, keywords or list representation.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(indices ov #(get % :a))   ;; retur indicies where (:a elem) is non-nil
+
+=&gt; [0 1]
+
+(indices ov #(:a %))       ;; more succint function form
+
+=&gt; [0 1]
+
+(indices ov :a)            ;; keyword form, same as #(:a %)
+
+=&gt; [0 1]
+
+(indices ov '(get :a))     ;; list form, same as #(get % :a)
+
+=&gt; [0 1]
+
+(indices ov '(:a))         ;; list form, same as #(:a %)
+
+=&gt; [0 1]</div></section><section class="section" id="by-sets-or"><h3 class="section">4.4  &nbsp;&nbsp; by sets (or)</h3><div class="paragraph"><p>sets can be used to compose more complex searches by acting as an <code>union</code> operator over its members</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(indices ov #{0 1})        ;; return indices 0 and 1
+=&gt; [0 1]
+
+(indices ov #{:a 2})       ;; return indices of searching for both 2 and :a
+=&gt; (just [0 1 2] :in-any-order)
+
+(indices ov #{'(:a)        ;; a more complex example
+              #(= (:v %) 2)})
+=&gt; (just [0 1 2] :in-any-order)</div></section><section class="section" id="by-vectors-and"><h3 class="section">4.5  &nbsp;&nbsp; by vectors (and)</h3><div class="paragraph"><p>vectors can be used to combine predicates for more selective filtering of elements</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(indices ov [:v 0])        ;; return indicies where (:a ele) = {:c 4}
+=&gt; [0]
+
+(indices ov [:v '(= 0)])   ;; return indicies where (:a ele) = {:c 4}
+=&gt; [0]
+
+(indices ov [:a #(% :c)])  ;; return indicies where (:a ele) has a :c element
+=&gt; [0]
+
+(indices ov [:a '(:c)])    ;; with list predicate
+=&gt; [0]
+
+(indices ov [:a :c])       ;; with keyword predicate
+=&gt; [0]
+
+(indices ov [:v odd?       ;; combining predicates
+             :v '(&gt; 1)])
+=&gt; [3]
+
+(indices ov #{[:a :c] 2})  ;; used within a set
+
+=&gt; (just [0 2] :in-any-order)</div></section><section class="section" id="accessing-nested-elements"><h3 class="section">4.6  &nbsp;&nbsp; accessing nested elements</h3><div class="paragraph"><p>When dealing with nested maps, a vector can be used instead of a keyword to specify rules of selection using nested elements</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(indices ov [[:b :c] 2])   ;; with value
+=&gt; [2]
+
+(indices ov [[:v] '(&lt; 3)]) ;; with predicate
+=&gt; [0 1 2]
+
+(indices ov [:v 2          ;; combining in vector
+             [:b :c] 2])
+=&gt; [2]</div></section></section><section class="chapter" id="scoreboard"><h2 class="chapter">5  &nbsp;&nbsp; Scoreboard</h2><section class="section" id="data-setup"><h3 class="section">5.1  &nbsp;&nbsp; Data Setup</h3><div class="paragraph"><p>A scoreboard is used to track player attempts, scores and high-scores</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(def scoreboard
+  (ova [{:name &quot;Bill&quot; :attempts 0 :score {:all ()}}
+        {:name &quot;John&quot; :attempts 0 :score {:all ()}}
+        {:name &quot;Sally&quot; :attempts 0 :score {:all ()}}
+        {:name &quot;Fred&quot;  :attempts 0 :score {:all ()}}]))</div></section><section class="section" id="notifier-setup"><h3 class="section">5.2  &nbsp;&nbsp; Notifier Setup</h3><div class="paragraph"><p><code>hara.event</code> is used to listen for a <code>:log</code> signal and print out the <code>:msg</code> component of the event.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(require '[hara.event :as event])
+
+(event/deflistener print-logger
+  :log
+  [msg]
+  (println msg))</div><div class="paragraph"><p>We set up two watch notifiers that signal and event.</p><ul><li>one to print when an attempt has been made to play a game</li><li>one to print when there is a new highscore</li></ul></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(watch/add scoreboard
+           :notify-attempt
+           (fn [k o r p n]  ;; key, ova, ref, previous, next
+             (event/signal [:log {:msg (str (:name @r) &quot; is on attempt &quot; n)}]))
+           {:select :attempts})
+
+(watch/add scoreboard
+           :notify-high-score
+           (fn [k o r p n]
+             (event/signal [:log {:msg (str (:name @r) &quot; has a new highscore of &quot; n)}]))
+           {:select [:score :highest]})</div><div class="paragraph"><p>Of course, we could have added the <code>println</code> statement directly. However, in an actual application, events may be logged to file, emailed, beeped or read back to the user. Having a light-weight event signalling framework lets that decision be made much later</p></div></section><section class="section" id="high-scores"><h3 class="section">5.3  &nbsp;&nbsp; High Scores</h3><div class="paragraph"><p>Another watch is added to update the high score whenever it occurs.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(watch/add scoreboard
+           :update-high-score
+           (fn [k o r p n]
+             (let [hs    [:score :highest]
+                   high  (get-in @r hs)
+                   current (first n)]
+               (if (and current
+                        (or (nil? high)
+                            (&lt; high current)))
+                 (dosync (alter r assoc-in hs current)))))
+           {:select [:score :all]})</div></section><section class="section" id="game-simulation"><h3 class="section">5.4  &nbsp;&nbsp; Game Simulation</h3><div class="paragraph"><p>Functions for simulation are defined with the following parameters:</p><ul><li><code>sim-game</code> and <code>sim-n-games</code> are used to update the scoreboard</li><li>the time to finish the game is randomised</li><li>the wait-time between subsequent games is randomised</li><li>the score they get is also randomised</li></ul></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(defn sim-game [scoreboard name]
+  ;; increment number of attempts
+  (dosync (!&gt; scoreboard [:name name]
+              (update-in [:attempts] inc)))
+
+  ;; simulate game playing time
+  (Thread/sleep (rand-int 500))
+
+  ;; conj the newest score at the start of the list
+  (dosync (!&gt; scoreboard [:name name]
+              (update-in [:score :all] conj (rand-int 50)))))
+
+(defn sim-n-games [scoreboard name n]
+  (when (&gt; n 0)
+    (Thread/sleep (rand-int 500))
+    (sim-game scoreboard name)
+    (recur scoreboard name (dec n))))</div></section><section class="section" id="multithreading"><h3 class="section">5.5  &nbsp;&nbsp; Multithreading</h3><div class="paragraph"><p>To demonstrate the use of ova within a multithreaded environment, we run the following simulation</p><ul><li>for each player on the scoreboard, they each play a random number of games simultaneously</li><li>the same scoreboard is used to keep track of state</li></ul></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(defn sim! [scoreboard]
+  (let [names (map :name scoreboard)]
+    (doseq [nm names]
+      (future (sim-n-games scoreboard nm (+ 5 (rand-int 5)))))))</div><div class="paragraph"><p>A sample simulation is show below:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(sim! scoreboard)
+
+=&gt; [Sally is on attempt 1
+    Bill is on attempt 1
+    Bill has a new highscore of 35
+    Sally has a new highscore of 40
+    John is on attempt 1
+    Fred is on attempt 1
+
+    .....
+
+    Sally is on attempt 8
+    Bill has a new highscore of 44
+    Bill is on attempt 9
+    Bill has a new highscore of 45]
+
+(&lt;&lt; scoreboard)
+
+=&gt; [{:name &quot;Bill&quot;, :attempts 9, :score {:highest 45, :all (45 44 36 9 24 25 39 18 3)}}
+    {:name &quot;John&quot;, :attempts 7, :score {:highest 49, :all (20 37 32 8 48 37 49)}}
+    {:name &quot;Sally&quot;, :attempts 8, :score {:highest 49, :all (1 48 7 12 43 0 39 49)}}
+    {:name &quot;Fred&quot;, :attempts 5, :score {:highest 47, :all (16 40 47 15 22)}}]</div></section></section>
+              </div>
+
+              <div class="col-md-3">
+                <ul id="nav" class="scrollspy nav hidden-xs hidden-sm" data-spy="affix">
+                  <li class="contents">
+                      <h4>NAVIGATION</h4>
+                  </li>
+                  <li><a href="#introduction">1  &nbsp;&nbsp; Introduction</a><ul class="nav"><li><a href="#installation">1.1  &nbsp;&nbsp; Installation</a></li><li><a href="#motivation">1.2  &nbsp;&nbsp; Motivation</a></li></ul></li><li><a href="#walkthrough">2  &nbsp;&nbsp; Walkthrough</a><ul class="nav"><li><a href="#constructor">2.1  &nbsp;&nbsp; Constructor</a></li><li><a href="#dereferencing">2.2  &nbsp;&nbsp; Dereferencing</a></li><li><a href="#append----insert----concat">2.3  &nbsp;&nbsp; Append / Insert / Concat</a></li><li><a href="#select">2.4  &nbsp;&nbsp; Select</a></li><li><a href="#remove----filter">2.5  &nbsp;&nbsp; Remove / Filter</a></li><li><a href="#sorting">2.6  &nbsp;&nbsp; Sorting</a></li><li><a href="#manipulation">2.7  &nbsp;&nbsp; Manipulation</a></li><li><a href="#ova-watch">2.8  &nbsp;&nbsp; Ova Watch</a></li><li><a href="#element-watch">2.9  &nbsp;&nbsp; Element Watch</a></li><li><a href="#clojure-protocols">2.10  &nbsp;&nbsp; Clojure Protocols</a></li></ul></li><li><a href="#api">3  &nbsp;&nbsp; API</a><ul class="nav"><li><a href="#basics">3.1  &nbsp;&nbsp; Basics</a></li><li><a href="#clojure">3.2  &nbsp;&nbsp; Clojure</a></li><li><a href="#query">3.3  &nbsp;&nbsp; Query</a></li><li><a href="#array-operations">3.4  &nbsp;&nbsp; Array Operations</a></li><li><a href="#element-operations">3.5  &nbsp;&nbsp; Element Operations</a></li><li><a href="#element-watch-2">3.6  &nbsp;&nbsp; Element Watch</a></li></ul></li><li><a href="#selection">4  &nbsp;&nbsp; Selection</a><ul class="nav"><li><a href="#by-index">4.1  &nbsp;&nbsp; by index</a></li><li><a href="#by-value">4.2  &nbsp;&nbsp; by value</a></li><li><a href="#by-predicate">4.3  &nbsp;&nbsp; by predicate</a></li><li><a href="#by-sets-or">4.4  &nbsp;&nbsp; by sets (or)</a></li><li><a href="#by-vectors-and">4.5  &nbsp;&nbsp; by vectors (and)</a></li><li><a href="#accessing-nested-elements">4.6  &nbsp;&nbsp; accessing nested elements</a></li></ul></li><li><a href="#scoreboard">5  &nbsp;&nbsp; Scoreboard</a><ul class="nav"><li><a href="#data-setup">5.1  &nbsp;&nbsp; Data Setup</a></li><li><a href="#notifier-setup">5.2  &nbsp;&nbsp; Notifier Setup</a></li><li><a href="#high-scores">5.3  &nbsp;&nbsp; High Scores</a></li><li><a href="#game-simulation">5.4  &nbsp;&nbsp; Game Simulation</a></li><li><a href="#multithreading">5.5  &nbsp;&nbsp; Multithreading</a></li></ul></li>
+                  <li class="contents">
+                  </li>
+                </ul>
+              </div>
+
+            </div>
+
+            </div><!--end of .row-->
+          </div><!--end of .container-->
+
+          <section class="application">
+            
+            <!--div class="container">
+              <h2>Come and Join Us</h2>
+              <div class="row">
+              </div>
+            </div-->
+          </section>
+        </div>
+      </div>
+</body>
+
+<script>
+  $('#nav').affix({
+    offset: {
+        top: $('#nav').offset().top,
+        bottom: $('footer').outerHeight(true) + $('.application').outerHeight(true) + 40
+    }});
+</script>
+
+
+<script>
+  if (document.location.search.match(/type=embed/gi)) {
+    window.parent.postMessage("resize", "*");
+  }
+</script>
+</body>
+</html>
