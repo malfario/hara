@@ -39,8 +39,8 @@
                    (system-timezone))))
   ([t tz]
    (hash-map :value    (time/-to-long t)
-             :milli    (time/-milli t tz) 
-             :second   (time/-second t tz) 
+             :milli    (time/-milli t tz)
+             :second   (time/-second t tz)
              :minute   (time/-minute t tz)
              :hour     (time/-hour t tz)
              :day      (time/-day t tz)
@@ -90,7 +90,9 @@
 
 (comment
 
+
+ 
   (now)
 
-  
+
   )

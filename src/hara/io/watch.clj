@@ -11,7 +11,7 @@
                            :mode :sync
                            :exclude [".*"]})
 
-(def ^:dynamic *filewatchers* (atom {}))
+(defonce ^:dynamic *filewatchers* (atom {}))
 
 (def event-kinds  [StandardWatchEventKinds/ENTRY_CREATE
                    StandardWatchEventKinds/ENTRY_DELETE
@@ -92,6 +92,7 @@
                         :excludes excludes
                         :includes includes
                         :kinds kinds))
+        _        (println (:paths watcher))
         watcher  (reduce register-sub-directory watcher (:paths watcher))]
     (assoc watcher :running (future (run-watcher watcher)))))
 
@@ -144,10 +145,9 @@
   (fn [type file]
     (f root k nil [type file])))
 
-(extend-protocol IWatch
-  java.io.File
-  (-add-watch [obj k f opts]
-    (let [path (.getCanonicalPath obj)
+
+(defn add-io-watch [obj k f opts]
+  (let [path (.getCanonicalPath obj)
           _    (if-let [wt (get-in @*filewatchers* [path k :watcher])]
                  (-remove-watch obj k nil))
           cb   (watch-callback f obj k)
@@ -155,18 +155,29 @@
       (swap! *filewatchers* assoc-in [path k] {:watcher wt :function f})
       obj))
 
-  (-list-watch [obj _]
-    (let [path (.getCanonicalPath obj)]
+(defn list-io-watch [obj _]
+  (let [path (.getCanonicalPath obj)]
       (->> path (get @*filewatchers*)
            (reduce-kv (fn [i k v]
                         (assoc i k (:function v)))
                       {}))))
 
+(defn remove-io-watch [obj k _]
+  (let [path (.getCanonicalPath obj)
+        wt   (get-in @*filewatchers* [path k :watcher])]
+    (if-not (nil? wt)
+      (if (stop-watcher wt)
+        (swap! *filewatchers* dissoc path)
+        true)
+      false)))
+
+(extend-protocol IWatch
+  java.io.File
+  (-add-watch [obj k f opts]
+    (add-io-watch obj k f opts))
+
+  (-list-watch [obj _]
+    (list-io-watch obj nil))
+
   (-remove-watch [obj k _]
-    (let [path (.getCanonicalPath obj)
-          wt   (get-in @*filewatchers* [path k :watcher])]
-      (if-not (nil? wt)
-        (do (stop-watcher wt)
-            (swap! *filewatchers* update-in [path] dissoc k)
-            true)
-        false))))
+    (remove-io-watch obj k nil)))

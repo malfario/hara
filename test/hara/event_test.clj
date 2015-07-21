@@ -85,7 +85,7 @@
 
 ^{:refer hara.event/continue :added "2.2"}
 (fact "used within a manage form to continue on with a particular value"
-  
+
   (manage [1 2 (raise {:error "should be 3"})]
           (on :error
               _
@@ -99,7 +99,7 @@
          (option :specify [a] a)
          (default :specify 3))
   => 3
-  
+
   (manage
    (raise :error
           (option :specify [a] a)
@@ -111,7 +111,7 @@
 
 ^{:refer hara.event/choose :added "2.2"}
 (fact "used within a manage form to definitively fail the system"
-  
+
   (manage (raise :error
                  (option :specify [a] a))
           (on :error
@@ -121,7 +121,7 @@
 
 ^{:refer hara.event/escalate :added "2.2"}
 (fact "used within a manage form to add further data on an issue"
-  
+
   (manage [1 2 (raise :error)]
           (on :error
               _
@@ -130,7 +130,7 @@
 
 ^{:refer hara.event/fail :added "2.2"}
 (fact "used within a manage form to definitively fail the system"
-  
+
   (manage (raise :error)
           (on :error
               _
