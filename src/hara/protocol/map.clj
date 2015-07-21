@@ -7,3 +7,5 @@
 (defprotocol IMap
   (-to-map [obj])
   (-to-map-meta [obj]))
+
+(defmulti -from-map (fn [map type] type))

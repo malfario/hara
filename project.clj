@@ -1,4 +1,4 @@
-(defproject im.chit/hara "2.2.1"
+(defproject im.chit/hara "2.2.2"
   :description "patterns and utilities"
   :url "https://github.com/zcaudate/hara"
   :license {:name "The MIT License"
@@ -84,4 +84,4 @@
   :repack [{:type :clojure
             :levels 2
             :path "src"
-            :standalone #{"reflect" "time" "event"}}])
+            :standalone #{"reflect" "time" "event" "object"}}])

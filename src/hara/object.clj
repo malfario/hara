@@ -1,31 +1,67 @@
 (ns hara.object
-  (:require [hara.reflect :as reflect]
-            [hara.protocol.map :as map]))
+  (:require [hara.object.meta :as meta]
+            [hara.object.enum :as enum]
+            [hara.object.map-like :as map-like]
+            [hara.object.string-like :as string-like]
+            [hara.protocol.map :as map]
+            [hara.protocol.string :as string]
+            [hara.event :as event]))
 
-(defmulti from-map
-  {:added "2.1"}
-  (fn [data meta] (or (:type meta) meta)))
+(defprotocol IData
+  (-to-data [obj]))
 
-(defmethod from-map :default
-  [data meta]
-  (throw (Exception. (str "Not Implemented for: " meta " and " map))))
+(defn to-data [obj]
+  (cond (.isArray ^Class (type obj))
+        (->> (seq obj)
+             (mapv to-data))
 
-(defn to-map
-  {:added "2.1"}
-  [x]
-  (map/-to-map x))
+        :else
+        (let [{:keys [types to-data] :as mobj} (meta/-meta-object (type obj))]
+          (cond to-data (to-data obj)
+                (get types java.util.Map) (map/-to-map obj)
+                (get types String) (string/-to-string obj)
+                :else (-to-data obj)))))
 
-(defn to-meta
-  {:added "2.1"}
-  [x]
-  (map/-to-map-meta x))
+(defn from-data [data type]
+  (let [{:keys [from-data] :as mobj} (meta/-meta-object type)]
+    (cond from-data
+          (from-data data type)
 
-(extend-type nil
-  map/IMap
-  (-to-map [x] {})
-  (-to-map-meta [x] {:type nil}))
+          (map? data)
+          (map/-from-map data type)
 
-(extend-type Object
-  map/IMap
-  (-to-map [x] (str x))
-  (-to-map-meta [x] {:type (type x)}))
+          (string? data)
+          (string/-from-string data type))))
+
+(defn meta-object [type]
+  (meta/-meta-object type))
+
+(extend-protocol IData
+  nil
+  (-to-data [obj] obj)
+
+  java.lang.Iterable
+  (-to-data [obj]
+    (mapv to-data obj))
+
+  java.util.Iterator
+  (-to-data [obj]
+    (->> obj iterator-seq (mapv to-data)))
+
+  Object
+  (-to-data [obj]
+    (event/raise {:value obj
+                  :msg (str "Cannot covert " obj " to data.")}
+                 (option :nil [] nil)
+                 (default :nil))))
+
+(defmacro extend-stringlike [& {:as classes}]
+  `(vector ~@(map (fn [[cls opts]]
+                    `(string-like/extend-stringlike-class ~cls ~opts))
+                  classes)))
+
+(defmacro extend-maplike [& {:as classes}]
+  `(vector ~@(map (fn [[cls opts]]
+                    `(map-like/extend-maplike-class ~cls ~opts))
+                  classes)))
+
