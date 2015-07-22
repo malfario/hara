@@ -1,4 +1,7 @@
-(ns hara.object.meta)
+(ns hara.protocol.data)
+
+(defprotocol IData
+  (-to-data [obj]))
 
 (defmulti -meta-object (fn [type] type))
 

@@ -1,36 +1,43 @@
 (ns hara.object.map-like
   (:require [hara.protocol.map :as map]
-            [hara.object.meta :as meta]
+            [hara.protocol.data :as data]
+            [hara.object.base :as base]
             [hara.object.util :as util]))
 
-(defn generic-map [obj {:keys [select exclude] :as opts}]
-  (-> (util/object-methods obj)
+(defn generic-map [obj {:keys [select exclude getters] :as opts}]
+  (-> (if getters
+        (eval getters)
+        (util/object-getters obj))
       (#(apply dissoc % :class exclude))
       (#(if select
           (select-keys % select)
           %))
-      (util/object-apply obj map/-to-map)))
+      (util/object-apply obj base/to-data)))
 
 (defmacro extend-maplike-class [cls {:keys [tag to from meta] :as opts}]
   `(vector
-    (defmethod meta/-meta-object ~cls
+    (defmethod data/-meta-object ~cls
       [type#]
-      (hashmap :class     type#
+      (hash-map :class     type#
                :types     #{java.util.Map}
                :to-data   map/-to-map
                ~@(if from [:from-data ~from] [])))
 
     (extend-protocol map/IMap
       ~cls
-      (-to-map [entry#]
-        (if to
-          (~to entry#)
-          (generic-map entry#)))
+      ~(if to
+         `(-to-map [entry#]
+                   (~to entry#))
+         `(-to-map [entry#]
+                   (generic-map entry# ~opts)))
 
-      (-to-map-meta [entry#]
-        (if meta
-          (~meta entry#)
-          {:type ~cls})))
+      ~(if meta
+         `(-to-map-meta
+           [entry#]
+           (~meta entry#))
+         `(-to-map-meta
+           [entry#]
+           {:class ~cls})))
 
     ~@(if from
         [`(defmethod map/-from-map ~cls

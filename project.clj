@@ -20,12 +20,13 @@
                             :website "http://z.caudate.me"}]
                   :template {:path "template"
                              :copy ["assets/css" "assets/js"]
-                             :defaults {:template "article.html"
+                             :defaults {:template "article-basic.html"
+                                        :navbar  [:file "partials/navbar.html"]
                                         :sidebar [:file "partials/sidebar.html"]
                                         :footer  [:file "partials/footer.html"]
                                         :dependencies [:file "partials/deps-web.html"]
-                                        :navbar  :navigation
-                                        :article :article}}
+                                        :contentbar  :navigation
+                                        :article     :article}}
                   :paths ["test/documentation"]
                   :files {"index"
                           {:template "home.html"

@@ -1,10 +1,10 @@
 (ns hara.object.string-like
   (:require [hara.protocol.string :as string]
-            [hara.object.meta :as meta]))
+            [hara.protocol.data :as data]))
 
 (defmacro extend-stringlike-class [cls {:keys [meta to from] :as opts}]
   `(vector
-    (defmethod meta/-meta-object ~cls
+    (defmethod data/-meta-object ~cls
       [type#]
       {:class     type#
        :types     #{String}
@@ -31,4 +31,4 @@
 
     (defmethod print-method ~cls
       [v# ^java.io.Writer w#]
-      (.write w# (str "#" ~(or (:tag opts) cls) "::" (string/-to-string v#))))))
+      (.write w# (str "#" ~(or (:tag opts) cls) " \"" (string/-to-string v#) "\"")))))

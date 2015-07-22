@@ -1,7 +1,8 @@
 (ns hara.object.enum
   (:require [hara.protocol.string :as string]
+            [hara.protocol.data :as data]
             [hara.reflect :as reflect]
-            [hara.object.meta :as meta]
+            
             [hara.class.inheritance :as inheritance]))
 
 (defn enum? [type]
@@ -14,7 +15,7 @@
   (let [vf (reflect/query-class type ["$VALUES" :#])]
     (->> (vf type) (seq))))
 
-(defmethod meta/-meta-object Enum
+(defmethod data/-meta-object Enum
   [type]
   {:class java.lang.Enum
    :types #{String}

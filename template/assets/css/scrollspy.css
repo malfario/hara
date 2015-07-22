@@ -70,9 +70,14 @@ section:last-child {
   border-bottom: none;
 }
 
-#nav{
-  margin-top: 0px;
+#content{
+  margin-top: 30px;
 }
+
+#nav{
+  margin-top: 50px;
+}
+
 
 .nav {
   background: #30426a;
@@ -190,4 +195,23 @@ footer p {
 .figure h4{
   text-align: center;
   margin-top:30px
+}
+
+
+ul.sidebar .submenu-item {
+  margin-left: 10px;
+}
+
+.navbar-default {
+  background-color: #30426A;
+  border-color: #30426A;
+}
+
+.navbar-brand img{
+  height: 40px;
+  margin-top: -10px;
+}
+
+.navbar-nav {
+  margin-top: 12px;
 }
