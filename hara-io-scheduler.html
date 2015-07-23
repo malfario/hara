@@ -36,97 +36,59 @@
   </script>
 
   <script>
-  angular.module('app',['ui.bootstrap', 'ngCookies', 'hljs']);
-
-  function rdLoading(){var d={restrict:"AE",template:'<div class="loading"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>'};return d}angular.module("app").directive("rdLoading",rdLoading);
-  function rdWidgetBody(){var d={requires:"^rdWidget",scope:{loading:"@?",classes:"@?"},transclude:!0,template:'<div class="widget-body" ng-class="classes"><rd-loading ng-show="loading"></rd-loading><div ng-hide="loading" class="widget-content" ng-transclude></div></div>',restrict:"E"};return d}angular.module("app").directive("rdWidgetBody",rdWidgetBody);
-  function rdWidgetFooter(){var e={requires:"^rdWidget",transclude:!0,template:'<div class="widget-footer" ng-transclude></div>',restrict:"E"};return e}angular.module("app").directive("rdWidgetFooter",rdWidgetFooter);
-  function rdWidgetTitle(){var e={requires:"^rdWidget",scope:{title:"@",icon:"@"},transclude:!0,template:'<div class="widget-header"><i class="fa" ng-class="icon"></i> {{title}} <div class="pull-right" ng-transclude></div></div>',restrict:"E"};return e}angular.module("app").directive("rdWidgetHeader",rdWidgetTitle);
-  function rdWidget(){var d={transclude:!0,template:'<div class="widget" ng-transclude></div>',restrict:"EA"};return d}angular.module("app").directive("rdWidget",rdWidget);
-  function AlertsCtrl(e){e.alerts=[{type:"success",msg:"Thanks for visiting! Feel free to create pull requests to improve the dashboard!"},{type:"danger",msg:"Found a bug? Create an issue with as many details as you can."}],e.addAlert=function(){e.alerts.push({msg:"Another alert!"})},e.closeAlert=function(t){e.alerts.splice(t,1)}}angular.module("app").controller("AlertsCtrl",["$scope",AlertsCtrl]);
-  function MasterCtrl(t,e){var o=992;t.getWidth=function(){return window.innerWidth},t.$watch(t.getWidth,function(g){t.toggle=g>=o?angular.isDefined(e.get("toggle"))?e.get("toggle")?!0:!1:!0:!1}),t.toggleSidebar=function(){t.toggle=!t.toggle,e.put("toggle",t.toggle)},window.onresize=function(){t.$apply()}}angular.module("app").controller("MasterCtrl",["$scope","$cookieStore",MasterCtrl]);
-
+    var app = angular.module('app', ['hljs']);
   </script>
   </head>
 
-  <body ng-app="app" ng-controller="MasterCtrl" data-spy="scroll" data-target=".scrollspy">
-    <div id="page-wrapper" ng-class="{'open': toggle}" ng-cloak>
-      <!-- Sidebar -->
-      <div id="sidebar-wrapper">
-  <ul class="sidebar">
-    <li class="sidebar-main">
-      <a ng-click="toggleSidebar()">
-        <span style="padding-left:20px">MENU</span>
-        <!--img src="img/logo.png" height=40 style="padding-left:70px"-->
-        <span ng-hide="toggle" class="menu-icon glyphicon glyphicon-transfer"></span>
-      </a>
-    </li>
-    <li class="sidebar-list">
-      <a href="index.html">home <span class="menu-icon fa fa-home"></span></a>
-    </li>
-    <!--li class="sidebar-list">
-      <a href="api.html">api reference <span class="menu-icon fa fa-bank"></span></a>
-    </li-->
-    <li class="sidebar-title"><span>guides</span></li>
-    <li class="sidebar-list" ng-show="toggle">
-      <a href="hara-component.html">&bull;<span class="submenu-item">component</span></a>
-    </li>
-    <li class="sidebar-list" ng-show="toggle">
-      <a href="hara-concurrent-ova.html">&bull;<span class="submenu-item">concurrent.ova</span></a>
-    </li>
-    <li class="sidebar-list" ng-show="toggle">
-      <a href="hara-event.html">&bull;<span class="submenu-item">event</span></a>
-    </li>
-    <!--li class="sidebar-list" ng-show="toggle">
-      <a href="hara-io-watch.html">&bull;<span class="submenu-item">io.watch</span></a>
-    </li-->
-    <li class="sidebar-list" ng-show="toggle">
-      <a href="hara-io-scheduler.html">&bull;<span class="submenu-item">io.scheduler</span></a>
-    </li>
-    <li class="sidebar-list" ng-show="toggle">
-      <a href="hara-reflect.html">&bull;<span class="submenu-item">reflect</span></a>
-    </li>
+  <body ng-app="app" data-spy="scroll" data-target=".scrollspy">
+  <!-- Fixed navbar -->
+    <nav class="navbar navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html"><img src="img/logo.png"></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Guides <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="hara-component.html">component</a></li>
+                <li><a href="hara-concurrent-ova.html">concurrent.ova</a></li>
+                <li><a href="hara-event.html">event</a></li>
+                <li><a href="hara-io-scheduler.html">io.scheduler</a></li>
+                <li><a href="hara-reflect.html">reflect</a></li>
+            </ul>
+            </li>
+            <li>
+              <a href="https://github.com/zcaudate/hara" target="_blank">Github</a></li>
+            <li>
+              <a href="http://gitter.io/zcaudate/hara" target="_blank">Gitter</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
 
-    <li class="sidebar-title"><span>links</span></li>
-    <li class="sidebar-list">
-      <a href="http://www.gitter.im/zcaudate/hara" target="_blank">support <span class="menu-icon fa fa-support"></span></a>
-    </li>
-    <li class="sidebar-list">
-      <a href="https://github.com/zcaudate/hara" target="_blank">source code<span class="menu-icon fa fa-github"></span></a>
-    </li>
 
-  </ul>
-  <div class="sidebar-footer">
-    <div class="col-xs-6">
-      <a href="https://github.com/zcaudate/hara" target="_blank">
-        Github
-      </a>
+  <div class="container row">
+    <div class="col-md-4 scrollspy pull-right">
+      <ul id="nav" class="nav hidden-xs hidden-sm" data-spy="affix">
+        <li><a href="#introduction">1  &nbsp;&nbsp; Introduction</a><ul class="nav"><li><a href="#installation">1.1  &nbsp;&nbsp; Installation</a></li><li><a href="#motivation">1.2  &nbsp;&nbsp; Motivation</a></li><li><a href="#other-libraries">1.3  &nbsp;&nbsp; Other Libraries</a></li></ul></li><li><a href="#concepts-and-design">2  &nbsp;&nbsp; Concepts and Design</a><ul class="nav"><li><a href="#seperation-of-concerns">2.1  &nbsp;&nbsp; Seperation of Concerns</a></li><li><a href="#thread-management">2.2  &nbsp;&nbsp; Thread Management</a></li><li><a href="#simulation-testing">2.3  &nbsp;&nbsp; Simulation Testing</a></li></ul></li><li><a href="#walkthrough">3  &nbsp;&nbsp; Walkthrough</a><ul class="nav"><li><a href="#creating-a-task">3.1  &nbsp;&nbsp; Creating a Task</a></li><li><a href="#running-tasks">3.2  &nbsp;&nbsp; Running Tasks</a></li><li><a href="#components">3.3  &nbsp;&nbsp; Components</a></li><li><a href="#schedule">3.4  &nbsp;&nbsp; Schedule</a></li></ul></li><li><a href="#simulation">4  &nbsp;&nbsp; Simulation</a><ul class="nav"><li><a href="#y2-k-revisited">4.1  &nbsp;&nbsp; Y2K Revisited</a></li><li><a href="#interval-and-pause">4.2  &nbsp;&nbsp; Interval and Pause</a></li></ul></li><li><a href="#task-management">5  &nbsp;&nbsp; Task Management</a><ul class="nav"><li><a href="#trigger">5.1  &nbsp;&nbsp; trigger!</a></li><li><a href="#killing-instances">5.2  &nbsp;&nbsp; killing instances</a></li><li><a href="#live-action">5.3  &nbsp;&nbsp; live action</a></li><li><a href="#shutdown-and-restart">5.4  &nbsp;&nbsp; shutdown and restart</a></li></ul></li><li><a href="#links-and-resources">6  &nbsp;&nbsp; Links and Resources</a></li>
+      </ul>
     </div>
-    <div class="col-xs-6">
-      <a href="https://gitter.com/zcaudate/hara">
-        Support
-      </a>
-    </div>
-  </div>
-</div>
-
-      <!-- End Sidebar -->
-
-      <div id="content-wrapper">
-        <div class="page-content">
-
-          <div class="container">
-            <div class="row">
-
-              <div class="col-md-7">
-                <div class="jumbotron">
-                  <div class="container">
-                    <h1>io.scheduler</h1>
-                    <h4>easy and intuitive task scheduling</h4>
-                  </div>
-                </div><!--end of .jumbotron-->
-
-                <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.io.scheduler &quot;2.2.0&quot;&#93;
+    <div class="col-md-8" id="content">
+      <div class="jumbotron">
+        <div class="container">
+          <h1>io.scheduler</h1>
+          <h4>easy and intuitive task scheduling</h4>
+        </div>
+      </div>
+      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.io.scheduler &quot;2.2.3&quot;&#93;
 </code></pre></div><div class="paragraph"><p>All functions are in the <code>hara.io.scheduler</code> namespace.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(use 'hara.io.scheduler)</div></section><section class="section" id="motivation"><h3 class="section">1.2  &nbsp;&nbsp; Motivation</h3><div class="paragraph"><p><code>hara.io.scheduler</code> aims to provide an easy and intuitive way of specifying, testing and managing scheduled tasks. Much emphasis has been placed upon task management, the ability to inspect and kill running tasks as well as simulation, the ability to shorten time so that the scheduler can quickly run tests over and over again. These two features make for a very simple to use, but powerful package for dealing with cron-like tasks.</p><p>The library was originally developed as <a href='https://www.github.com/zcaudate/cronj'>cronj</a> but has now been included as part of the larger <a href='https://www.github.com/zcaudate/hara'>hara</a> codebase. The innards have been more clearly abstracted though building with <a href='hara-component.html'>hara.component</a>. Whilst the dependency on <a href='https://www.github.com/clj-time/clj-time'>clj-time</a> is now option. Another feature that has been added is the ability to control a task's execution model, done through building on top of <a href='https://github.com/zcaudate/hara/blob/master/src/hara/concurrent/procedure.clj'>concurrent.procedure</a>.</p></div></section><section class="section" id="other-libraries"><h3 class="section">1.3  &nbsp;&nbsp; Other Libraries</h3><div class="paragraph"><p><code>hara.io.scheduler</code> is just one of many scheduling libraries in the clojure world including:</p><ul><li><a href='https://github.com/overtone/at-at'>at-at</a></li><li><a href='https://github.com/james-henderson/chime'>chime</a></li><li><a href='https://github.com/kognate/clj-cronlike'>clj-cronlike</a></li><li><a href='http://www.sauronsoftware.it/projects/cron4j'>cron4j</a></li><li><a href='https://github.com/aredington/monotony'>monotony</a></li><li><a href='https://github.com/michaelklishin/quartzite'>quartzite</a></li><li><a href='https://github.com/AdamClements/schejulure'>schejulure</a></li></ul></div></section></section><section class="chapter" id="concepts-and-design"><h2 class="chapter">2  &nbsp;&nbsp; Concepts and Design</h2><div class="group"><div class="paragraph"><p><code>hara.io.scheduler</code> was built around a concept of a <strong>task</strong>. A task has two components:<ul><li>A <code>handler</code>  (what is to be done)</li><li>A <code>schedule</code> (when it should be done)</li></ul>Tasks are synchronized to run using a <code>clock</code>. If a task was scheduled to run at that time, it's <code>handler</code> would be run in a seperate thread. In this section, the general features and use cases for <code>hara.io.scheduler</code> will be shown as well as the novel ideas introduced in the library. These ideas will be exanded upon in the <a href='#walkthrough'>walkthrough</a>:</p></div></div><section class="section" id="seperation-of-concerns"><h3 class="section">2.1  &nbsp;&nbsp; Seperation of Concerns</h3><div class="paragraph"><p>A task handler is a function that can take up to three arguments:</p><ul><li><code>t</code>, the timestamp</li><li><code>params</code>, custom data associated with the task</li><li><code>instance</code>, options to change the execution model of the task</li></ul></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(fn [t params instance]
     (... perform a task ...))</div><div class="paragraph"><p><code>t</code> represents the time at which the handler was called. This solves the problem of <em>time synchronisation</em>. For example, I may have three tasks scheduled to run at a same time:</p><ul><li>perform a calculation and write the result to the database<ul><li>perform a http call and write result to the database</li><li>load some files, write to single output then store file location to the database.</li></ul></li></ul><p>All these tasks will end at different times. To retrospectively reasoning about how all three tasks were synced, each handler is required to accept the triggred time <code>t</code> as an argument.</p><p><code>params</code> is a hashmap, for example <code>{:path '/app/videos'}</code>. It has been found that user customisations such as server addresses and filenames, along with job schedules are usually specified at the top-most tier of the application whilst handler logic is usually in the middle-tier. Having an extra <code>opts</code> argument allow for better seperation of concerns and more readable code.</p><p><code>instance</code> is also a hashmap to manipulate whether to run the function synchronously or asynchronously, to access cached data, etc. More examples can be seen in the <a href='hara-concurrent-procedure.html'>procedure</a> docs.</p></div></section><section class="section" id="thread-management"><h3 class="section">2.2  &nbsp;&nbsp; Thread Management</h3><div class="paragraph"><p>Fully-featured thread management capabilities have been implemented:</p><ul><li>tasks can start at the next scheduled time before the previous thread has finished running so that multiple threads can be running simultaneously for a single task.</li><li>running threads can be listed.</li><li>normal and abnormal termination:<ul><li>kill a running thread</li><li>kill all running threads in a task</li><li>kill all threads</li><li>disable task but let running threads finish</li><li>stop timer but let running threads finish</li><li>shutdown timer, kill all running threads</li></ul></li></ul></div></section><section class="section" id="simulation-testing"><h3 class="section">2.3  &nbsp;&nbsp; Simulation Testing</h3><div class="paragraph"><p>Because the <code>clock</code> module is been completely decoupled from the task array it was very easy to add a simulation component into library. Simulation has some very handy features:<ul><li>Simulate how the entire system would behave over a long periods of time</li><li>Generating test inputs for other applications.</li><li>Both single and multi-threaded execution strategies are supported.</li></ul></div></section></section><section class="chapter" id="walkthrough"><h2 class="chapter">3  &nbsp;&nbsp; Walkthrough</h2><section class="section" id="creating-a-task"><h3 class="section">3.1  &nbsp;&nbsp; Creating a Task</h3><div class="paragraph"><p>We start off by defining a very basic function to essentially print what was passed to it:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(defn print-fn [t params]
   (println (:output params) &quot;:&quot; t))</div><div class="paragraph"><p> We define <code>print-task</code>, which adds schedule and custom param information:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(def print-task
@@ -334,34 +296,12 @@
 
 (count (list-instances sch2))
 =&gt; 0</div><div class="paragraph"><p><code>restart!</code> does the same as <code>shutdown!</code> but just starts up the system again once it has been stopped.</p></div></section></section><section class="chapter" id="links-and-resources"><h2 class="chapter">6  &nbsp;&nbsp; Links and Resources</h2><div class="group"><div class="paragraph"><p>Here are some more links and resources on the web:</p><ul><li><a href='http://z.caudate.me/immutability-time-and-task-schedulers/'>immutability, time and testable task schedulers</a> - original article on the philosophy behind <a href='http://www.github.com/zcaudate/cronj'>cronj</a></li></ul></div></div></section>
-              </div>
+    </div>
+</div><!--end of .container-->
 
-              <div class="col-md-3">
-                <ul id="nav" class="scrollspy nav hidden-xs hidden-sm" data-spy="affix">
-                  <li class="contents">
-                      <h4>NAVIGATION</h4>
-                  </li>
-                  <li><a href="#introduction">1  &nbsp;&nbsp; Introduction</a><ul class="nav"><li><a href="#installation">1.1  &nbsp;&nbsp; Installation</a></li><li><a href="#motivation">1.2  &nbsp;&nbsp; Motivation</a></li><li><a href="#other-libraries">1.3  &nbsp;&nbsp; Other Libraries</a></li></ul></li><li><a href="#concepts-and-design">2  &nbsp;&nbsp; Concepts and Design</a><ul class="nav"><li><a href="#seperation-of-concerns">2.1  &nbsp;&nbsp; Seperation of Concerns</a></li><li><a href="#thread-management">2.2  &nbsp;&nbsp; Thread Management</a></li><li><a href="#simulation-testing">2.3  &nbsp;&nbsp; Simulation Testing</a></li></ul></li><li><a href="#walkthrough">3  &nbsp;&nbsp; Walkthrough</a><ul class="nav"><li><a href="#creating-a-task">3.1  &nbsp;&nbsp; Creating a Task</a></li><li><a href="#running-tasks">3.2  &nbsp;&nbsp; Running Tasks</a></li><li><a href="#components">3.3  &nbsp;&nbsp; Components</a></li><li><a href="#schedule">3.4  &nbsp;&nbsp; Schedule</a></li></ul></li><li><a href="#simulation">4  &nbsp;&nbsp; Simulation</a><ul class="nav"><li><a href="#y2-k-revisited">4.1  &nbsp;&nbsp; Y2K Revisited</a></li><li><a href="#interval-and-pause">4.2  &nbsp;&nbsp; Interval and Pause</a></li></ul></li><li><a href="#task-management">5  &nbsp;&nbsp; Task Management</a><ul class="nav"><li><a href="#trigger">5.1  &nbsp;&nbsp; trigger!</a></li><li><a href="#killing-instances">5.2  &nbsp;&nbsp; killing instances</a></li><li><a href="#live-action">5.3  &nbsp;&nbsp; live action</a></li><li><a href="#shutdown-and-restart">5.4  &nbsp;&nbsp; shutdown and restart</a></li></ul></li><li><a href="#links-and-resources">6  &nbsp;&nbsp; Links and Resources</a></li>
-                  <li class="contents">
-                  </li>
-                </ul>
-              </div>
-
-            </div>
-
-            </div><!--end of .row-->
-          </div><!--end of .container-->
-
-          <section class="application">
-            
-            <!--div class="container">
-              <h2>Come and Join Us</h2>
-              <div class="row">
-              </div>
-            </div-->
-          </section>
-        </div>
-      </div>
+  <section class="application">
+    
+  </section>
 </body>
 
 <script>

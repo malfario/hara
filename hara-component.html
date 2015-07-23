@@ -36,97 +36,59 @@
   </script>
 
   <script>
-  angular.module('app',['ui.bootstrap', 'ngCookies', 'hljs']);
-
-  function rdLoading(){var d={restrict:"AE",template:'<div class="loading"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>'};return d}angular.module("app").directive("rdLoading",rdLoading);
-  function rdWidgetBody(){var d={requires:"^rdWidget",scope:{loading:"@?",classes:"@?"},transclude:!0,template:'<div class="widget-body" ng-class="classes"><rd-loading ng-show="loading"></rd-loading><div ng-hide="loading" class="widget-content" ng-transclude></div></div>',restrict:"E"};return d}angular.module("app").directive("rdWidgetBody",rdWidgetBody);
-  function rdWidgetFooter(){var e={requires:"^rdWidget",transclude:!0,template:'<div class="widget-footer" ng-transclude></div>',restrict:"E"};return e}angular.module("app").directive("rdWidgetFooter",rdWidgetFooter);
-  function rdWidgetTitle(){var e={requires:"^rdWidget",scope:{title:"@",icon:"@"},transclude:!0,template:'<div class="widget-header"><i class="fa" ng-class="icon"></i> {{title}} <div class="pull-right" ng-transclude></div></div>',restrict:"E"};return e}angular.module("app").directive("rdWidgetHeader",rdWidgetTitle);
-  function rdWidget(){var d={transclude:!0,template:'<div class="widget" ng-transclude></div>',restrict:"EA"};return d}angular.module("app").directive("rdWidget",rdWidget);
-  function AlertsCtrl(e){e.alerts=[{type:"success",msg:"Thanks for visiting! Feel free to create pull requests to improve the dashboard!"},{type:"danger",msg:"Found a bug? Create an issue with as many details as you can."}],e.addAlert=function(){e.alerts.push({msg:"Another alert!"})},e.closeAlert=function(t){e.alerts.splice(t,1)}}angular.module("app").controller("AlertsCtrl",["$scope",AlertsCtrl]);
-  function MasterCtrl(t,e){var o=992;t.getWidth=function(){return window.innerWidth},t.$watch(t.getWidth,function(g){t.toggle=g>=o?angular.isDefined(e.get("toggle"))?e.get("toggle")?!0:!1:!0:!1}),t.toggleSidebar=function(){t.toggle=!t.toggle,e.put("toggle",t.toggle)},window.onresize=function(){t.$apply()}}angular.module("app").controller("MasterCtrl",["$scope","$cookieStore",MasterCtrl]);
-
+    var app = angular.module('app', ['hljs']);
   </script>
   </head>
 
-  <body ng-app="app" ng-controller="MasterCtrl" data-spy="scroll" data-target=".scrollspy">
-    <div id="page-wrapper" ng-class="{'open': toggle}" ng-cloak>
-      <!-- Sidebar -->
-      <div id="sidebar-wrapper">
-  <ul class="sidebar">
-    <li class="sidebar-main">
-      <a ng-click="toggleSidebar()">
-        <span style="padding-left:20px">MENU</span>
-        <!--img src="img/logo.png" height=40 style="padding-left:70px"-->
-        <span ng-hide="toggle" class="menu-icon glyphicon glyphicon-transfer"></span>
-      </a>
-    </li>
-    <li class="sidebar-list">
-      <a href="index.html">home <span class="menu-icon fa fa-home"></span></a>
-    </li>
-    <!--li class="sidebar-list">
-      <a href="api.html">api reference <span class="menu-icon fa fa-bank"></span></a>
-    </li-->
-    <li class="sidebar-title"><span>guides</span></li>
-    <li class="sidebar-list" ng-show="toggle">
-      <a href="hara-component.html">&bull;<span class="submenu-item">component</span></a>
-    </li>
-    <li class="sidebar-list" ng-show="toggle">
-      <a href="hara-concurrent-ova.html">&bull;<span class="submenu-item">concurrent.ova</span></a>
-    </li>
-    <li class="sidebar-list" ng-show="toggle">
-      <a href="hara-event.html">&bull;<span class="submenu-item">event</span></a>
-    </li>
-    <!--li class="sidebar-list" ng-show="toggle">
-      <a href="hara-io-watch.html">&bull;<span class="submenu-item">io.watch</span></a>
-    </li-->
-    <li class="sidebar-list" ng-show="toggle">
-      <a href="hara-io-scheduler.html">&bull;<span class="submenu-item">io.scheduler</span></a>
-    </li>
-    <li class="sidebar-list" ng-show="toggle">
-      <a href="hara-reflect.html">&bull;<span class="submenu-item">reflect</span></a>
-    </li>
+  <body ng-app="app" data-spy="scroll" data-target=".scrollspy">
+  <!-- Fixed navbar -->
+    <nav class="navbar navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html"><img src="img/logo.png"></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Guides <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="hara-component.html">component</a></li>
+                <li><a href="hara-concurrent-ova.html">concurrent.ova</a></li>
+                <li><a href="hara-event.html">event</a></li>
+                <li><a href="hara-io-scheduler.html">io.scheduler</a></li>
+                <li><a href="hara-reflect.html">reflect</a></li>
+            </ul>
+            </li>
+            <li>
+              <a href="https://github.com/zcaudate/hara" target="_blank">Github</a></li>
+            <li>
+              <a href="http://gitter.io/zcaudate/hara" target="_blank">Gitter</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
 
-    <li class="sidebar-title"><span>links</span></li>
-    <li class="sidebar-list">
-      <a href="http://www.gitter.im/zcaudate/hara" target="_blank">support <span class="menu-icon fa fa-support"></span></a>
-    </li>
-    <li class="sidebar-list">
-      <a href="https://github.com/zcaudate/hara" target="_blank">source code<span class="menu-icon fa fa-github"></span></a>
-    </li>
 
-  </ul>
-  <div class="sidebar-footer">
-    <div class="col-xs-6">
-      <a href="https://github.com/zcaudate/hara" target="_blank">
-        Github
-      </a>
+  <div class="container row">
+    <div class="col-md-4 scrollspy pull-right">
+      <ul id="nav" class="nav hidden-xs hidden-sm" data-spy="affix">
+        <li><a href="#introduction">1  &nbsp;&nbsp; Introduction</a><ul class="nav"><li><a href="#installation">1.1  &nbsp;&nbsp; Installation</a></li><li><a href="#motivation">1.2  &nbsp;&nbsp; Motivation</a></li></ul></li><li><a href="#config-driven-design">2  &nbsp;&nbsp; Config Driven Design</a><ul class="nav"><li><a href="#the-bug-trapper">2.1  &nbsp;&nbsp; The Bug Trapper</a></li><li><a href="#configuration">2.2  &nbsp;&nbsp; Configuration</a></li></ul></li><li><a href="#probability-model">3  &nbsp;&nbsp; Probability Model</a><ul class="nav"><li><a href="#linear-adjustment">3.1  &nbsp;&nbsp; linear-adjustment</a></li><li><a href="#toggle-adjustment">3.2  &nbsp;&nbsp; toggle-adjustment</a></li><li><a href="#add-distributions">3.3  &nbsp;&nbsp; add-distributions</a></li><li><a href="#adjusted-distribution">3.4  &nbsp;&nbsp; adjusted-distribution</a></li></ul></li><li><a href="#sampling-model">4  &nbsp;&nbsp; Sampling Model</a><ul class="nav"><li><a href="#cumultive">4.1  &nbsp;&nbsp; cumultive</a></li><li><a href="#category">4.2  &nbsp;&nbsp; category</a></li><li><a href="#random-sample">4.3  &nbsp;&nbsp; random-sample</a></li></ul></li><li><a href="#implementing-components">5  &nbsp;&nbsp; Implementing Components</a><ul class="nav"><li><a href="#model">5.1  &nbsp;&nbsp; Model</a></li><li><a href="#trap">5.2  &nbsp;&nbsp; Trap</a></li><li><a href="#partial-system-testing">5.3  &nbsp;&nbsp; Partial System Testing</a></li><li><a href="#app">5.4  &nbsp;&nbsp; App</a></li><li><a href="#app-testing">5.5  &nbsp;&nbsp; App Testing</a></li><li><a href="#server">5.6  &nbsp;&nbsp; Server</a></li><li><a href="#server-testing">5.7  &nbsp;&nbsp; Server Testing</a></li></ul></li><li><a href="#the-big-picture">6  &nbsp;&nbsp; The Big Picture</a><ul class="nav"><li><a href="#summary">6.1  &nbsp;&nbsp; Summary</a></li><li><a href="#further-extension">6.2  &nbsp;&nbsp; Further Extension</a></li></ul></li><li><a href="#links-and-resources">7  &nbsp;&nbsp; Links and Resources</a></li>
+      </ul>
     </div>
-    <div class="col-xs-6">
-      <a href="https://gitter.com/zcaudate/hara">
-        Support
-      </a>
-    </div>
-  </div>
-</div>
-
-      <!-- End Sidebar -->
-
-      <div id="content-wrapper">
-        <div class="page-content">
-
-          <div class="container">
-            <div class="row">
-
-              <div class="col-md-7">
-                <div class="jumbotron">
-                  <div class="container">
-                    <h1>component</h1>
-                    <h4>constructing composable systems</h4>
-                  </div>
-                </div><!--end of .jumbotron-->
-
-                <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/component.clj'>hara.component</a> is a dependency injection framework inspired by the original Stuart Sierra component <a href='https://github.com/stuartsierra/component'>library</a> and <a href='http://www.youtube.com/watch?v=13cmHf&#95;kt-Q'>talk</a>. The virtues of this type of design for composing large systems has been much lauded and is quite a common practise within enterprise applications. Doing a <a href='https://www.google.com?q=stuart+sierra+component'>search</a> will yield many uses of such a pattern.</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.component &quot;2.2.0&quot;&#93;
+    <div class="col-md-8" id="content">
+      <div class="jumbotron">
+        <div class="container">
+          <h1>component</h1>
+          <h4>constructing composable systems</h4>
+        </div>
+      </div>
+      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/component.clj'>hara.component</a> is a dependency injection framework inspired by the original Stuart Sierra component <a href='https://github.com/stuartsierra/component'>library</a> and <a href='http://www.youtube.com/watch?v=13cmHf&#95;kt-Q'>talk</a>. The virtues of this type of design for composing large systems has been much lauded and is quite a common practise within enterprise applications. Doing a <a href='https://www.google.com?q=stuart+sierra+component'>search</a> will yield many uses of such a pattern.</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.component &quot;2.2.3&quot;&#93;
 </code></pre></div><div class="paragraph"><p>All functions are in the <code>hara.component</code> namespace.</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(require '[hara.component :as component])</div></section><section class="section" id="motivation"><h3 class="section">1.2  &nbsp;&nbsp; Motivation</h3><div class="paragraph"><p>The main reason for a reinterpretation of the original <a href='https://github.com/stuartsierra/component'>stuartsierra/component</a> was for a couple reasons:</p><ul><li>the <code>component/Lifecycle</code> protocol did not expose <code>started?</code> and <code>stopped?</code> methods</li><li>the new library has been designed to work well with configuration files</li><li>dependencies are now not required to be explicitly defined</li><li>added support for dealing with arrays of component</li><li>more control was needed when working with nested systems</li><li>more emphasis has been placed on prettiness and readibility</li></ul><p>The differentiation of <code>hara.component</code> is to tease apart configuration and application topology. Configuration gives the ability to set the starting state of the entire program and should be easy as possible. Many a system become bloated due to not being able to properly manage configuration, therefore composing systems with configuration at the forefront will make for much simpler code and design. This library was build with this paradigm in mind.</p></div></section></section><section class="chapter" id="config-driven-design"><h2 class="chapter">2  &nbsp;&nbsp; Config Driven Design</h2><div class="group"><div class="paragraph"><p>We will aim to create a system based upon a configuration file. As components are a very high level concept, using the pattern in code is more of a state of mind than following a set of APIs. Therefore in this documentation, it is hoped that a tutorial based approach will demonstrate the core functionality within the library. We seperate the guide into the following sections</p><ul><li><a href='#probability-model'>Probability Model</a> - How to calculate a bug distribution model.</li><li><a href='#sampling-model'>Sampling Model</a> - How to sample the distribution model.</li><li><a href='#implementing-components'>Implementing Components</a> - How to create and pretty up components so they are easy to integrate.</li><li><a href='#the-big-picture'>The Big Picture</a> - How to think about building and extending systems</li></ul><p>The first two chapters are not really about components, but it is important in showing how to create functions based around a particular configuration. The rest of the sections take a comphrensive approach of how to configure and reason about entire systems based on the component approach.</p></div></div><section class="section" id="the-bug-trapper"><h3 class="section">2.1  &nbsp;&nbsp; The Bug Trapper</h3><div class="paragraph"><p>We are creating a simulation based on trapping bugs in different parts of the house, then tallying up the results and displaying it through a web interface. We can see how the sub-systems connect together in the diagram below:</p></div><div class="figure"><a name="sub-system-dependencies"></a><div class="img"><img height="400px" src="img/hara_component/dependency.png" /></div><h4><i>fig.1  &nbsp;-&nbsp; sub-system dependencies</i></h4></div><div class="paragraph"><p>At the very bottom is a statistical model for generating events ie, how often an insect would be likely to appear given a certain set of conditions such as brightness, dampness, if it is indoors or outdoors, etc. This is used by a number of <code>traps</code>, which are an array of devices that simulates events of an insect going into the trap. An insect may or may not be captured by the trap itself and this is also tallied. The <code>app</code> itself tracks events over time by putting results into a <em>'database'</em> and the server takes live results and outputs a string via http.</p></div></section><section class="section" id="configuration"><h3 class="section">2.2  &nbsp;&nbsp; Configuration</h3><div class="paragraph"><p>A datastructure can be created that customises various aspects of the simulation:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(def config
   {:server     {:port 8090}
    :app        {}
@@ -483,34 +445,12 @@
 
 (def sys (-&gt; (component/system topology config)
              (component/start)))</div><div class="paragraph"><p>We can again visualize the extended system:</p></div><div class="figure"><a name="the-extended-system"></a><div class="img"><img src="img/hara_component/system2.png" width="100%" /></div><h4><i>fig.3  &nbsp;-&nbsp; the extended system</i></h4></div></section></section><section class="chapter" id="links-and-resources"><h2 class="chapter">7  &nbsp;&nbsp; Links and Resources</h2><div class="group"><div class="paragraph"><p>Here are some more links and resources on the web:</p><ul><li><a href='https://github.com/stuartsierra/component'>stuartsierra/component</a> - original library</li><li><a href='http://z.caudate.me/hara-component-just-a-bit-more-structure/'>just a bit more structure</a> - the announcement on my blog</li></ul></div></div></section>
-              </div>
+    </div>
+</div><!--end of .container-->
 
-              <div class="col-md-3">
-                <ul id="nav" class="scrollspy nav hidden-xs hidden-sm" data-spy="affix">
-                  <li class="contents">
-                      <h4>NAVIGATION</h4>
-                  </li>
-                  <li><a href="#introduction">1  &nbsp;&nbsp; Introduction</a><ul class="nav"><li><a href="#installation">1.1  &nbsp;&nbsp; Installation</a></li><li><a href="#motivation">1.2  &nbsp;&nbsp; Motivation</a></li></ul></li><li><a href="#config-driven-design">2  &nbsp;&nbsp; Config Driven Design</a><ul class="nav"><li><a href="#the-bug-trapper">2.1  &nbsp;&nbsp; The Bug Trapper</a></li><li><a href="#configuration">2.2  &nbsp;&nbsp; Configuration</a></li></ul></li><li><a href="#probability-model">3  &nbsp;&nbsp; Probability Model</a><ul class="nav"><li><a href="#linear-adjustment">3.1  &nbsp;&nbsp; linear-adjustment</a></li><li><a href="#toggle-adjustment">3.2  &nbsp;&nbsp; toggle-adjustment</a></li><li><a href="#add-distributions">3.3  &nbsp;&nbsp; add-distributions</a></li><li><a href="#adjusted-distribution">3.4  &nbsp;&nbsp; adjusted-distribution</a></li></ul></li><li><a href="#sampling-model">4  &nbsp;&nbsp; Sampling Model</a><ul class="nav"><li><a href="#cumultive">4.1  &nbsp;&nbsp; cumultive</a></li><li><a href="#category">4.2  &nbsp;&nbsp; category</a></li><li><a href="#random-sample">4.3  &nbsp;&nbsp; random-sample</a></li></ul></li><li><a href="#implementing-components">5  &nbsp;&nbsp; Implementing Components</a><ul class="nav"><li><a href="#model">5.1  &nbsp;&nbsp; Model</a></li><li><a href="#trap">5.2  &nbsp;&nbsp; Trap</a></li><li><a href="#partial-system-testing">5.3  &nbsp;&nbsp; Partial System Testing</a></li><li><a href="#app">5.4  &nbsp;&nbsp; App</a></li><li><a href="#app-testing">5.5  &nbsp;&nbsp; App Testing</a></li><li><a href="#server">5.6  &nbsp;&nbsp; Server</a></li><li><a href="#server-testing">5.7  &nbsp;&nbsp; Server Testing</a></li></ul></li><li><a href="#the-big-picture">6  &nbsp;&nbsp; The Big Picture</a><ul class="nav"><li><a href="#summary">6.1  &nbsp;&nbsp; Summary</a></li><li><a href="#further-extension">6.2  &nbsp;&nbsp; Further Extension</a></li></ul></li><li><a href="#links-and-resources">7  &nbsp;&nbsp; Links and Resources</a></li>
-                  <li class="contents">
-                  </li>
-                </ul>
-              </div>
-
-            </div>
-
-            </div><!--end of .row-->
-          </div><!--end of .container-->
-
-          <section class="application">
-            
-            <!--div class="container">
-              <h2>Come and Join Us</h2>
-              <div class="row">
-              </div>
-            </div-->
-          </section>
-        </div>
-      </div>
+  <section class="application">
+    
+  </section>
 </body>
 
 <script>

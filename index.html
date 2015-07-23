@@ -58,7 +58,7 @@
       <a ng-click="toggleSidebar()">
         <span style="padding-left:20px">MENU</span>
         <!--img src="img/logo.png" height=40 style="padding-left:70px"-->
-        <span ng-hide="toggle" class="menu-icon glyphicon glyphicon-transfer"></span>
+        <span ng-show="toggle" class="menu-icon glyphicon glyphicon-transfer"></span>
       </a>
     </li>
     <li class="sidebar-list">
@@ -190,12 +190,12 @@
 				<div class="comment">In your <code>project.clj</code> add the following to include the entire <code>hara</code> library:</div>
         <div class="comment">&nbsp;</div>
         <div hljs language="clojure">
-[im.chit/hara "2.2.0"]</div>
+[im.chit/hara "2.2.3"]</div>
         <div class="comment">&nbsp;</div>
 				<div class="comment">Include selected functionality by including the specific package. For example, if the <code>hara.io.watch</code> namespace is required, use the following instead:</div>
         <div class="comment">&nbsp;</div>
         <div hljs language="clojure">
-[im.chit/hara.io.watch "2.2.0"]</div>
+[im.chit/hara.io.watch "2.2.3"]</div>
     <div class="comment">&nbsp;</div>
 			</rd-widget-body>
 		</rd-widget>

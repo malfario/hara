@@ -36,97 +36,59 @@
   </script>
 
   <script>
-  angular.module('app',['ui.bootstrap', 'ngCookies', 'hljs']);
-
-  function rdLoading(){var d={restrict:"AE",template:'<div class="loading"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>'};return d}angular.module("app").directive("rdLoading",rdLoading);
-  function rdWidgetBody(){var d={requires:"^rdWidget",scope:{loading:"@?",classes:"@?"},transclude:!0,template:'<div class="widget-body" ng-class="classes"><rd-loading ng-show="loading"></rd-loading><div ng-hide="loading" class="widget-content" ng-transclude></div></div>',restrict:"E"};return d}angular.module("app").directive("rdWidgetBody",rdWidgetBody);
-  function rdWidgetFooter(){var e={requires:"^rdWidget",transclude:!0,template:'<div class="widget-footer" ng-transclude></div>',restrict:"E"};return e}angular.module("app").directive("rdWidgetFooter",rdWidgetFooter);
-  function rdWidgetTitle(){var e={requires:"^rdWidget",scope:{title:"@",icon:"@"},transclude:!0,template:'<div class="widget-header"><i class="fa" ng-class="icon"></i> {{title}} <div class="pull-right" ng-transclude></div></div>',restrict:"E"};return e}angular.module("app").directive("rdWidgetHeader",rdWidgetTitle);
-  function rdWidget(){var d={transclude:!0,template:'<div class="widget" ng-transclude></div>',restrict:"EA"};return d}angular.module("app").directive("rdWidget",rdWidget);
-  function AlertsCtrl(e){e.alerts=[{type:"success",msg:"Thanks for visiting! Feel free to create pull requests to improve the dashboard!"},{type:"danger",msg:"Found a bug? Create an issue with as many details as you can."}],e.addAlert=function(){e.alerts.push({msg:"Another alert!"})},e.closeAlert=function(t){e.alerts.splice(t,1)}}angular.module("app").controller("AlertsCtrl",["$scope",AlertsCtrl]);
-  function MasterCtrl(t,e){var o=992;t.getWidth=function(){return window.innerWidth},t.$watch(t.getWidth,function(g){t.toggle=g>=o?angular.isDefined(e.get("toggle"))?e.get("toggle")?!0:!1:!0:!1}),t.toggleSidebar=function(){t.toggle=!t.toggle,e.put("toggle",t.toggle)},window.onresize=function(){t.$apply()}}angular.module("app").controller("MasterCtrl",["$scope","$cookieStore",MasterCtrl]);
-
+    var app = angular.module('app', ['hljs']);
   </script>
   </head>
 
-  <body ng-app="app" ng-controller="MasterCtrl" data-spy="scroll" data-target=".scrollspy">
-    <div id="page-wrapper" ng-class="{'open': toggle}" ng-cloak>
-      <!-- Sidebar -->
-      <div id="sidebar-wrapper">
-  <ul class="sidebar">
-    <li class="sidebar-main">
-      <a ng-click="toggleSidebar()">
-        <span style="padding-left:20px">MENU</span>
-        <!--img src="img/logo.png" height=40 style="padding-left:70px"-->
-        <span ng-hide="toggle" class="menu-icon glyphicon glyphicon-transfer"></span>
-      </a>
-    </li>
-    <li class="sidebar-list">
-      <a href="index.html">home <span class="menu-icon fa fa-home"></span></a>
-    </li>
-    <!--li class="sidebar-list">
-      <a href="api.html">api reference <span class="menu-icon fa fa-bank"></span></a>
-    </li-->
-    <li class="sidebar-title"><span>guides</span></li>
-    <li class="sidebar-list" ng-show="toggle">
-      <a href="hara-component.html">&bull;<span class="submenu-item">component</span></a>
-    </li>
-    <li class="sidebar-list" ng-show="toggle">
-      <a href="hara-concurrent-ova.html">&bull;<span class="submenu-item">concurrent.ova</span></a>
-    </li>
-    <li class="sidebar-list" ng-show="toggle">
-      <a href="hara-event.html">&bull;<span class="submenu-item">event</span></a>
-    </li>
-    <!--li class="sidebar-list" ng-show="toggle">
-      <a href="hara-io-watch.html">&bull;<span class="submenu-item">io.watch</span></a>
-    </li-->
-    <li class="sidebar-list" ng-show="toggle">
-      <a href="hara-io-scheduler.html">&bull;<span class="submenu-item">io.scheduler</span></a>
-    </li>
-    <li class="sidebar-list" ng-show="toggle">
-      <a href="hara-reflect.html">&bull;<span class="submenu-item">reflect</span></a>
-    </li>
+  <body ng-app="app" data-spy="scroll" data-target=".scrollspy">
+  <!-- Fixed navbar -->
+    <nav class="navbar navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html"><img src="img/logo.png"></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Guides <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="hara-component.html">component</a></li>
+                <li><a href="hara-concurrent-ova.html">concurrent.ova</a></li>
+                <li><a href="hara-event.html">event</a></li>
+                <li><a href="hara-io-scheduler.html">io.scheduler</a></li>
+                <li><a href="hara-reflect.html">reflect</a></li>
+            </ul>
+            </li>
+            <li>
+              <a href="https://github.com/zcaudate/hara" target="_blank">Github</a></li>
+            <li>
+              <a href="http://gitter.io/zcaudate/hara" target="_blank">Gitter</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
 
-    <li class="sidebar-title"><span>links</span></li>
-    <li class="sidebar-list">
-      <a href="http://www.gitter.im/zcaudate/hara" target="_blank">support <span class="menu-icon fa fa-support"></span></a>
-    </li>
-    <li class="sidebar-list">
-      <a href="https://github.com/zcaudate/hara" target="_blank">source code<span class="menu-icon fa fa-github"></span></a>
-    </li>
 
-  </ul>
-  <div class="sidebar-footer">
-    <div class="col-xs-6">
-      <a href="https://github.com/zcaudate/hara" target="_blank">
-        Github
-      </a>
+  <div class="container row">
+    <div class="col-md-4 scrollspy pull-right">
+      <ul id="nav" class="nav hidden-xs hidden-sm" data-spy="affix">
+        <li><a href="#introduction">1  &nbsp;&nbsp; Introduction</a><ul class="nav"><li><a href="#installation">1.1  &nbsp;&nbsp; Installation</a></li><li><a href="#motivation">1.2  &nbsp;&nbsp; Motivation</a></li><li><a href="#other-libraries">1.3  &nbsp;&nbsp; Other Libraries</a></li></ul></li><li><a href="#event-management">2  &nbsp;&nbsp; Event Management</a><ul class="nav"><li><a href="#listeners-and-managers">2.1  &nbsp;&nbsp; Listeners and Managers</a></li><li><a href="#signal-syntax">2.2  &nbsp;&nbsp; Signal Syntax</a></li><li><a href="#listener-syntax">2.3  &nbsp;&nbsp; Listener Syntax</a></li><li><a href="#raise-syntax">2.4  &nbsp;&nbsp; Raise Syntax</a></li><li><a href="#manage-syntax">2.5  &nbsp;&nbsp; Manage Syntax</a></li></ul></li><li><a href="#quickstart">3  &nbsp;&nbsp; Quickstart</a><ul class="nav"><li><a href="#unlucky-numbers">3.1  &nbsp;&nbsp; Unlucky Numbers</a></li><li><a href="#getting-messy">3.2  &nbsp;&nbsp; Getting Messy</a></li><li><a href="#raise-dont-throw">3.3  &nbsp;&nbsp; Raise, don't Throw</a></li><li><a href="#issues-and-abnormal-flow">3.4  &nbsp;&nbsp; Issues and Abnormal Flow</a></li><li><a href="#a-sleight-of-hand">3.5  &nbsp;&nbsp; A Sleight of Hand</a></li><li><a href="#chinese-unlucky-numbers">3.6  &nbsp;&nbsp; Chinese Unlucky Numbers</a></li><li><a href="#christian-unlucky-numbers">3.7  &nbsp;&nbsp; Christian Unlucky Numbers</a></li></ul></li><li><a href="#api">4  &nbsp;&nbsp; API</a><ul class="nav"><li><a href="#api-raise">4.1  &nbsp;&nbsp; raise</a></li><li><a href="#option--default">4.2  &nbsp;&nbsp; option/default</a></li><li><a href="#manage--on">4.3  &nbsp;&nbsp; manage/on</a></li><li><a href="#checkers">4.4  &nbsp;&nbsp; checkers</a></li><li><a href="#bindings">4.5  &nbsp;&nbsp; bindings</a></li><li><a href="#catch-and-finally">4.6  &nbsp;&nbsp; catch and finally</a></li><li><a href="#special-forms">4.7  &nbsp;&nbsp; special forms</a></li><li><a href="#api-continue">4.8  &nbsp;&nbsp; continue</a></li><li><a href="#api-fail">4.9  &nbsp;&nbsp; fail</a></li><li><a href="#api-choose">4.10  &nbsp;&nbsp; choose</a></li><li><a href="#api-default">4.11  &nbsp;&nbsp; default</a></li><li><a href="#api-escalate">4.12  &nbsp;&nbsp; escalate</a></li></ul></li><li><a href="#strategies">5  &nbsp;&nbsp; Strategies</a><ul class="nav"><li><a href="#normal">5.1  &nbsp;&nbsp; Normal</a></li><li><a href="#catch">5.2  &nbsp;&nbsp; Catch</a></li><li><a href="#continue">5.3  &nbsp;&nbsp; Continue</a></li><li><a href="#choose">5.4  &nbsp;&nbsp; Choose</a></li><li><a href="#choose-more">5.5  &nbsp;&nbsp; Choose - More Strategies</a></li><li><a href="#escalate">5.6  &nbsp;&nbsp; Escalate</a></li><li><a href="#fail">5.7  &nbsp;&nbsp; Fail</a></li><li><a href="#default">5.8  &nbsp;&nbsp; Default</a></li><li><a href="#on-form">5.9  &nbsp;&nbsp; Branch Using On</a></li></ul></li><li><a href="#implementation">6  &nbsp;&nbsp; Implementation</a><ul class="nav"><li><a href="#the-dumb-throw">6.1  &nbsp;&nbsp; The dumb throw</a></li><li><a href="#the-smart-raise">6.2  &nbsp;&nbsp; The smart raise</a></li><li><a href="#being-proactive">6.3  &nbsp;&nbsp; Being Proactive</a></li><li><a href="#the-issue-management-board">6.4  &nbsp;&nbsp; The Issue Management Board</a></li><li><a href="#control-flow-as-data">6.5  &nbsp;&nbsp; Control Flow as Data</a></li><li><a href="#implementing-catch">6.6  &nbsp;&nbsp; Implementing Catch</a></li><li><a href="#implementing-choose">6.7  &nbsp;&nbsp; Implementing Choose</a></li><li><a href="#implementing-the-rest">6.8  &nbsp;&nbsp; Implementing the Rest</a></li></ul></li><li><a href="#links-and-resources">7  &nbsp;&nbsp; Links and Resources</a></li>
+      </ul>
     </div>
-    <div class="col-xs-6">
-      <a href="https://gitter.com/zcaudate/hara">
-        Support
-      </a>
-    </div>
-  </div>
-</div>
-
-      <!-- End Sidebar -->
-
-      <div id="content-wrapper">
-        <div class="page-content">
-
-          <div class="container">
-            <div class="row">
-
-              <div class="col-md-7">
-                <div class="jumbotron">
-                  <div class="container">
-                    <h1>event</h1>
-                    <h4>event signalling and conditional restart</h4>
-                  </div>
-                </div><!--end of .jumbotron-->
-
-                <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/event.clj'>hara.event</a> aims to provide more loosely coupled code through two mechanisms:</p><ul><li>a global eventing system for decoupilng of side-effecting</li><li>a conditional restart framework that hooks into the eventing system.</li></ul><p><code>hara.event</code> was originally developed as a <a href='https://github.com/zcaudate/ribol'>seperate library</a> but has been included as part of the larger <a href='https://github.com/zcaudate/hara'>hara</a> codebase. The main addition to the original library has been the inclusion of the eventing system as it was felt that there should be an integrated way of dealing with side-effecting calls such as logging, indexing, emails and many other tasks within both normal and abnormal program flows.</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies (use double quotes):</p><pre><code>&#91;im.chit/hara.event '2.2.0'&#93;
+    <div class="col-md-8" id="content">
+      <div class="jumbotron">
+        <div class="container">
+          <h1>event</h1>
+          <h4>event signalling and conditional restart</h4>
+        </div>
+      </div>
+      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/event.clj'>hara.event</a> aims to provide more loosely coupled code through two mechanisms:</p><ul><li>a global eventing system for decoupilng of side-effecting</li><li>a conditional restart framework that hooks into the eventing system.</li></ul><p><code>hara.event</code> was originally developed as a <a href='https://github.com/zcaudate/ribol'>seperate library</a> but has been included as part of the larger <a href='https://github.com/zcaudate/hara'>hara</a> codebase. The main addition to the original library has been the inclusion of the eventing system as it was felt that there should be an integrated way of dealing with side-effecting calls such as logging, indexing, emails and many other tasks within both normal and abnormal program flows.</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies (use double quotes):</p><pre><code>&#91;im.chit/hara.event '2.2.3'&#93;
 </code></pre></div><div class="paragraph"><p>All functionality is found contained in the <code>hara.event</code> namespace</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(use 'hara.event)</div></section><section class="section" id="motivation"><h3 class="section">1.2  &nbsp;&nbsp; Motivation</h3><div class="paragraph"><p>For those that are not familiar with restart systems (most well know in Common Lisp), they can be thought of as an issue resolution system or <code>try++/catch++</code>. In <code>hara.event</code>, we use the term <code>issues</code> to differentiate them from <code>exceptions</code>. The difference is purely semantic: <code>issues</code> are <code>managed</code> whilst <code>exceptions</code> are <code>caught</code>. They all refer to abnormal program flow.</p><p>There are two forms of <code>exceptions</code> that a programmer will typically encounter:</p><ol><li><strong>Programming Mistakes</strong> - These are a result of logic and reasoning errors, should not occur in normal operation and should be eliminated as soon as possible. The best strategy for dealing with this is to use offensive checks such as pre- and post- conditions, write unit tests and have functions fail early with a clear message to the programmer about the error. Typical cases are:<ul><li>Null pointer exceptions</li><li>Wrong inputs to functions</li></ul></li><li><strong>Exceptions due to Circumstances</strong> - These are circumstancial and should be considered part of the normal operation of the program. There are a wide variety of such exceptions and usually is up to the programming workflow to handle such cases:<ul><li>A database connection going down</li><li>A file not found</li><li>User input not valid</li></ul></li></ol></li></ol><p>The method of <code>try</code> and <code>catch</code> exception handing, though commonly used and familiar to most programmers is a very weak system for exception handling. The try blocks are not really needed when dealing with the <em>Type 1</em> exceptions and a little too weak when dealing with those of <em>Type 2</em>. The net effect of using only the <code>try/catch</code> paradigm in application code is that in order to mitigate these <em>Type 2</em> exceptions, there requires a lot of defensive programming. This turns the middle level of the application into spagetti code with program control flow (<code>try/catch</code>) mixed in with program logic.</p><p>Conditional restarts provide a way for the top-level application to more cleanly deal with <em>Type 2</em> exceptions. A simple use case looking at advantages in using restarts over exceptions can be seen in the <a href='#quickstart'>quickstart</a>. For those that wish to know more about conditional restarts, there is a comprehensive <a href='#strategies'>strategies</a> chapter to the listing different ways abnormal program flow can be dealt with. For those curious about how the framework has been implementated, please jump over to the <a href='#implementation'>implementation</a> chapter.</p></div></section><section class="section" id="other-libraries"><h3 class="section">1.3  &nbsp;&nbsp; Other Libraries</h3><div class="paragraph"><p>There are currently three other conditional restart libraries for clojure, in the more traditional Common Lisp style syntax:</p><ul><li><a href='https://github.com/richhickey/clojure-contrib/blob/master/src/main/clojure/clojure/contrib/error&#95;kit.clj'>errorkit</a> was the first and provided the guiding architecture for this library.</li><li><a href='https://github.com/hugoduncan/swell'>swell</a> and <a href='https://github.com/bwo/conditions'>conditions</a> have been written to work with <a href='https://github.com/scgilardi/slingshot'>slingshot</a>.</li></ul></div></section></section><section class="chapter" id="event-management"><h2 class="chapter">2  &nbsp;&nbsp; Event Management</h2><section class="section" id="listeners-and-managers"><h3 class="section">2.1  &nbsp;&nbsp; Listeners and Managers</h3><div class="paragraph"><p>In any program, we see the following patterns</p><ul><li>side effects occur within both abnormal and normal program flow (usually logging)</li><li>side-effecting libraries coupled to the main logic (logback, email systems, alerts)</li><li>usually some sort of logging has to be done on abnormal program flow</li></ul><p><code>hara.event</code> provides for listeners and managers:</p><ul><li>Listeners act on events they have jurisdiction over for both <code>signal</code> and <code>raise</code> calls. All listeners participate.</li><li>Managers act in a hierarchical fashion where if an issue is raised, the closest manager will handle the issue.</li></ul><p>An example is provided below:</p></div><div class="figure"><a name="example-pathways"></a><div class="img"><img src="img/hara_event/event_pathway.png" width="100%" /></div><h4><i>fig.1  &nbsp;-&nbsp; example pathways</i></h4></div><div class="paragraph"><p>The only difference between <code>signal</code> and <code>raise</code> calls is that <code>signal</code> does not trigger <code>manage</code> handlers. Both calls will trigger any compatible listener. The listers and managers act in a horizontal/vertical or only/all fashion to provide for better decoupilng of functionality within the code base.</p></div></section><section class="section" id="signal-syntax"><h3 class="section">2.2  &nbsp;&nbsp; Signal Syntax</h3><div class="paragraph"><p><code>signal</code> typically just informs its listeners with a given set of information:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(signal {:everything-is-good true :input-data 3})
   </div></section><section class="section" id="listener-syntax"><h3 class="section">2.3  &nbsp;&nbsp; Listener Syntax</h3><div class="paragraph"><p><code>signal</code> typically just informs its listeners with a given set of information:</p></div><div class="code" hljs="hljs" language="clojure" no-escape="no-escape">(deflistener print-listener :log
   data
@@ -660,34 +622,12 @@
            args (::args data)]
        (manage-apply f args label))
   ...)</div></section><section class="section" id="implementing-the-rest"><h3 class="section">6.8  &nbsp;&nbsp; Implementing the Rest</h3><div class="paragraph"><p><code>fail</code>, <code>default</code>, <code>escalate</code> all use similar <em>data as control-flow</em> mechanisms to allow control to be directed to the correct part of the program. It is through this mechanism that branching in the <code>on</code> handlers can be achieved.</p></div></section></section><section class="chapter" id="links-and-resources"><h2 class="chapter">7  &nbsp;&nbsp; Links and Resources</h2><div class="group"><div class="paragraph"><p>Here are some more links and resources on the web:</p><ul><li><a href='http://www.gigamonkeys.com/book/beyond-exception-handling-conditions-and-restarts.html'>beyond exception handling</a> - Peter Seibel's chapter on conditional restarts</li><li><a href='http://z.caudate.me/why-exceptions-are-like-stylesheets/'>why exceptions should cascade like stylesheets</a> - original article on the philosophy behind <a href='http://www.github.com/zcaudate/ribol'>ribol</a></li><li><a href='http://www.youtube.com/watch?v=GDVAHA0oyJU'>the power of abstraction</a> - excellent talk by Barbara Liskov</li></ul></div></div></section>
-              </div>
+    </div>
+</div><!--end of .container-->
 
-              <div class="col-md-3">
-                <ul id="nav" class="scrollspy nav hidden-xs hidden-sm" data-spy="affix">
-                  <li class="contents">
-                      <h4>NAVIGATION</h4>
-                  </li>
-                  <li><a href="#introduction">1  &nbsp;&nbsp; Introduction</a><ul class="nav"><li><a href="#installation">1.1  &nbsp;&nbsp; Installation</a></li><li><a href="#motivation">1.2  &nbsp;&nbsp; Motivation</a></li><li><a href="#other-libraries">1.3  &nbsp;&nbsp; Other Libraries</a></li></ul></li><li><a href="#event-management">2  &nbsp;&nbsp; Event Management</a><ul class="nav"><li><a href="#listeners-and-managers">2.1  &nbsp;&nbsp; Listeners and Managers</a></li><li><a href="#signal-syntax">2.2  &nbsp;&nbsp; Signal Syntax</a></li><li><a href="#listener-syntax">2.3  &nbsp;&nbsp; Listener Syntax</a></li><li><a href="#raise-syntax">2.4  &nbsp;&nbsp; Raise Syntax</a></li><li><a href="#manage-syntax">2.5  &nbsp;&nbsp; Manage Syntax</a></li></ul></li><li><a href="#quickstart">3  &nbsp;&nbsp; Quickstart</a><ul class="nav"><li><a href="#unlucky-numbers">3.1  &nbsp;&nbsp; Unlucky Numbers</a></li><li><a href="#getting-messy">3.2  &nbsp;&nbsp; Getting Messy</a></li><li><a href="#raise-dont-throw">3.3  &nbsp;&nbsp; Raise, don't Throw</a></li><li><a href="#issues-and-abnormal-flow">3.4  &nbsp;&nbsp; Issues and Abnormal Flow</a></li><li><a href="#a-sleight-of-hand">3.5  &nbsp;&nbsp; A Sleight of Hand</a></li><li><a href="#chinese-unlucky-numbers">3.6  &nbsp;&nbsp; Chinese Unlucky Numbers</a></li><li><a href="#christian-unlucky-numbers">3.7  &nbsp;&nbsp; Christian Unlucky Numbers</a></li></ul></li><li><a href="#api">4  &nbsp;&nbsp; API</a><ul class="nav"><li><a href="#api-raise">4.1  &nbsp;&nbsp; raise</a></li><li><a href="#option--default">4.2  &nbsp;&nbsp; option/default</a></li><li><a href="#manage--on">4.3  &nbsp;&nbsp; manage/on</a></li><li><a href="#checkers">4.4  &nbsp;&nbsp; checkers</a></li><li><a href="#bindings">4.5  &nbsp;&nbsp; bindings</a></li><li><a href="#catch-and-finally">4.6  &nbsp;&nbsp; catch and finally</a></li><li><a href="#special-forms">4.7  &nbsp;&nbsp; special forms</a></li><li><a href="#api-continue">4.8  &nbsp;&nbsp; continue</a></li><li><a href="#api-fail">4.9  &nbsp;&nbsp; fail</a></li><li><a href="#api-choose">4.10  &nbsp;&nbsp; choose</a></li><li><a href="#api-default">4.11  &nbsp;&nbsp; default</a></li><li><a href="#api-escalate">4.12  &nbsp;&nbsp; escalate</a></li></ul></li><li><a href="#strategies">5  &nbsp;&nbsp; Strategies</a><ul class="nav"><li><a href="#normal">5.1  &nbsp;&nbsp; Normal</a></li><li><a href="#catch">5.2  &nbsp;&nbsp; Catch</a></li><li><a href="#continue">5.3  &nbsp;&nbsp; Continue</a></li><li><a href="#choose">5.4  &nbsp;&nbsp; Choose</a></li><li><a href="#choose-more">5.5  &nbsp;&nbsp; Choose - More Strategies</a></li><li><a href="#escalate">5.6  &nbsp;&nbsp; Escalate</a></li><li><a href="#fail">5.7  &nbsp;&nbsp; Fail</a></li><li><a href="#default">5.8  &nbsp;&nbsp; Default</a></li><li><a href="#on-form">5.9  &nbsp;&nbsp; Branch Using On</a></li></ul></li><li><a href="#implementation">6  &nbsp;&nbsp; Implementation</a><ul class="nav"><li><a href="#the-dumb-throw">6.1  &nbsp;&nbsp; The dumb throw</a></li><li><a href="#the-smart-raise">6.2  &nbsp;&nbsp; The smart raise</a></li><li><a href="#being-proactive">6.3  &nbsp;&nbsp; Being Proactive</a></li><li><a href="#the-issue-management-board">6.4  &nbsp;&nbsp; The Issue Management Board</a></li><li><a href="#control-flow-as-data">6.5  &nbsp;&nbsp; Control Flow as Data</a></li><li><a href="#implementing-catch">6.6  &nbsp;&nbsp; Implementing Catch</a></li><li><a href="#implementing-choose">6.7  &nbsp;&nbsp; Implementing Choose</a></li><li><a href="#implementing-the-rest">6.8  &nbsp;&nbsp; Implementing the Rest</a></li></ul></li><li><a href="#links-and-resources">7  &nbsp;&nbsp; Links and Resources</a></li>
-                  <li class="contents">
-                  </li>
-                </ul>
-              </div>
-
-            </div>
-
-            </div><!--end of .row-->
-          </div><!--end of .container-->
-
-          <section class="application">
-            
-            <!--div class="container">
-              <h2>Come and Join Us</h2>
-              <div class="row">
-              </div>
-            </div-->
-          </section>
-        </div>
-      </div>
+  <section class="application">
+    
+  </section>
 </body>
 
 <script>
