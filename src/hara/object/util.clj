@@ -11,6 +11,9 @@
                     (re-find #"^is[A-Z].+" name)
                     (str (subs name 2) "?")
 
+                    (re-find #"^has[A-Z].+" name)
+                    (str (subs name 3) "!")
+
                     :else name)]
     (case/spear-case nname)))
 
@@ -20,6 +23,9 @@
    (let [nname (cond (.endsWith name "?")
                      (str "is-" (.substring name 0 (.length name)))
 
+                     (.endsWith name "!")
+                     (str "has-" (.substring name 0 (.length name)))
+
                      :else
                      (str (clojure.core/name suffix) "-" name))]
      (case/camel-case nname))))
@@ -27,7 +33,7 @@
 (defn object-getters
   ([obj]
    (if obj
-     (->> (reflect/query-instance obj [#"(^get)|(^is)[A-Z].+" 1 :instance])
+     (->> (reflect/query-instance obj [#"(^get)|(^is)|(^has)[A-Z].+" 1 :instance])
           (reduce (fn [m ele]
                     (assoc m (-> ele :name java->clojure keyword) ele))
                   {}))
