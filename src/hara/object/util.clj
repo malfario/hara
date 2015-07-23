@@ -4,22 +4,22 @@
             [hara.reflect :as reflect]
             [hara.event :as event]))
 
-(defn java->clojure [name]
+(defn java->clojure [^String name]
   (let [nname (cond (re-find #"(^get)|(^set)[A-Z].+" name)
                     (subs name 3)
-                    
+
                     (re-find #"^is[A-Z].+" name)
                     (str (subs name 2) "?")
-                    
+
                     :else name)]
     (case/spear-case nname)))
 
 (defn clojure->java
   ([name] (clojure->java name :get))
-  ([name suffix]
+  ([^String name suffix]
    (let [nname (cond (.endsWith name "?")
                      (str "is-" (.substring name 0 (.length name)))
-                     
+
                      :else
                      (str (clojure.core/name suffix) "-" name))]
      (case/camel-case nname))))
