@@ -4,7 +4,7 @@
             [hara.event.condition.raise :as raise]
             [hara.event.condition.manage :as manage]
             [hara.event.condition.util :as util])
-  (:import clojure.lang.Symbol))
+  (:import [clojure.lang Symbol Namespace]))
 
 (defonce ^:dynamic *signal-manager* (atom (common/manager)))
 
@@ -56,8 +56,8 @@
   (do (swap! *signal-manager* common/remove-handler id)
       (if-let [nsp (and (symbol? id)
                         (.getNamespace ^Symbol id)
-                        (clojure.lang.Namespace/find (symbol (.getNamespace ^Symbol id))))]
-        (do (.unmap nsp (symbol (.getName ^Symbol id)))
+                        (Namespace/find (symbol (.getNamespace ^Symbol id))))]
+        (do (.unmap ^Namespace nsp (symbol (.getName ^Symbol id)))
             nsp)
         id)))
 

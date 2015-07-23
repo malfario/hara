@@ -147,7 +147,7 @@
 
 
 (defn add-io-watch [obj k f opts]
-  (let [path (.getCanonicalPath obj)
+  (let [path (.getCanonicalPath ^java.io.File obj)
           _    (if-let [wt (get-in @*filewatchers* [path k :watcher])]
                  (-remove-watch obj k nil))
           cb   (watch-callback f obj k)
@@ -156,14 +156,14 @@
       obj))
 
 (defn list-io-watch [obj _]
-  (let [path (.getCanonicalPath obj)]
+  (let [path (.getCanonicalPath ^java.io.File  obj)]
       (->> path (get @*filewatchers*)
            (reduce-kv (fn [i k v]
                         (assoc i k (:function v)))
                       {}))))
 
 (defn remove-io-watch [obj k _]
-  (let [path (.getCanonicalPath obj)
+  (let [path (.getCanonicalPath ^java.io.File obj)
         wt   (get-in @*filewatchers* [path k :watcher])]
     (if-not (nil? wt)
       (if (stop-watcher wt)
