@@ -202,7 +202,7 @@ ul.sidebar .submenu-item {
   margin-left: 10px;
 }
 
-.navbar-default {
+nav {
   background-color: #30426A;
   border-color: #30426A;
 }
@@ -214,4 +214,12 @@ ul.sidebar .submenu-item {
 
 .navbar-nav {
   margin-top: 12px;
+}
+
+.nav .open>a, .nav .open>a:focus, .nav .open>a:hover {
+  background-color: #30426A;
+}
+
+.dropdown-menu>li>a:hover {
+  color: white;
 }
