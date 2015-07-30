@@ -7,10 +7,15 @@
             [hara.object.map-like :as map-like]
             [hara.object.string-like :as string-like]))
 
-(ns/import hara.object.access :all
-           hara.object.base   :all
-           hara.object.enum   :all
-           hara.object.util   :all)
+(ns/import hara.object.access [access]
+           hara.object.base   [to-data from-data]
+           hara.object.enum   [enum? enum-values]
+           hara.object.util   [java->clojure
+                               clojure->java
+                               object-getters
+                               object-setters
+                               object-apply
+                               object-data])
 
 (defmacro extend-stringlike [& {:as classes}]
   `(vector ~@(map (fn [[cls opts]]

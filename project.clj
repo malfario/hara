@@ -1,4 +1,4 @@
-(defproject im.chit/hara "2.2.4"
+(defproject im.chit/hara "2.2.5-SNAPSHOT"
   :description "patterns and utilities"
   :url "https://github.com/zcaudate/hara"
   :license {:name "The MIT License"
@@ -55,6 +55,10 @@
                           ;{:input "test/documentation/hara_io_watch.clj"
                           ; :title "hara.io.watch"
                           ; :subtitle "watch for filesystem changes"}
+                          "hara-object"
+                          {:input "test/documentation/hara_object.clj"
+                           :title "object"
+                           :subtitle "convert java classes to data"}
                           "hara-io-scheduler"
                           {:input "test/documentation/hara_io_scheduler.clj"
                            :title "io.scheduler"
