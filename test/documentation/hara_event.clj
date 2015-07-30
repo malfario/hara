@@ -15,9 +15,9 @@
 
 [[:section {:title "Installation"}]]
 
-"Add to `project.clj` dependencies (use double quotes):
+"Add to `project.clj` dependencies:
 
-    [im.chit/hara.event '{{PROJECT.version}}']"
+    [im.chit/hara.event \"{{PROJECT.version}}\"]"
 
 "All functionality is found contained in the `hara.event` namespace"
 

@@ -33,7 +33,7 @@
 (defn object-getters
   ([obj]
    (if obj
-     (->> (reflect/query-instance obj [#"(^get)|(^is)|(^has)[A-Z].+" 1 :instance])
+     (->> (reflect/query-hierarchy obj [#"(^get)|(^is)|(^has)[A-Z].+" 1 :instance])
           (reduce (fn [m ele]
                     (assoc m (-> ele :name java->clojure keyword) ele))
                   {}))
@@ -42,7 +42,7 @@
 (defn object-setters
   ([obj]
    (if obj
-     (->> (reflect/query-instance obj [#"(^set)[A-Z].+" 2 :instance])
+     (->> (reflect/query-hierarchy obj [#"(^set)[A-Z].+" 2 :instance])
           (reduce (fn [m ele]
                     (assoc m (-> ele :name java->clojure keyword) ele))
                   {}))
@@ -51,15 +51,15 @@
 (defn object-apply [methods obj f]
   (reduce-kv (fn [m k ele]
                (map/assoc-if m k
-                         (try
-                           (f (ele obj))
-                           (catch Throwable t
-                             (event/raise {:msg "Cannot process object-apply"
-                                           :object obj
-                                           :element ele
-                                           :function f}
-                                          (option :nothing [] nil)
-                                          (default :nothing))))))
+                             (try
+                               (f (ele obj))
+                               (catch Throwable t
+                                 (event/raise {:msg "Cannot process object-apply"
+                                               :object obj
+                                               :element ele
+                                               :function f}
+                                              (option :nothing [] nil)
+                                              (default :nothing))))))
              {} methods))
 
 (defn object-data

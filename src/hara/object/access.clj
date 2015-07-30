@@ -1,8 +1,10 @@
 (ns hara.object.access
-  (:require [hara.object.base :as base]
+  (:require [hara.data.nested :as nested]
+            [hara.object.base :as base]
             [hara.object.util :as object]
             [hara.reflect.util :as util]
-            [hara.reflect :as reflect]))
+            [hara.reflect :as reflect])
+  (:import hara.reflect.types.element.Element))
 
 (defn may-coerce [^Class param arg]
   (let [^Class targ (type arg)
@@ -21,23 +23,64 @@
   ([{:keys [params] :as ele} args]
    (apply ele (map may-coerce params args))))
 
+(defn access-get [obj k]
+  (cond (instance? java.util.Map obj)
+        (get obj k)
+
+        :else
+        (if-let [getter (-> obj base/meta-object :getters k)]
+          (getter obj))))
+
+(defn access-set [obj k v]
+  (if-let [setter (-> obj base/meta-object :setters k)]
+    (cond (instance? Element setter)
+          (apply-with-coercion
+           (reflect/query-class obj [(object/clojure->java (name k) :set) 2 :#]) [obj v])
+
+          :else
+          (setter obj v))))
+
+(defn access-get-nested [obj [k & more]]
+  (cond (nil? obj) nil
+        
+        (empty? more) (access-get obj k)
+
+        :else (access-get-nested (access-get obj k) more)))
+
+(defn access-set-nested [obj [k & more] v]
+  (cond (or (nil? obj) (nil? k)) nil
+        
+        (empty? more) (access-set obj k v)
+
+        :else (access-set-nested (access-get obj k) more v))
+  obj)
+
 (defn access
   ([obj]
-   (let [rfunc (fn [m ks val]
-                 (reduce-kv (fn [out k v]
-                              (update-in out [k] (fnil #(conj % val) #{})))
-                         m
-                         ks))]
-     (-> {}
-         (rfunc (object/object-getters obj) :get)
-         (rfunc (object/object-setters obj) :set))))
+   (-> obj
+       base/meta-object
+       (select-keys [:getters :setters])
+       (nested/update-vals-in [] keys)))
   ([obj k]
-   (base/to-data (reflect/apply-element obj (object/clojure->java (name k)) [])))
+   (cond (keyword? k) (access-get obj k)
+         (vector? k)  (access-get-nested obj k)))
   ([obj k v]
-   (apply-with-coercion
-    (reflect/query-class obj [(object/clojure->java (name k) :set) 2 :#]) [obj v])))
+   (cond (keyword? k) (access-set obj k v)
+         (vector? k)  (access-set-nested obj k v))))
 
 
 
 (comment
-  (ns-unalias 'hara.object.access 'reflect))
+  (ns-unalias 'hara.object.access 'reflect)
+
+  (access graph :key)
+
+  (access graph key value)
+  
+  (access graph [:nested :key])
+
+  (access graph [:nested :key] value)
+
+  
+
+  )

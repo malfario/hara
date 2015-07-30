@@ -2,16 +2,20 @@
   (:require [hara.protocol.data :as data]
             [hara.protocol.map :as map]
             [hara.protocol.string :as string]
-            [hara.event :as event]))
+            [hara.event :as event]
+            [hara.reflect :as reflect]))
 
 (defn meta-object [type]
-  (data/-meta-object type))
+  (data/-meta-object (reflect/context-class type)))
 
 (defn to-data [obj]
   (cond (.isArray ^Class (type obj))
         (->> (seq obj)
              (mapv to-data))
 
+        (instance? java.util.Map obj)
+        obj
+        
         :else
         (let [{:keys [types to-data] :as mobj} (data/-meta-object (type obj))]
           (cond to-data (to-data obj)
@@ -23,6 +27,9 @@
   nil
   (-to-data [obj] obj)
 
+  java.util.Map
+  (-to-data [obj] obj)
+  
   java.lang.Iterable
   (-to-data [obj]
     (mapv to-data obj))

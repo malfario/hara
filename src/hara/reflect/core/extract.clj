@@ -78,9 +78,3 @@
      (create-ns nssym)
      (doall (for [method methods]
               (extract-to-var nssym (symbol method) class method selectors))))))
-
-(extract-to-var 'val-of String "valueOf")
-
-(extract-to-var 'veeee String "value")
-
-(meta #'val-of)

@@ -56,6 +56,14 @@
     (->> (all-instance-elements tcls (if (class? obj) obj))
          (display/display grp))))
 
+(defn query-hierarchy
+  "lists what methods could be applied to a particular instance"
+  {:added "2.2"}
+  [obj selectors]
+  (let [grp (args/args-group selectors)
+        tcls  (common/context-class obj)]
+    (->> (all-instance-elements tcls nil)
+         (display/display grp))))
 
 (comment
 

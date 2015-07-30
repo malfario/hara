@@ -9,9 +9,9 @@
 
  [[:section {:title "Installation"}]]
 
-  "Add to `project.clj` dependencies (use double quotes):
+  "Add to `project.clj` dependencies:
 
-      [im.chit/hara.reflect '{{PROJECT.version}}']"
+      [im.chit/hara.reflect \"{{PROJECT.version}}\"]"
 
  "All functionality is found contained in the `hara.reflect` namespace"
 

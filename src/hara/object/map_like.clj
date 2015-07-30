@@ -4,45 +4,53 @@
             [hara.object.base :as base]
             [hara.object.util :as util]))
 
-(defn generic-map [obj {:keys [select exclude getters] :as opts}]
-  (-> (if getters
-        (eval getters)
-        (util/object-getters obj))
-      (#(apply dissoc % :class exclude))
-      (#(if select
-          (select-keys % select)
-          %))
-      (util/object-apply obj base/to-data)))
+(defn map-functions [obj {:keys [func default exclude include extra] :as opts}]
+  (let [fns (if-not (false? default) (func obj) {})
+        fns (if include
+              (select-keys fns include)
+              fns)
+        fns (apply dissoc fns :class exclude)
+        fns (if extra
+              (merge extra fns)
+              fns)]
+    fns))
 
-(defmacro extend-maplike-class [cls {:keys [tag to from meta] :as opts}]
+(defmacro extend-maplike-class [cls {:keys [tag meta to from getters setters default] :as opts}]
   `(vector
+    
     (defmethod data/-meta-object ~cls
       [type#]
-      (hash-map :class     type#
-               :types     #{java.util.Map}
-               :to-data   map/-to-map
-               ~@(if from [:from-data ~from] [])))
-
+      {:class      type#
+       :types      #{java.util.Map}
+       :to-data    map/-to-map
+       :from-data  map/-from-map
+       :getters    (map-functions type# (assoc ~opts :func util/object-getters :extra ~getters))
+       :setters    (map-functions type# (assoc ~opts :func util/object-setters :extra ~setters))})
+    
     (extend-protocol map/IMap
       ~cls
       ~(if to
-         `(-to-map [entry#]
-                   (~to entry#))
-         `(-to-map [entry#]
-                   (generic-map entry# ~opts)))
-
+         `(-to-map [obj#]
+                   (~to obj#))
+         `(-to-map [obj#]
+                   (let [getters# (:getters (data/-meta-object (type obj#)))]
+                     (util/object-apply getters# obj# base/to-data))))
+      
       ~(if meta
          `(-to-map-meta
-           [entry#]
-           (~meta entry#))
+           [obj#]
+           (~meta obj#))
          `(-to-map-meta
-           [entry#]
+           [obj#]
            {:class ~cls})))
 
-    ~@(if from
-        [`(defmethod map/-from-map ~cls
+      ~(if from
+         `(defmethod map/-from-map ~cls
             [data# type#]
-            (~from data# type#))])
+            (~from data# type#))
+         `(defmethod map/-from-map ~cls
+            [data# type#]
+            (throw (Exception. (str "Cannot create " type# " from map.")))))
 
     (defmethod print-method ~cls
       [v# ^java.io.Writer w#]
