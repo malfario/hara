@@ -67,20 +67,3 @@
   ([obj k v]
    (cond (keyword? k) (access-set obj k v)
          (vector? k)  (access-set-nested obj k v))))
-
-
-
-(comment
-  (ns-unalias 'hara.object.access 'reflect)
-
-  (access graph :key)
-
-  (access graph key value)
-  
-  (access graph [:nested :key])
-
-  (access graph [:nested :key] value)
-
-  
-
-  )

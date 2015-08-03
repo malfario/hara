@@ -1,4 +1,4 @@
-(defproject im.chit/hara "2.2.5-SNAPSHOT"
+(defproject im.chit/hara "2.2.5"
   :description "patterns and utilities"
   :url "https://github.com/zcaudate/hara"
   :license {:name "The MIT License"
@@ -9,7 +9,6 @@
                                   [ring "1.4.0"]
                                   [clj-http "1.1.2"]]
                    :plugins [[lein-midje "3.1.3"]
-                             [lein-midje-doc "0.0.23"]
                              [lein-repack "0.2.10"]]}}
   :documentation {:site   "hara"
                   :output "docs"
@@ -45,24 +44,28 @@
                            :subtitle "shared mutable state for multi-threaded applications"}
                           ;"hara-concurrent-procedure"
                           ;{:input "test/documentation/hara_concurrent_procedure.clj"
-                          ; :title "hara.concurrent.procedure"
-                          ; :subtitle ""}
+                          ; :title "concurrent.procedure"
+                          ; :subtitle "generic model for controllable execution"}
                           "hara-event"
                           {:input "test/documentation/hara_event.clj"
                            :title "event"
                            :subtitle "event signalling and conditional restart"}
-                          ;"hara-io-watch"
-                          ;{:input "test/documentation/hara_io_watch.clj"
-                          ; :title "hara.io.watch"
-                          ; :subtitle "watch for filesystem changes"}
-                          "hara-object"
-                          {:input "test/documentation/hara_object.clj"
-                           :title "object"
-                           :subtitle "convert java classes to data"}
+                          "hara-extend-abstract"
+                          {:input "test/documentation/hara_extend_abstract.clj"
+                           :title "extend.abstract"
+                           :subtitle "the abstract container pattern generator"}
                           "hara-io-scheduler"
                           {:input "test/documentation/hara_io_scheduler.clj"
                            :title "io.scheduler"
                            :subtitle "easy and intuitive task scheduling"}
+                          ;"hara-io-watch"
+                          ;{:input "test/documentation/hara_io_watch.clj"
+                          ; :title "io.watch"
+                          ; :subtitle "watch for filesystem changes"}
+                          "hara-object"
+                          {:input "test/documentation/hara_object.clj"
+                           :title "object"
+                           :subtitle "turn everything into clojure data"}
                           "hara-reflect"
                           {:input "test/documentation/hara_reflect.clj"
                            :title "reflect"
