@@ -25,28 +25,29 @@
 
 [[:chapter {:title "Understanding JavaFX"}]]
 
-(import javafx.scene.layout.StackPane
-        javafx.scene.Scene
-        javafx.stage.Stage
-        javafx.scene.control.Button)
-
 (comment
+
+  (import javafx.scene.layout.StackPane
+          javafx.scene.Scene
+          javafx.stage.Stage
+          javafx.scene.control.Button)
+
   (defonce force-toolkit-init (javafx.embed.swing.JFXPanel.))
-  
+
   (extend-maplike java.awt.Container
                   {:tag "container"
                    :include [:components :x :y :size]}
                   java.awt.Dimension
                   {:tag "dimension"
                    :include [:width :height]})
-  
+
   (StackPane)
-  
+
   (.* force-toolkit-init #"arent" :name)
-  
-  
+
+
   (count (object-getters force-toolkit-init))
-  
+
 
   (def root (StackPane.))
   (def scene (Scene. root 300 250))
