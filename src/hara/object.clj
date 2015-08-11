@@ -8,7 +8,7 @@
             [hara.object.string-like :as string-like]))
 
 (ns/import hara.object.access [access]
-           hara.object.base   [to-data from-data]
+           hara.object.base   [to-data from-data meta-object]
            hara.object.enum   [enum? enum-values]
            hara.object.util   [java->clojure
                                clojure->java
