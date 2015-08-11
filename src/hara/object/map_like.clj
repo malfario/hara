@@ -2,10 +2,31 @@
   (:require [hara.protocol.map :as map]
             [hara.protocol.data :as data]
             [hara.object.base :as base]
-            [hara.object.util :as util]))
+            [hara.object.util :as util]
+            [hara.object.access :as access]))
 
-(defn map-functions [obj {:keys [type func default exclude include extra] :as opts}]
+(defn proxy-functions [obj type proxy]
+  (reduce-kv (fn [out prx ks]
+               (reduce (fn [out k]
+                         (assoc out k
+                                (case type
+                                  :get (fn [obj]
+                                         (let [proxy (prx obj)]
+                                           (access/access proxy k)))
+                                  :set (fn [obj v]
+                                         (let [proxy (prx obj)]
+                                           (access/access proxy k v)
+                                           obj)))))
+                       out
+                       ks))
+             {}
+             proxy))
+
+(defn map-functions [obj {:keys [type proxy func default exclude include extra] :as opts}]
   (let [fns (if-not (false? default) (func obj) {})
+        fns (if proxy
+              (merge fns (proxy-functions obj type proxy))
+              fns)
         fns (if include
               (select-keys fns include)
               fns)
@@ -27,12 +48,14 @@
        :getters    (map-functions type# (assoc ~opts
                                                :type :get
                                                :func util/object-getters
-                                               :extra ~getters))
+                                               :extra ~getters
+                                               :proxy ~proxy))
        
        :setters    (map-functions type# (assoc ~opts
                                                :type :set
                                                :func util/object-setters
-                                               :extra ~setters))})
+                                               :extra ~setters
+                                               :proxy ~proxy))})
     
     (extend-protocol map/IMap
       ~cls
