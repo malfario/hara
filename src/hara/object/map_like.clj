@@ -4,7 +4,7 @@
             [hara.object.base :as base]
             [hara.object.util :as util]))
 
-(defn map-functions [obj {:keys [func default exclude include extra] :as opts}]
+(defn map-functions [obj {:keys [type func default exclude include extra] :as opts}]
   (let [fns (if-not (false? default) (func obj) {})
         fns (if include
               (select-keys fns include)
@@ -15,7 +15,7 @@
               fns)]
     fns))
 
-(defmacro extend-maplike-class [cls {:keys [tag meta to from getters setters default] :as opts}]
+(defmacro extend-maplike-class [cls {:keys [tag meta to from proxy getters setters default hide] :as opts}]
   `(vector
     
     (defmethod data/-meta-object ~cls
@@ -24,8 +24,15 @@
        :types      #{java.util.Map}
        :to-data    map/-to-map
        :from-data  map/-from-map
-       :getters    (map-functions type# (assoc ~opts :func util/object-getters :extra ~getters))
-       :setters    (map-functions type# (assoc ~opts :func util/object-setters :extra ~setters))})
+       :getters    (map-functions type# (assoc ~opts
+                                               :type :get
+                                               :func util/object-getters
+                                               :extra ~getters))
+       
+       :setters    (map-functions type# (assoc ~opts
+                                               :type :set
+                                               :func util/object-setters
+                                               :extra ~setters))})
     
     (extend-protocol map/IMap
       ~cls
@@ -54,4 +61,5 @@
 
     (defmethod print-method ~cls
       [v# ^java.io.Writer w#]
-      (.write w# (str "#" ~(or tag cls) "" (map/-to-map v#))))))
+      (.write w# (str "#" ~(or tag cls) ""
+                      (dissoc (map/-to-map v#) ~@hide))))))

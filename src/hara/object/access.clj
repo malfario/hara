@@ -24,12 +24,10 @@
    (apply ele (map may-coerce params args))))
 
 (defn access-get [obj k]
-  (cond (instance? java.util.Map obj)
-        (get obj k)
-
-        :else
-        (if-let [getter (-> obj base/meta-object :getters k)]
-          (getter obj))))
+  (if-let [getter (-> obj base/meta-object :getters k)]
+    (getter obj)
+    (if (instance? java.util.Map obj)
+      (get obj k))))
 
 (defn access-set [obj k v]
   (if-let [setter (-> obj base/meta-object :setters k)]
@@ -38,7 +36,8 @@
            (reflect/query-class obj [(object/clojure->java (name k) :set) 2 :#]) [obj v])
 
           :else
-          (setter obj v))))
+          (setter obj v)))
+  obj)
 
 (defn access-get-nested [obj [k & more]]
   (cond (nil? obj) nil
@@ -55,6 +54,12 @@
         :else (access-set-nested (access-get obj k) more v))
   obj)
 
+(defn access-set-map [obj m]
+  (reduce-kv (fn [obj k v]
+               (access-set obj k v))
+             obj
+             m))
+
 (defn access
   ([obj]
    (-> obj
@@ -63,7 +68,8 @@
        (nested/update-vals-in [] keys)))
   ([obj k]
    (cond (keyword? k) (access-get obj k)
-         (vector? k)  (access-get-nested obj k)))
+         (vector? k)  (access-get-nested obj k)
+         (map? k)     (access-set-map obj k)))
   ([obj k v]
    (cond (keyword? k) (access-set obj k v)
          (vector? k)  (access-set-nested obj k v))))

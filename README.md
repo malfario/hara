@@ -1,4 +1,4 @@
-# hara 
+# hara
 
 [![Join the chat at https://gitter.im/zcaudate/hara](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/zcaudate/hara?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/zcaudate/hara.png?branch=master)](https://travis-ci.org/zcaudate/hara)
@@ -10,15 +10,15 @@ Code patterns and utilities. Please see [finding a middle ground](http://z.cauda
 Add to `project.clj`:
 
 ```clojure
-[im.chit/hara "2.2.3"]
+[im.chit/hara "2.2.6"]
 
 or
 
-[im.chit/hara.<PACKAGE> "2.2.3"]
+[im.chit/hara.<PACKAGE> "2.2.6"]
 
 or
 
-[im.chit/hara.<PACKAGE>.<NAMESPACE> "2.2.3"]
+[im.chit/hara.<PACKAGE>.<NAMESPACE> "2.2.6"]
 ```
 
 Where `PACKAGE` and `NAMESPACE` can be seen from the [website](http://docs.caudate.me/hara/). Please see documentation for usage.
@@ -36,7 +36,7 @@ Where `PACKAGE` and `NAMESPACE` can be seen from the [website](http://docs.cauda
 - Fixed all reflection warnings
 
 #### 2.1.8
-- Reworked `hara.reflect` to use only functions, moved helper macros into vinyasa 
+- Reworked `hara.reflect` to use only functions, moved helper macros into vinyasa
 
 #### 2.1.5
 - Fix for `hara.component` to work with none record-based components
