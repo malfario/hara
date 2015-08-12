@@ -6,13 +6,13 @@
 
 (defn java->clojure
   "turns a java name into a clojure one.
-   
+
    (java->clojure \"getKebabCase\") => kebab-case
- 
+
    (java->clojure \"setKebabCase\") => kebab-case
- 
+
    (java->clojure \"isKebabCase\")  => kebab-case?
-   
+
    (java->clojure \"hasKebabCase\") => kebab-case!"
   {:added "2.2"} [^String name]
   (let [nname (cond (re-find #"(^get)|(^set)[A-Z].+" name)
@@ -29,11 +29,11 @@
 
 (defn clojure->java
   "turns a clojure name into a java one.
-   
+
    (clojure->java \"camel-case\") => getCamelCase
- 
+
    (clojure->java \"camel-case?\") => isCamelCase
- 
+
    (clojure->java \"camel-case!\") => hasCamelCase"
   {:added "2.2"}
   ([name] (clojure->java name :get))
@@ -50,7 +50,7 @@
 
 (defn object-getters
   "finds all the reflected functions that act as getters.
- 
+
    (object-getters [])
    => (just {:empty? element/element?
              :class  element/element?})"
@@ -65,7 +65,7 @@
 
 (defn object-setters
   "finds all the reflected functions that act as setters.
- 
+
    (object-setters (java.util.Date.))
    => {:year element/element?
        :time element/element?
@@ -105,7 +105,7 @@
 
 (defn object-data
   "retrieves the data within the class as a map (like bean)
-   
+
    (object-data (Date. 0))
    => (contains {:day 4
                  :date 1
@@ -115,8 +115,7 @@
                  :year 70
                  :class Date
                  :hours 5
-                 :minutes 30})
-  "
+                 :minutes 30})"
   {:added "2.2"}
   ([obj] (object-data obj identity))
   ([obj f]
