@@ -112,29 +112,29 @@
 
 (defn watcher
   "the watch interface provided for java.io.File
-
-  (def ^:dynamic *happy* (promise))
-
-  (watch/add (io/file \".\") :save
-             (fn [f k _ [cmd file]]
-               (watch/remove f k)
-               (.delete file)
-               (deliver *happy* [cmd (.getName file)]))
-             {:types #{:create :modify}
-              :recursive false
-              :filter  [\".hara\"]
-              :exclude [\".git\" \"target\"]})
-
-  (watch/list (io/file \".\"))
-  => (contains {:save fn?})
-
-  (spit \"happy.hara\" \"hello\")
-
-  @*happy*
-  => [:create \"happy.hara\"]
-
-  (watch/list (io/file \".\"))
-  => {}"
+ 
+   (def ^:dynamic *happy* (promise))
+ 
+   (watch/add (io/file \".\") :save
+              (fn [f k _ [cmd file]]
+                (watch/remove f k)
+                (.delete file)
+                (deliver *happy* [cmd (.getName file)]))
+              {:types #{:create :modify}
+               :recursive false
+               :filter  [\".hara\"]
+               :exclude [\".git\" \"target\"]})
+ 
+   (watch/list (io/file \".\"))
+   => (contains {:save fn?})
+ 
+   (spit \"happy.hara\" \"hello\")
+ 
+   @*happy*
+   => [:create \"happy.hara\"]
+ 
+   (watch/list (io/file \".\"))
+   => {}"
   {:added "2.1"}
   [paths callback options]
   (let [paths   (if (coll? paths) paths [paths])]

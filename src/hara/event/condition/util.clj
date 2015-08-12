@@ -7,8 +7,6 @@
                :manage     '#{on on-any option}})
 
 (defn is-special-form
-  "checks if a form is special in term of the condition framework"
-  {:added "2.2"}
   ([k form]
      (and (list? form)
           (symbol? (first form))

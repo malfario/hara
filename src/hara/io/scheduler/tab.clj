@@ -28,12 +28,12 @@
 ;; Array Representation
 (defn *-
   "takes a string and returns something
-  (*-) => :*
-
-  (map (*- 2) (range 60))
-  => (map even? (range 60))
-
-  "
+   (*-) => :*
+ 
+   (map (*- 2) (range 60))
+   => (map even? (range 60))
+ 
+   "
   {:added "2.2"}
   ([]      :*)
   ([s]     (fn [v] (zero? (mod v s))))
@@ -61,17 +61,17 @@
 
 (defn parse-tab
   "takes a string and creates matches
-
-  (parse-tab \"* * * * * * *\")
-  => '[(:*) (:*) (:*) (:*) (:*) (:*) (:*)]
-
-  (parse-tab \"* * * * * *\")
-  => '[(0) (:*) (:*) (:*) (:*) (:*) (:*)]
-
-  (parse-tab \"* * * * *\")
-  => (throws Exception)
-
-  "
+ 
+   (parse-tab \"* * * * * * *\")
+   => '[(:*) (:*) (:*) (:*) (:*) (:*) (:*)]
+ 
+   (parse-tab \"* * * * * *\")
+   => '[(0) (:*) (:*) (:*) (:*) (:*) (:*)]
+ 
+   (parse-tab \"* * * * *\")
+   => (throws Exception)
+ 
+   "
   {:added "2.2"}
   [s]
   (let [c-toks (re-seq #"[^\s]+" s)
@@ -89,12 +89,12 @@
 ;; dt-arr methods
 (defn to-time-array
   "takes a time element and returns an array representation
-  
-  (to-time-array #inst \"1970-01-01T00:00:00.000-00:00\" \"UTC\")
-  => [0 0 0 5 1 1 1970]
-
-  (to-time-array #inst \"1970-01-01T00:00:00.000-00:00\" \"GMT-10\")
-  => [0 0 14 4 31 12 1969]"
+   
+   (to-time-array #inst \"1970-01-01T00:00:00.000-00:00\" \"UTC\")
+   => [0 0 0 5 1 1 1970]
+ 
+   (to-time-array #inst \"1970-01-01T00:00:00.000-00:00\" \"GMT-10\")
+   => [0 0 14 4 31 12 1969]"
   {:added "2.2"}
   ([t] (to-time-array t (t/system-timezone)))
   ([t tz]
@@ -103,14 +103,14 @@
 
 (defn match-element?
   "takes an element of the array and compares with a single matcher
-
-  (match-element? 1 :*)
-  => true
-  
-  (match-element? 1 [2 3 4])
-  => false
-
-  "
+ 
+   (match-element? 1 :*)
+   => true
+   
+   (match-element? 1 [2 3 4])
+   => false
+ 
+   "
   {:added "2.2"}
   [dt-e tab-e]
   (or (cond (= tab-e :*) true
@@ -121,14 +121,14 @@
 
 (defn match-array?
   "takes an array representation for match comparison
-
-  (match-array? [30 14 0 4 26 7 2012]
-                [(*- 0 60 5) (*-) (*-) (*-) (*-) (*-) (*-)])
-  => true
-
-  (match-array? [31 14 0 4 26 7 2012]
-                [(*- 0 60 5) (*-) (*-) (*-) (*-) (*-) (*-)])
-  => false"
+ 
+   (match-array? [30 14 0 4 26 7 2012]
+                 [(*- 0 60 5) (*-) (*-) (*-) (*-) (*-) (*-)])
+   => true
+ 
+   (match-array? [31 14 0 4 26 7 2012]
+                 [(*- 0 60 5) (*-) (*-) (*-) (*-) (*-) (*-)])
+   => false"
   {:added "2.2"}
   [dt-array tab-array]
   (every? true?

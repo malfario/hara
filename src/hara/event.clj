@@ -36,21 +36,21 @@
 
 (defn uninstall-listener
   "installs a global signal listener
-
-  (def ^:dynamic *global* (atom {}))
-
-  (deflistener count-listener :log
-    [msg]
-    (swap! *global* update-in [:counts] (fnil #(conj % (count msg)) [])))
-  (uninstall-listener count-listener)
-
-  (signal [:log {:msg \"Hello World\"}])
-  (raise  [:log {:msg \"How are you?\"}]
-          (option :nil [] nil)
-          (default :nil))
-
-  @*global*
-  => {}"
+ 
+   (def ^:dynamic *global* (atom {}))
+ 
+   (deflistener count-listener :log
+     [msg]
+     (swap! *global* update-in [:counts] (fnil #(conj % (count msg)) [])))
+   (uninstall-listener count-listener)
+ 
+   (signal [:log {:msg \"Hello World\"}])
+   (raise  [:log {:msg \"How are you?\"}]
+           (option :nil [] nil)
+           (default :nil))
+ 
+   @*global*
+   => {}"
   {:added "2.2"}
   [id]
   (do (swap! *signal-manager* common/remove-handler id)

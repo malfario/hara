@@ -4,12 +4,12 @@
 
 (defmulti from-string
   "meta information of keywords and symbols
-
-  (from-string {:type clojure.lang.Symbol} \"hello/world\")
-  => 'hello/world
-
-  (from-string {:type clojure.lang.Keyword} \"hello/world\")
-  => :hello/world"
+ 
+   (from-string {:type clojure.lang.Symbol} \"hello/world\")
+   => 'hello/world
+ 
+   (from-string {:type clojure.lang.Keyword} \"hello/world\")
+   => :hello/world"
   {:added "2.1"}
   (fn [meta string] (or (:type meta) meta)))
 
@@ -31,24 +31,24 @@
 
 (defn to-string
   "converts symbols and keywords to string representation
-
-  (to-string 'hello/world)
-  => \"hello/world\"
-
-  (to-string :hello/world)
-  => \"hello/world\""
+ 
+   (to-string 'hello/world)
+   => hello/world
+ 
+   (to-string :hello/world)
+   => hello/world"
   {:added "2.1"}
   ^String [x]
   (-to-string x))
 
 (defn to-meta
   "meta information of keywords and symbols
-
-  (to-meta 'hello/world)
-  => {:type clojure.lang.Symbol}
-
-  (to-meta :hello/world)
-  => {:type clojure.lang.Keyword}"
+ 
+   (to-meta 'hello/world)
+   => {:type clojure.lang.Symbol}
+ 
+   (to-meta :hello/world)
+   => {:type clojure.lang.Keyword}"
   {:added "2.1"}
   [x]
   (-to-string-meta x))

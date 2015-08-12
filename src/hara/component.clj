@@ -21,15 +21,15 @@
 
 (defn started?
   "checks if a component has been started
-
-  (started? (Database.))
-  => false
-
-  (started? (start (Database.)))
-  => true
-
-  (started? (stop (start (Database.))))
-  => false"
+ 
+   (started? (Database.))
+   => false
+ 
+   (started? (start (Database.)))
+   => true
+ 
+   (started? (stop (start (Database.))))
+   => false"
   {:added "2.1"}
   [component]
   (try (-started? component)
@@ -40,15 +40,15 @@
 
 (defn stopped?
   "checks if a component has been stopped
-
-  (stopped? (Database.))
-  => true
-
-  (stopped? (start (Database.)))
-  => false
-
-  (stopped? (stop (start (Database.))))
-  => true"
+ 
+   (stopped? (Database.))
+   => true
+ 
+   (stopped? (start (Database.)))
+   => false
+ 
+   (stopped? (stop (start (Database.))))
+   => true"
   {:added "2.1"}
   [component]
   (try (-stopped? component)
@@ -59,9 +59,9 @@
 
 (defn start
   "starts a component/array/system
-
-  (start (Database.))
-  => (just {:status \"started\"})"
+ 
+   (start (Database.))
+   => (just {:status \"started\"})"
   {:added "2.1"}
   [component]
   (let [cp (-start component)]
@@ -71,9 +71,9 @@
 
 (defn stop
   "stops a component/array/system
-
-  (stop (start (Database.)))
-  => (just {})"
+ 
+   (stop (start (Database.)))
+   => (just {})"
   {:added "2.1"}
   [component]
   (let [cp (-stop component)]
@@ -144,10 +144,10 @@
 
 (defn array
   "creates an array of components
-
-  (let [recs (start (array map->Database [{:id 1} {:id 2}]))]
+ 
+   (let [recs (start (array map->Database [{:id 1} {:id 2}]))]
     (count (seq recs)) => 2
-    (first recs) => (just {:id 1 :status \"started\"}))"
+     (first recs) => (just {:id 1 :status \"started\"}))"
   {:added "2.1"}
   [ctor config]
   (if (vector? config)
@@ -157,9 +157,9 @@
 
 (defn array?
   "checks if object is a component array
-
-  (array? (array map->Database []))
-  => true"
+ 
+   (array? (array map->Database []))
+   => true"
   {:added "2.1"}
   [x]
   (instance? ComponentArray x))
@@ -335,20 +335,20 @@
 
 (defn system
   "creates a system of components
-
-  (let [topo {:db     [map->Database]
-              :files  [[map->Filesystem]]
-              :store  [[map->Database] [:files :fs] :db]}
-        cfg  {:db {:type :basic :host \"localhost\" :port 8080}
-              :files [{:path \"/app/local/1\"} {:path \"/app/local/2\"}]
+ 
+   (let [topo {:db     [map->Database]
+               :files  [[map->Filesystem]]
+               :store  [[map->Database] [:files :fs] :db]}
+         cfg  {:db {:type :basic :host \"localhost\" :port 8080}
+               :files [{:path \"/app/local/1\"} {:path \"/app/local/2\"}]
               :store [{:id 1} {:id 2}]}
-        sys (-> (system topo cfg) start)]
-
-    (:db sys) => (just {:status \"started\", :type :basic, :port 8080, :host \"localhost\"})
-
-    (-> sys :files seq first) => (just {:status \"started\", :path \"/app/local/1\"})
-
-    (-> sys :store seq first keys))  => (just [:status :fs :db :id] :in-any-order)"
+         sys (-> (system topo cfg) start)]
+ 
+     (:db sys) => (just {:status \"started\", :type :basic, :port 8080, :host \"localhost\"})
+ 
+     (-> sys :files seq first) => (just {:status \"started\", :path \"/app/local/1\"})
+ 
+     (-> sys :store seq first keys))  => (just [:status :fs :db :id] :in-any-order)"
   {:added "2.1"}
   ([topology config] (system topology config nil))
   ([topology config name]
@@ -385,9 +385,9 @@
 
 (defn system?
   "checks if object is a component system
-
-  (system? (system {} {}))
-  => true"
+ 
+   (system? (system {} {}))
+   => true"
   {:added "2.1"}
   [x]
   (instance? ComponentSystem x))

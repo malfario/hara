@@ -5,14 +5,14 @@
 
 (defn has-method
   "Checks to see if any given method exists in a particular class
-
-  (has-method without-method
-              String)
-  => nil
-
-  (has-method without-method
-              clojure.lang.PersistentArrayMap)
-  => clojure.lang.PersistentArrayMap"
+ 
+   (has-method without-method
+               String)
+   => nil
+ 
+   (has-method without-method
+               clojure.lang.PersistentArrayMap)
+   => clojure.lang.PersistentArrayMap"
   {:added "2.1"}
   [^java.lang.reflect.Method method ^Class class]
   (try (.getDeclaredMethod class
@@ -22,11 +22,11 @@
 
 (defn methods-with-same-name-and-count
   "methods-with-same-name-and-count
-
-  (methods-with-same-name-and-count without-method clojure.lang.IPersistentMap)
-  =>  (#<Method clojure.lang.IPersistentMap.without(java.lang.Object)>)
-
-  "
+ 
+   (methods-with-same-name-and-count without-method clojure.lang.IPersistentMap)
+   =>  #(-> % count (= 1))  ;; (#<Method clojure.lang.IPersistentMap.without(java.lang.Object)>)
+ 
+   "
   {:added "2.1"}
   [^java.lang.reflect.Method method ^Class class]
   (let [methods (.getDeclaredMethods class)
@@ -47,12 +47,12 @@
 
 (defn has-overridden-method
   "Checks to see that the method can be 
-
-  (has-overridden-method without-method String)
-  => nil
-
-  (has-overridden-method without-method clojure.lang.IPersistentMap)
-  => clojure.lang.IPersistentMap"
+ 
+   (has-overridden-method without-method String)
+   => nil
+ 
+   (has-overridden-method without-method clojure.lang.IPersistentMap)
+   => clojure.lang.IPersistentMap"
   {:added "2.1"}
   [^java.lang.reflect.Method method class]
   (let [smethods (methods-with-same-name-and-count method class)
@@ -66,15 +66,15 @@
 
 (defn origins
   "Lists all the classes tha contain a particular method
-
-  (def without-method
-    (-> clojure.lang.PersistentArrayMap
-        (.getDeclaredMethod \"without\"
-                            (hara.common.primitives/class-array [Object]))))
-
-  (origins without-method)
-  => [clojure.lang.IPersistentMap
-      clojure.lang.PersistentArrayMap]"
+ 
+   (def without-method
+     (-> clojure.lang.PersistentArrayMap
+         (.getDeclaredMethod \"without\"
+                             (hara.common.primitives/class-array [Object]))))
+ 
+   (origins without-method)
+   => [clojure.lang.IPersistentMap
+       clojure.lang.PersistentArrayMap]"
   {:added "2.1"}
   ([^java.lang.reflect.Method method]
    (origins method (inheritance/ancestor-tree (.getDeclaringClass method))))

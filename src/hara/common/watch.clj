@@ -50,31 +50,19 @@
     f))
 
 (defn add
-  "Adds a watch function through the IWatch protocol
-
-  (let [subject (atom nil)
-        observer  (atom nil)]
-    (watch/add subject :follow
-               (fn [_ _ _ n]
-                 (reset! observer n)))
-    (reset! subject 1)
-    @observer => 1
-
-    \"Alternatively, options can be given to either transform the current
-    as well as to only execute the callback if there is a difference.\"
-
-    (let [subject  (atom {:a 1 :b 2})
-          observer (atom nil)]
-    (watch/add subject :clone
-               (fn [_ _ p n] (reset! observer n))
-               {:select :b
-                :diff true})
-
-    (swap! subject assoc :a 0) ;; change in :a does not
-    @observer => nil           ;; affect watch
-
-    (swap! subject assoc :b 1) ;; change in :b does
-    @observer => 1))"
+  "testing the watch/add with ova functionality
+   (let [ov     (ova [])
+         out    (atom [])
+        o-fn  (fn  [_ _ p v]
+                 (swap! out conj [p v]))
+         _      (watch/add ov :conj o-fn
+                           {:type :ova
+                            :select #(mapv deref %)})
+         _      (dosync (conj! ov 1))
+         _      (dosync (conj! ov 2))
+         _      (dosync (conj! ov 3))]
+     (persistent! ov) => [1 2 3]
+     (sort @out) => [[[] [1]] [[1] [1 2]] [[1 2] [1 2 3]]])"
   {:added "2.1"}
   ([obj f] (add obj nil f nil))
   ([obj k f] (add obj k f nil))
@@ -83,24 +71,24 @@
 
 (defn list
   "Lists watch functions through the IWatch protocol
-
-  (let [subject   (atom nil)
+ 
+   (let [subject   (atom nil)
         observer  (atom nil)]
-    (watch/add subject :a (fn [_ _ _ n]))
-    (watch/add subject :b (fn [_ _ _ n]))
-    (watch/list subject) => (contains {:a fn? :b fn?}))"
+     (watch/add subject :a (fn [_ _ _ n]))
+     (watch/add subject :b (fn [_ _ _ n]))
+     (watch/list subject) => (contains {:a fn? :b fn?}))"
   {:added "2.1"}
   ([obj] (list obj nil))
   ([obj opts] (-list-watch obj opts)))
 
 (defn remove
   "Removes watch function through the IWatch protocol
-
-  (let [subject   (atom nil)
-        observer  (atom nil)]
-    (watch/add subject :a (fn [_ _ _ n]))
-    (watch/add subject :b (fn [_ _ _ n]))
-    (watch/remove subject :b)
+ 
+   (let [subject   (atom nil)
+         observer  (atom nil)]
+     (watch/add subject :a (fn [_ _ _ n]))
+     (watch/add subject :b (fn [_ _ _ n]))
+     (watch/remove subject :b)
     (watch/list subject)) => (contains {:a fn?})"
   {:added "2.1"}
   ([obj]   (remove obj nil nil))
@@ -109,12 +97,12 @@
 
 (defn clear
   "Clears all watches form the object
-
-  (let [subject   (atom nil)
-        observer  (atom nil)]
-    (watch/add subject :a (fn [_ _ _ n]))
-    (watch/add subject :b (fn [_ _ _ n]))
-    (watch/clear subject)
+ 
+   (let [subject   (atom nil)
+         observer  (atom nil)]
+     (watch/add subject :a (fn [_ _ _ n]))
+     (watch/add subject :b (fn [_ _ _ n]))
+     (watch/clear subject)
     (watch/list subject)) => {}"
   {:added "2.1"}
   ([obj] (clear obj nil))
@@ -125,11 +113,11 @@
 
 (defn set
   "Sets a watch in the form of a map
-
-  (let [obj   (atom nil)]
+ 
+   (let [obj   (atom nil)]
     (watch/set obj {:a (fn [_ _ _ n])
-                    :b (fn [_ _ _ n])})
-    (watch/list obj) => (contains {:a fn? :b fn?}))"
+                     :b (fn [_ _ _ n])})
+     (watch/list obj) => (contains {:a fn? :b fn?}))"
   {:added "2.1"}
   ([obj watches] (set obj watches nil))
   ([obj watches opts]
@@ -139,13 +127,13 @@
 
 (defn copy
   "Copies watches from one object to another
-
-  (let [obj-a   (atom nil)
+ 
+   (let [obj-a   (atom nil)
         obj-b   (atom nil)]
-    (watch/set obj-a {:a (fn [_ _ _ n])
-                      :b (fn [_ _ _ n])})
-    (watch/copy obj-b obj-a)
-    (watch/list obj-b) => (contains {:a fn? :b fn?}))"
+     (watch/set obj-a {:a (fn [_ _ _ n])
+                       :b (fn [_ _ _ n])})
+     (watch/copy obj-b obj-a)
+     (watch/list obj-b) => (contains {:a fn? :b fn?}))"
   {:added "2.1"}
   ([to from] (copy to from nil))
   ([to from opts]

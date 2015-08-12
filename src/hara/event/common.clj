@@ -10,12 +10,12 @@
 
 (defn expand-data
   "expands shorthand data into a map
-  
-  (expand-data :hello)
-  => {:hello true}
-
-  (expand-data [:hello {:world \"foo\"}])
-  => {:world \"foo\", :hello true}"
+   
+   (expand-data :hello)
+   => {:hello true}
+ 
+   (expand-data [:hello {:world \"foo\"}])
+   => {:world \"foo\", :hello true}"
   {:added "2.2"}
   [data]
   (cond (hash-map? data) data
@@ -25,18 +25,18 @@
 
 (defn check-data
   "checks to see if the data corresponds to a template
-
-  (check-data {:hello true} :hello)
-  => true
-
-  (check-data {:hello true} {:hello true?})
-  => true
-
-  (check-data {:hello true} '_)
-  => true
-
-  (check-data {:hello true} #{:hello})
-  => true"
+ 
+   (check-data {:hello true} :hello)
+   => true
+ 
+   (check-data {:hello true} {:hello true?})
+   => true
+ 
+   (check-data {:hello true} '_)
+   => true
+ 
+   (check-data {:hello true} #{:hello})
+   => true"
   {:added "2.2"}
   [data chk]
   (cond (hash-map? chk)
@@ -70,11 +70,11 @@
 
 (defn remove-handler
   "adds a handler to the manager
-  (-> (add-handler (manager) :hello {:id :hello
-                                     :handler identity})
-      (remove-handler :hello)
-      (match-handlers {:hello \"world\"}))
-  => ()"
+   (-> (add-handler (manager) :hello {:id :hello
+                                      :handler identity})
+       (remove-handler :hello)
+       (match-handlers {:hello \"world\"}))
+   => ()"
   {:added "2.2"}
   [manager id]
   (if-let [position (first (seq/positions #(-> % :id (= id)) (:store manager)))]
@@ -83,11 +83,11 @@
 
 (defn add-handler
   "adds a handler to the manager
-  (-> (add-handler (manager) :hello {:id :hello
-                                     :handler identity})
-      (match-handlers {:hello \"world\"})
-      (count))
-  => 1"
+   (-> (add-handler (manager) :hello {:id :hello
+                                      :handler identity})
+       (match-handlers {:hello \"world\"})
+       (count))
+   => 1"
   {:added "2.2"}
   ([manager handler]
    (let [handler (if (:id handler)

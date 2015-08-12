@@ -3,12 +3,12 @@
 
 (defn extend-single
   "Transforms a protocol template into an extend-type expression
-
-  (extend-single 'Type
-                 'IProtocol
-                 '[(op [x y] (% x y))]
-                 '[op-object])
-  => '(clojure.core/extend-type Type IProtocol (op [x y] (op-object x y)))"
+ 
+   (extend-single 'Type
+                  'IProtocol
+                  '[(op [x y] (% x y))]
+                  '[op-object])
+   => '(clojure.core/extend-type Type IProtocol (op [x y] (op-object x y)))"
   {:added "2.1"}
   [t proto ptmpls funcs]
   (apply list `extend-type t proto

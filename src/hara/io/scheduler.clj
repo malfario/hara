@@ -74,15 +74,15 @@
 
 (defn simulate
   "simulates the scheduler running for a certain interval:
-
-  (simulate
+ 
+   (simulate
    (scheduler {:print-task {:handler (fn [t params instance]
-                                       (str t params))
-                            :schedule \"/2 * * * * * *\"
-                            :params   {:value \"hello world\"}}})
-   {:start (java.util.Date. 0)
-    :end   (java.util.Date. 100000)
-    :pause 10})"
+                                        (str t params))
+                             :schedule \"/2 * * * * * *\"
+                             :params   {:value \"hello world\"}}})
+    {:start (java.util.Date. 0)
+     :end   (java.util.Date. 100000)
+     :pause 10})"
   {:added "2.2"}
   [scheduler {:keys [start end step pause mode]}]
   (swap! (-> scheduler :clock :state) assoc :disabled true)

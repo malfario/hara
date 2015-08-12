@@ -7,13 +7,13 @@
 
 (defn clock-loop
   "updates the clock tick, if `recur?` is true, then it keeps running
-  (-> (:clock scheduler/*defaults*)
-      (clock)
-      (clock-loop false))
-  ;;=> #clock {:start-time nil,
-  ;;           :current-time #inst \"2015-07-16T15:24:42.608-00:00\",
-  ;;           :running false}
-  "
+   (-> (:clock scheduler/*defaults*)
+       (clock)
+       (clock-loop false))
+   ;;=> #clock {:start-time nil,
+   ;;           :current-time #inst \"2015-07-16T15:24:42.608-00:00\",
+   ;;           :running false}
+   "
   {:added "2.2"}
   [clock recur?]
   (if (not (:disabled @clock))
@@ -115,11 +115,11 @@
 
 (defn clock
   "creates an instance of a clock
-  (clock (:clock scheduler/*defaults*))
-  ;;=> #clock {:start-time nil,
-  ;;           :current-time nil,
-  ;;           :running false}
-  "
+   (clock (:clock scheduler/*defaults*))
+   ;;=> #clock {:start-time nil,
+   ;;           :current-time nil,
+   ;;           :running false}
+   "
   {:added "2.2"}
   [meta]
   (Clock. (-> meta

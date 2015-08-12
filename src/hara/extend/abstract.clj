@@ -4,15 +4,15 @@
 
 (defn protocol-basis
   "Helper function that transforms the functions in the protocol to
-  the neccessary format in preparation for extend-abstract and extend-implementations
-
-  (defprotocol IVal
-    (-set [this val])
-    (-get [this]))
-
-  (protocol-basis IVal '- 'pre- '-tail)
-  => '({:args [this], :fn pre-get-tail, :name -get}
-       {:args [this val], :fn pre-set-tail, :name -set})"
+   the neccessary format in preparation for extend-abstract and extend-implementations
+ 
+   (defprotocol IVal
+     (-set [this val])
+     (-get [this]))
+ 
+   (protocol-basis IVal '- 'pre- '-tail)
+   => '({:args [this], :fn pre-get-tail, :name -get}
+        {:args [this val], :fn pre-set-tail, :name -set})"
   {:added "2.1"}
   [protocol select prefix suffix]
   (->> protocol :sigs vals
@@ -35,13 +35,13 @@
 
 (defn map-walk-submap
   "Gets a submap depending on whether it is a key or it
-  is a key witthin a hashset
-
-  (map-walk-submap {:hello \"world\"} :hello)
-  => \"world\"
-
-  (map-walk-submap {#{:hello} \"world\"} :hello)
-  => \"world\""
+   is a key witthin a hashset
+ 
+   (map-walk-submap {:hello \"world\"} :hello)
+   => world
+ 
+   (map-walk-submap {#{:hello} \"world\"} :hello)
+   => world"
   {:added "2.1"}
   [m search-key]
   (->> m
@@ -54,13 +54,13 @@
 
 (defn map-walk
   "Helper function for evaluation of various utility functions
-  within the namespace
-
-  (map-walk :hello {#{:hello} (fn [k arg1] (str (name k) \" world \" arg1))}
-            [\"again\"]  identity
-            (fn [_ _ _] :none)
-            (fn [obj func arg1] (func obj arg1)))
-  => \"hello world again\""
+   within the namespace
+ 
+   (map-walk :hello {#{:hello} (fn [k arg1] (str (name k) \" world \" arg1))}
+             [\"again\"]  identity
+             (fn [_ _ _] :none)
+             (fn [obj func arg1] (func obj arg1)))
+   => hello world again"
   {:added "2.1"}
   [obj mapobj args f-obj f-nil f-nonmap]
   (cond (nil? mapobj) (apply f-nil obj mapobj args)
@@ -75,20 +75,20 @@
 
 (defn protocol-default-form
   "creates a :default defmethod form from a protocol basis
-
-  (protocol-default-form '{:args [this], :fn data-env, :name -data}
-                         '{#{-data} ([this & args] nil)})
-  => '(defmethod data-env :default [this & args] nil)
-
-  (protocol-default-form '{:args [this], :fn data-env, :name -data}
-                         '{#{-data} (fn [basis]
-                                      `(~(:args basis)
-                                        (throw (Exception. (str ~(str \"No implementation of \" (:fn basis) \" for \")
-                                                                (-> ~(-> basis :args first) :meta :type))))))})
-  => '(defmethod data-env :default [this]
-        (throw (java.lang.Exception.
-                (clojure.core/str \"No implementation of data-env for \"
-                                  (clojure.core/-> this :meta :type)))))"
+ 
+   (protocol-default-form '{:args [this], :fn data-env, :name -data}
+                          '{#{-data} ([this & args] nil)})
+   => '(defmethod data-env :default [this & args] nil)
+ 
+   (protocol-default-form '{:args [this], :fn data-env, :name -data}
+                          '{#{-data} (fn [basis]
+                                       `(~(:args basis)
+                                         (throw (Exception. (str ~(str \"No implementation of \" (:fn basis) \" for \")
+                                                                 (-> ~(-> basis :args first) :meta :type))))))})
+   => '(defmethod data-env :default [this]
+         (throw (java.lang.Exception.
+                 (clojure.core/str \"No implementation of data-env for \"
+                                   (clojure.core/-> this :meta :type)))))"
   {:added "2.1"}
   [basis defaults]
   (map-walk basis defaults [] :name
@@ -104,10 +104,10 @@
 
 (defn protocol-multi-form
   "creates a :default defmethod form from a protocol basis
-
-  (protocol-multi-form '{:args [this], :fn data-env, :name -data}
-                       '{#{-data} (-> % :meta :type)})
-  => '(defmulti data-env (fn [this] (-> this :meta :type)))"
+ 
+   (protocol-multi-form '{:args [this], :fn data-env, :name -data}
+                        '{#{-data} (-> % :meta :type)})
+   => '(defmulti data-env (fn [this] (-> this :meta :type)))"
   {:added "2.1"}
   [basis dispatch]
   (map-walk basis dispatch [] :name
@@ -123,12 +123,12 @@
 
 (defn protocol-multimethods
   "creates a set of defmulti and defmethods for each entry in all-basis
-
-  (protocol-multimethods '[{:args [this], :fn data-env, :name -data}]
-                         {:defaults '([this & args] (Exception. \"No input\"))
-                          :dispatch '(-> % :meta :type)})
-  => '((defmulti data-env (fn [this] (-> this :meta :type)))
-       (defmethod data-env :default [this & args] (Exception. \"No input\")))"
+ 
+   (protocol-multimethods '[{:args [this], :fn data-env, :name -data}]
+                          {:defaults '([this & args] (Exception. \"No input\"))
+                           :dispatch '(-> % :meta :type)})
+   => '((defmulti data-env (fn [this] (-> this :meta :type)))
+        (defmethod data-env :default [this & args] (Exception. \"No input\")))"
   {:added "2.1"}
   [all-basis {:keys [defaults dispatch]}]
   (->> all-basis
@@ -138,16 +138,16 @@
 
 (defn protocol-extend-type-wrappers
   "applies form template for simple template rewrites
-
-  (protocol-extend-type-wrappers '{:args [this], :fn data-env, :name -data}
-                                 '{-data (process %)}
-                                 '(data-env this))
-  => '(process (data-env this))
-
-  (protocol-extend-type-wrappers '{:args [this], :fn data-env, :name -data}
-                                 '{-data (fn [form basis] (concat ['apply] form [[]]))}
-                                 '(data-env this))
-  => '(apply data-env this [])"
+ 
+   (protocol-extend-type-wrappers '{:args [this], :fn data-env, :name -data}
+                                  '{-data (process %)}
+                                  '(data-env this))
+   => '(process (data-env this))
+ 
+   (protocol-extend-type-wrappers '{:args [this], :fn data-env, :name -data}
+                                  '{-data (fn [form basis] (concat ['apply] form [[]]))}
+                                  '(data-env this))
+   => '(apply data-env this [])"
   {:added "2.1"}
   [basis wrappers form]
   (map-walk basis wrappers [form] :name
@@ -162,10 +162,10 @@
 
 (defn protocol-extend-type-function
   "utility to create a extend-type function  with template and macros
-
-  (protocol-extend-type-function '{:args [this], :fn data-env, :name -data}
-                                 '{-data (fn [form basis] (concat ['apply] form [[]]))})
-  => '(-data [this] (apply data-env this []))"
+ 
+   (protocol-extend-type-function '{:args [this], :fn data-env, :name -data}
+                                  '{-data (fn [form basis] (concat ['apply] form [[]]))})
+   => '(-data [this] (apply data-env this []))"
   {:added "2.1"}
   [basis wrappers]
   (list (:name basis) (:args basis)
@@ -174,11 +174,11 @@
 
 (defn protocol-extend-type
   "utility to create an extend-type form
-  (protocol-extend-type 'Type 'IProtocol
-                        '[{:args [this], :fn data-env, :name -data}]
-                        '{:wrappers (fn [form basis] (concat ['apply] form [[]]))})
-  => '(extend-type Type IProtocol
-                   (-data [this] (apply data-env this [])))"
+   (protocol-extend-type 'Type 'IProtocol
+                         '[{:args [this], :fn data-env, :name -data}]
+                         '{:wrappers (fn [form basis] (concat ['apply] form [[]]))})
+   => '(extend-type Type IProtocol
+                    (-data [this] (apply data-env this [])))"
   {:added "2.1"}
   [typesym protocolsym all-basis {:keys [wrappers]}]
   (concat (list 'extend-type typesym protocolsym)

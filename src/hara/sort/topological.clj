@@ -3,8 +3,8 @@
 
 (defn top-nodes
   "nodes that have no other nodes that are dependent on them
-  (top-nodes {:a #{} :b #{:a}})
-  => #{:b}"
+   (top-nodes {:a #{} :b #{:a}})
+   => #{:b}"
   {:added "2.1"}
   [g]
   (let [nodes (set (keys g))
@@ -13,18 +13,18 @@
 
 (defn topological-sort
   "sorts a directed graph into its dependency order
-
-  (topological-sort {:a #{:b :c},
-                     :b #{:d :e},
-                     :c #{:e :f},
-                     :d #{},
-                     :e #{:f},
-                     :f nil})
-  => [:f :d :e :b :c :a]
-
-  (topological-sort {:a #{:b},
-                     :b #{:a}})
-  => (throws Exception \"Graph Contains Circular Dependency: {:b #{:a}, :a #{:b}}\")"
+ 
+   (topological-sort {:a #{:b :c},
+                      :b #{:d :e},
+                      :c #{:e :f},
+                      :d #{},
+                      :e #{:f},
+                      :f nil})
+   => [:f :d :e :b :c :a]
+ 
+   (topological-sort {:a #{:b},
+                      :b #{:a}})
+   => (throws Exception \"Graph Contains Circular Dependency: {:b #{:a}, :a #{:b}}\")"
   {:added "2.1"}
   ([g]
      (let [g (let [dependent-nodes (apply union (vals g))]

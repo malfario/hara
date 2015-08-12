@@ -24,11 +24,11 @@
 
 (defn query-class
   "queries the java view of the class declaration
-
-  (query-class String  [#\"^c\" :name])
-  => [\"charAt\" \"checkBounds\" \"codePointAt\" \"codePointBefore\"
-      \"codePointCount\" \"compareTo\" \"compareToIgnoreCase\"
-      \"concat\" \"contains\" \"contentEquals\" \"copyValueOf\"]"
+ 
+   (query-class String  [#\"^c\" :name])
+   => [\"charAt\" \"checkBounds\" \"codePointAt\" \"codePointBefore\"
+       \"codePointCount\" \"compareTo\" \"compareToIgnoreCase\"
+       \"concat\" \"contains\" \"contentEquals\" \"copyValueOf\"]"
   {:added "2.1"}
   [obj selectors]
   (list-class-elements (common/context-class obj) selectors))
@@ -43,12 +43,12 @@
 
 (defn query-instance
   "lists what methods could be applied to a particular instance
-
-  (query-instance \"abc\" [:name #\"^to\"])
-  => [\"toCharArray\" \"toLowerCase\" \"toString\" \"toUpperCase\"]
-
-  (query-instance String [:name #\"^to\"])
-  => (contains [\"toString\"])"
+ 
+   (query-instance \"abc\" [:name #\"^to\"])
+   => [\"toCharArray\" \"toLowerCase\" \"toString\" \"toUpperCase\"]
+ 
+   (query-instance String [:name #\"^to\"])
+   => (contains [\"toString\"])"
   {:added "2.1"}
   [obj selectors]
   (let [grp (args/args-group selectors)
@@ -57,8 +57,6 @@
          (display/display grp))))
 
 (defn query-hierarchy
-  "lists what methods could be applied to a particular instance"
-  {:added "2.2"}
   [obj selectors]
   (let [grp (args/args-group selectors)
         tcls  (common/context-class obj)]

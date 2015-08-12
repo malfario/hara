@@ -35,24 +35,24 @@
    :string    - The string that hara.reflect uses for matching
    :class     - The primitive class representation of the primitive
    :container - The containing class representation for the primitive type
-
-  (primitive-convert Boolean/TYPE :symbol)
-  => 'boolean
-
-  (primitive-convert \"Z\" :symbol)
-  => 'boolean
-
-  (primitive-convert \"int\" :symbol)
-  => 'int
-
-  (primitive-convert Character :string)
-  => \"char\"
-
-  (primitive-convert \"V\" :class)
-  => Void/TYPE
-
-  (primitive-convert 'long :container)
-  => Long"
+ 
+   (primitive-convert Boolean/TYPE :symbol)
+   => 'boolean
+ 
+   (primitive-convert \"Z\" :symbol)
+   => 'boolean
+ 
+   (primitive-convert \"int\" :symbol)
+   => 'int
+ 
+   (primitive-convert Character :string)
+   => char
+ 
+   (primitive-convert \"V\" :class)
+   => Void/TYPE
+ 
+   (primitive-convert 'long :container)
+   => Long"
   {:added "2.1"}
   ([v to]
      (loop [[k & more] (seq (disj primitive-reps to))]

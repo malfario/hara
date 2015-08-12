@@ -25,13 +25,13 @@
 
 (defn title-case
   "converts a string-like object to a title case string
-
-  (title-case \"helloWorld\")
-
-  => \"Hello World\"
-
-  (title-case :hello-world)
-  => \"Hello World\""
+ 
+   (title-case \"helloWorld\")
+ 
+   => Hello World
+ 
+   (title-case :hello-world)
+   => Hello World"
   {:added "2.1"}
   [value]
   (->> (-> (common/to-string value)
@@ -42,12 +42,12 @@
 
 (defn lower-case
   "converts a string-like object to a lower case string
-
-  (lower-case \"helloWorld\")
-  => \"hello world\"
-
-  (lower-case 'hello-world)
-  => \"hello world\""
+ 
+   (lower-case \"helloWorld\")
+   => hello world
+ 
+   (lower-case 'hello-world)
+   => hello world"
   {:added "2.1"}
   [value]
   (->> (-> (common/to-string value)
@@ -58,12 +58,12 @@
 
 (defn camel-case
   "converts a string-like object to camel case representation
-
-  (camel-case :hello-world)
-  => :helloWorld
-
-  (camel-case 'hello_world)
-  => 'helloWorld"
+ 
+   (camel-case :hello-world)
+   => :helloWorld
+ 
+   (camel-case 'hello_world)
+   => 'helloWorld"
   {:added "2.1"}
   [value]
   (let [meta (common/to-meta value)
@@ -74,12 +74,12 @@
 
 (defn snake-case
   "converts a string-like object to snake case representation
-
-  (snake-case :hello-world)
-  => :hello_world
-
-  (snake-case 'helloWorld)
-  => 'hello_world"
+ 
+   (snake-case :hello-world)
+   => :hello_world
+ 
+   (snake-case 'helloWorld)
+   => 'hello_world"
   {:added "2.1"}
   [value]
   (let [meta (common/to-meta value)
@@ -91,12 +91,12 @@
 
 (defn spear-case
   "converts a string-like object to spear case representation
-
-  (spear-case :hello_world)
-  => :hello-world
-
-  (spear-case 'helloWorld)
-  => 'hello-world"
+ 
+   (spear-case :hello_world)
+   => :hello-world
+ 
+   (spear-case 'helloWorld)
+   => 'hello-world"
   {:added "2.1"}
   [value]
   (let [meta (common/to-meta value)

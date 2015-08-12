@@ -3,11 +3,11 @@
 
 (defn ancestor-list
   "Lists the direct ancestors of a class
-  (ancestor-list clojure.lang.PersistentHashMap)
-  => [clojure.lang.PersistentHashMap
-      clojure.lang.APersistentMap
-      clojure.lang.AFn
-      java.lang.Object]"
+   (ancestor-list clojure.lang.PersistentHashMap)
+   => [clojure.lang.PersistentHashMap
+       clojure.lang.APersistentMap
+       clojure.lang.AFn
+       java.lang.Object]"
   {:added "2.1"}
   ([cls] (ancestor-list cls []))
   ([^java.lang.Class cls output]
@@ -17,12 +17,12 @@
 
 (defn ancestor-tree
   "Lists the hierarchy of bases and interfaces of a class.
-  (ancestor-tree Class)
-  => [[java.lang.Object #{java.io.Serializable
-                          java.lang.reflect.Type
-                          java.lang.reflect.AnnotatedElement
-                          java.lang.reflect.GenericDeclaration}]]
-  "
+   (ancestor-tree Class)
+   => [[java.lang.Object #{java.io.Serializable
+                           java.lang.reflect.Type
+                           java.lang.reflect.AnnotatedElement
+                           java.lang.reflect.GenericDeclaration}]]
+   "
   {:added "2.1"}
   ([cls] (ancestor-tree cls []))
   ([^Class cls output]
@@ -34,10 +34,10 @@
 
 (defn best-match
   "finds the best matching interface or class from a list of candidates
-
-  (best-match #{Object} Long) => Object
-  (best-match #{String} Long) => nil
-  (best-match #{Object Number} Long) => Number"
+ 
+   (best-match #{Object} Long) => Object
+   (best-match #{String} Long) => nil
+   (best-match #{Object Number} Long) => Number"
   {:added "2.1"}
   [candidates ^Class cls]
   (or (get candidates cls)

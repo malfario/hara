@@ -42,14 +42,14 @@
 
 (defn delegate
   "Allow transparent field access and manipulation to the underlying object.
-
-  (let [a   \"hello\"
+ 
+   (let [a   \"hello\"
         >a  (delegate a)]
-
-    (seq (>a :value)) => [\\h \\e \\l \\l \\o]
-
-    (>a :value (char-array \"world\"))
-    a => \"world\")"
+ 
+     (seq (>a :value)) => [\h \e \l \l \o]
+ 
+     (>a :value (char-array \"world\"))
+     a => \"world\")"
   {:added "2.1"}
   [obj]
   (let [fields (->> (map (juxt (comp keyword :name) identity) (q/query-instance obj [:field]))
