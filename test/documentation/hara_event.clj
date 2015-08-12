@@ -80,22 +80,23 @@ An example is provided below:
 The only difference between `signal` and `raise` calls is that `signal` does not trigger `manage` handlers. Both calls will trigger any compatible listener. The listers and managers act in a horizontal/vertical or only/all fashion to provide for better decoupilng of functionality within the code base.
 "
 
+[[:section {:title "Listener Syntax"}]]
+
+"`deflistener` installs a signal listener with a precondition for activation. For example, in the case below, if there is a `:log` in body of the signalled (or raised) event, then `event` will be printed."
+
+(comment
+  (deflistener print-listener :log
+    event
+    (println event)))
+
 [[:section {:title "Signal Syntax"}]]
 
 "`signal` typically just informs its listeners with a given set of information:"
 
 (comment
-  (signal {:everything-is-good true :input-data 3})
-  )
+  (signal {:everything-is-good true :input-data 3 :log true}))
 
-[[:section {:title "Listener Syntax"}]]
-
-"`signal` typically just informs its listeners with a given set of information:"
-
-(comment
-  (deflistener print-listener :log
-    data
-    (println data)))
+"If the previous `deflistener` was defined, then this call will activate a print statement."
 
 [[:section {:title "Raise Syntax"}]]
 

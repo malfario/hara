@@ -21,10 +21,10 @@
   ([name] (clojure->java name :get))
   ([^String name suffix]
    (let [nname (cond (.endsWith name "?")
-                     (str "is-" (.substring name 0 (.length name)))
+                     (str "is-" (.substring name 0 (dec (.length name))))
 
                      (.endsWith name "!")
-                     (str "has-" (.substring name 0 (.length name)))
+                     (str "has-" (.substring name 0 (dec (.length name))))
 
                      :else
                      (str (clojure.core/name suffix) "-" name))]

@@ -20,7 +20,13 @@
 [[:section {:title "Motivation"}]]
 
 "
-[hara.object](https://github.com/zcaudate/hara/blob/master/src/hara/object.clj) has been extracted out from [gita](https://github.com/zcaudate/gita) where it was used to analyse the [jgit porcelain](https://wiki.eclipse.org/JGit/User_Guide#Porcelain_API) api and to reflectively generate an interface for git. A similar technique was used to access cassandra datastructures in [cassius](https://github.com/mypost/cassius) though it was done through protocols and not in such a generic fashion. The reason one may wish to use such a library would be to quickly visualize the structure of a class as well as to customize how the class looks in the repl. Of course it can also be used to wrap java apis.
+[hara.object](https://github.com/zcaudate/hara/blob/master/src/hara/object.clj) has been extracted out from [gita](https://github.com/zcaudate/gita) where it was used to analyse the [jgit porcelain](https://wiki.eclipse.org/JGit/User_Guide#Porcelain_API) api and to reflectively generate an interface for git. A similar technique was used to recursively access cassandra datastructures in [cassius](https://github.com/mypost/cassius) though it was done through protocols and not in such a generic fashion.
+
+The reason one may wish to use such a library would be to quickly visualize the structure of a class as well as to customize how the class looks in the repl. It can also be used to wrap java apis. The library is very similar in concept to the `def-map-type` and `def-derived-type` in [potemkin](https://github.com/ztellman/potemkin) but in . Currently the implementation is not optimised though it has an extremely broad use cases.
+
+Libraries that are using `hara.object` for wrapping functionality:
+- [gita](https://github.com/zcaudate/gita)
+- [gulfstream](https://github.com/helpshift/gulfstream)
 "
 
 [[:chapter {:title "Understanding JavaFX"}]]
