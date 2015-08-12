@@ -6,19 +6,19 @@
 
 ^{:refer hara.object.util/java->clojure :added "2.2"}
 (fact "turns a java name into a clojure one."
-  
+
   (java->clojure "getKebabCase") => "kebab-case"
 
   (java->clojure "setKebabCase") => "kebab-case"
 
   (java->clojure "isKebabCase")  => "kebab-case?"
-  
+
   (java->clojure "hasKebabCase") => "kebab-case!")
 
 
 ^{:refer hara.object.util/clojure->java :added "2.2"}
 (fact "turns a clojure name into a java one."
-  
+
   (clojure->java "camel-case") => "getCamelCase"
 
   (clojure->java "camel-case?") => "isCamelCase"
@@ -38,13 +38,13 @@
 (fact "finds all the reflected functions that act as setters."
 
   (object-setters (java.util.Date.))
-  => {:year element/element?
-      :time element/element?
-      :seconds element/element?
-      :month element/element?
-      :minutes element/element?
-      :hours element/element?
-      :date element/element?})
+  => (contains {:year element/element?
+                :time element/element?
+                :seconds element/element?
+                :month element/element?
+                :minutes element/element?
+                :hours element/element?
+                :date element/element?}))
 
 ^{:refer hara.object.util/object-apply :added "2.2"}
 (fact "applies a map of functions to an object yielding a result of the same shape."
@@ -56,7 +56,7 @@
 
 ^{:refer hara.object.util/object-data :added "2.2"}
 (fact "retrieves the data within the class as a map (like bean)"
-  
+
   (object-data (Date. 0))
   => (contains {:day 4
                 :date 1

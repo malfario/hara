@@ -28,7 +28,7 @@
 
   (long? 1)          => true
   (long? 1N)         => false)
-  
+
 ^{:refer hara.common.checks/bigint? :added "2.0"}
 (fact "Returns `true` if `x` is of type `clojure.lang.BigInt`."
 
@@ -81,7 +81,7 @@
 
 ^{:refer hara.common.checks/ref? :added "2.0"}
 (fact "Returns `true` if `x` is of type `clojure.lang.Ref`."
-
+      
   (ref? (ref nil)) => true
 )
 
@@ -117,7 +117,7 @@
 (fact "Returns `true` is `x` is a thread"
 
   (thread? (Thread/currentThread)) => true)
-  
+
 ^{:refer hara.common.checks/type-checker :added "2.0"}
 (fact "Returns the checking function associated with `k`"
 
