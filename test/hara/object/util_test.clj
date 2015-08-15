@@ -57,13 +57,6 @@
 ^{:refer hara.object.util/object-data :added "2.2"}
 (fact "retrieves the data within the class as a map (like bean)"
 
-  (object-data (Date. 0))
-  => (contains {:day 4
-                :date 1
-                :time 0
-                :month 0
-                :seconds 0
-                :year 70
-                :hours 5
-                :minutes 30})
-  )
+  (keys (object-data (Date. 0)))
+  => (contains [:day :date :time :month :seconds :year :hours :minutes]
+               :in-any-order :gaps-ok))
