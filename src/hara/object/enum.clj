@@ -11,7 +11,8 @@
    (enum? java.lang.annotation.ElementType) => true
  
    (enum? String) => false"
-  {:added "2.2"} [type]
+  {:added "2.2"}
+  [type]
   (if (-> (inheritance/ancestor-list type)
           (set)
           (get java.lang.Enum))
@@ -25,7 +26,8 @@
    => (contains [\"TYPE\" \"FIELD\" \"METHOD\" \"PARAMETER\" \"CONSTRUCTOR\"
                  \"LOCAL_VARIABLE\" \"ANNOTATION_TYPE\" \"PACKAGE\"
                  \"TYPE_PARAMETER\" \"TYPE_USE\"] :in-any-order)"
-  {:added "2.2"} [type]
+  {:added "2.2"}
+  [type]
   (let [vf (reflect/query-class type ["$VALUES" :#])]
     (->> (vf type) (seq))))
 

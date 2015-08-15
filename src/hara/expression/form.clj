@@ -35,7 +35,7 @@
   
      (my-inc 1) => 2
    
-     (meta my-inc) => {:source \"#(+ 1 %)\n\"})"
+     (meta my-inc) => {:source \"#(+ 1 %)\\n\"})"
   {:added "2.1"}
   [form]
   (try (let [fform (form-prep form)]
