@@ -352,6 +352,7 @@ It can be seen that we can simulate the actual speed of outputs by keeping the s
   ;;       :interrupt false,
   ;;       :input (#inst "2015-07-17T07:45:59.464-00:00" {:data "foo"} {}),
   ;;       :timestamp #inst "2015-07-17T07:45:59.464-00:00"}
+  (Thread/sleep 10)
   (count (list-instances sch2 :l1))
   => 3)
 
@@ -389,7 +390,7 @@ It can be seen that we can simulate the actual speed of outputs by keeping the s
   (trigger! sch2 :l2)
   (Thread/sleep 100)
   (trigger! sch2 :l2)
-
+  (Thread/sleep 100)
 
   (count (list-instances sch2 :l1))
   => 3
