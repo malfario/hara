@@ -20,6 +20,8 @@
 (fact "creates")
 
 (comment
+
+  
   (deflistener print-log :log
     ev
     (println ev))
@@ -27,18 +29,29 @@
   (def ^:dynamic *blob* (promise))
 
   (def two-procedure (procedure {:name "two"
-                                 :handler (fn [id params]
-                                            (Thread/sleep 1000)
-                                            (println id params)
-                                            2)
-                                 ;;:mode :async
+                                 :handler (fn [id params instance]
+                                            (Thread/sleep 100)
+                                            (println (:retry instance))
+                                            (if (= 1 (-> instance :retry :count))
+                                              :SUCCESS
+                                              (throw (Exception.)))
+                                            )
+                                 :retry {:on    #{Exception}
+                                         :wait  200
+                                         :count 2}
+                                 ;;:timeout 300
                                  }
                                 [:id :params :instance]))
-
-  (:procedure (two-procedure 100 {:a 1} {:mode :sync :cached true}))
-
+(two-procedure 200 {:a 1} {:mode :async :cached false})
+  
+  
   {:mode :sync}
 
+  (def th1 (future (Thread/sleep 100000)))
+
+  (future-done? th1)
+  (future-cancel th1)
+  @th1
   a -> b -> c
 
   function

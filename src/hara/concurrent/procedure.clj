@@ -48,7 +48,7 @@
     (str "#proc[" (:id obj) "]"
          (-> (select-keys obj [:name :result :timestamp :interrupt
                                :overwrite :cached :runtime
-                               :mode :params :input :args])
+                               :mode :params :input :args :timeout :retry])
              (->> (into {}))
              (update-in [:runtime] (fn [x] (if x (deref x) {})))
              (update-in [:result]  (fn [x] (if (realized? x) (deref x) :waiting))))))
@@ -64,15 +64,37 @@
   [v ^java.io.Writer w]
   (.write w (str v)))
 
+(defn update-args [args arglist retry instance]
+  (map (fn [arg type]
+         (cond (= type :retry)
+               retry
+
+               (= type :instance)
+               instance
+
+               :else arg))
+       args
+       arglist))
+
+(defn wrap-exception [f]
+  (fn [{:keys [retry arglist] :as instance} args]
+    (try (f instance args)
+         (catch Throwable t
+           (if (and (:count retry) (> (:count retry) 0))
+             (do (let [_  (Thread/sleep (:wait retry))
+                       retry (update-in retry [:count] dec)
+                       instance (assoc-in instance [:retry] retry)
+                       res ((wrap-exception f) instance (update-args args arglist retry instance))]
+                   res))
+             (deliver (:result instance) {:type :error
+                                          :data t}))))))
+
 (defn invoke-base
   [instance args]
-  (try
-    (let [result (apply (:handler instance) args)]
-      (deliver (:result instance) {:type :success
-                                   :data result}))
-    (catch Throwable t
-      (deliver (:result instance) {:type :error
-                                   :data t}))))
+  (let [result (apply (:handler instance) args)]
+    
+    (deliver (:result instance) {:type :success
+                                 :data result})))
 
 (defn invoke-procedure [{:keys [id-fn handler arglist time] :as procedure} & args]
   (let [_          (if (< (count arglist) (count args))
@@ -100,11 +122,13 @@
                        (assoc :procedure procedure)
                        (map->ProcedureInstance))]
     ((-> invoke-base
+         wrap-exception
          middleware/wrap-instance
          middleware/wrap-cached
          middleware/wrap-timing
          middleware/wrap-registry
          middleware/wrap-mode
+         middleware/wrap-timeout
          middleware/wrap-interrupt
          middleware/wrap-id)
      instance nargs)))
@@ -112,7 +136,7 @@
 (defrecord Procedure []
   Object
   (toString [obj]
-    (str "#proc" (-> (select-keys obj [:name :mode :params :cached :runtime :arglist])
+    (str "#proc" (-> (select-keys obj [:name :mode :params :cached :runtime :arglist :retry :timeout])
                      (->> (into {})))))
 
   clojure.lang.IFn

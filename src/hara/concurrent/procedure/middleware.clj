@@ -25,6 +25,21 @@
           (let [current (f instance args)]
             (state/update cache assoc-in [name id args] instance)))))))
 
+(defn wrap-timeout [f]
+  (fn [{:keys [timeout mode] :as instance} args]
+    (cond (nil? timeout)
+          (f instance args)
+          
+          (and timeout (= :mode :sync))
+          (throw (Exception. "Cannot perform timeout on synchronous mode"))
+
+          :else
+          (let [{:keys [registry name id thread] :as instance} (f instance args)]
+            (future (Thread/sleep timeout)
+                    (registry/kill registry name id)
+                    (future-cancel thread))
+            instance))))
+
 (defn wrap-interrupt [f]
   (fn [{:keys [registry name id interrupt] :as instance} args]
     (let [existing (get-in @registry [name id])]
