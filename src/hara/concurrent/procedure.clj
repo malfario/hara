@@ -8,7 +8,8 @@
             [hara.concurrent.procedure
              [data :as data]
              [middleware :as middleware]
-             [registry :as registry]]))
+             [registry :as registry]
+             [retry :as retry]]))
 
 (defonce ^:dynamic *default-cache* (data/cache))
 
@@ -64,19 +65,16 @@
   [v ^java.io.Writer w]
   (.write w (str v)))
 
-(defn update-args [args arglist retry instance]
-  (map (fn [arg type]
-         (cond (= type :retry)
-               retry
-
-               (= type :instance)
-               instance
-
-               :else arg))
-       args
-       arglist))
-
 (defn wrap-exception [f]
+  (fn [{:keys [retry arglist] :as instance} args]
+    (try (f instance args)
+         (catch Throwable e
+           (if-let [[instance args] (retry/retry instance args e)] 
+             ((wrap-exception f) instance args)
+             (deliver (:result instance) {:type :error
+                                          :data e}))))))
+
+#_(defn wrap-exception [f]
   (fn [{:keys [retry arglist] :as instance} args]
     (try (f instance args)
          (catch Throwable t

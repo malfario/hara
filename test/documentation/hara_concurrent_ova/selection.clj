@@ -1,4 +1,4 @@
-(ns documentation..hara-concurrent-ova.selection
+(ns documentation.hara-concurrent-ova.selection
   (:use midje.sweet)
   (:require [hara.concurrent.ova :refer :all]))
 

@@ -34,18 +34,31 @@
                                             (println (:retry instance))
                                             (if (= 1 (-> instance :retry :count))
                                               :SUCCESS
-                                              (throw (Exception.)))
-                                            )
-                                 :retry {:on    #{Exception}
-                                         :wait  200
-                                         :count 2}
-                                 ;;:timeout 300
+                                              (throw (Exception.))))
+                                 ;; :retry {:on #{Exception} :wait 200 :count 3}
+                                 ;; :timeout 300
+                                 :retry {:handle [{:on #{Exception}
+                                                   :apply   (fn [state e])
+                                                   :limit   (fn [state count])
+                                                   :wait    (fn [state count])}
+                                                  {:on Throwable
+                                                   :apply (fn [state e])
+                                                   :limit :no}
+                                                  {:on (fn [e])
+                                                   :apply (fn [state e])
+                                                   :limit :no}]
+                                         :count 0
+                                         :state  {:a 1 :b 2}
+                                         :limit 10
+                                         :wait  100}
+                                 
                                  }
                                 [:id :params :instance]))
-(two-procedure 200 {:a 1} {:mode :async :cached false})
+  (def res (two-procedure 200 {:a 1} {:mode :async :cached false}))
   
-  
+  @res
   {:mode :sync}
+
 
   (def th1 (future (Thread/sleep 100000)))
 
