@@ -15,6 +15,5 @@
   
   (->> (enum-values ElementType)
        (map str))
-  => (contains ["TYPE" "FIELD" "METHOD" "PARAMETER" "CONSTRUCTOR"
-                "LOCAL_VARIABLE" "ANNOTATION_TYPE" "PACKAGE"
-                "TYPE_PARAMETER" "TYPE_USE"] :in-any-order))
+  => (contains "TYPE" "FIELD" "METHOD" "PARAMETER" "CONSTRUCTOR"
+               :in-any-order :gaps-ok))
