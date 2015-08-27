@@ -46,7 +46,7 @@
    => 'int
  
    (primitive-convert Character :string)
-   => char
+   => \"char\"
  
    (primitive-convert \"V\" :class)
    => Void/TYPE

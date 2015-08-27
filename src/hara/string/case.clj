@@ -28,10 +28,10 @@
  
    (title-case \"helloWorld\")
  
-   => Hello World
+   => \"Hello World\"
  
    (title-case :hello-world)
-   => Hello World"
+   => \"Hello World\""
   {:added "2.1"}
   [value]
   (->> (-> (common/to-string value)
@@ -44,10 +44,10 @@
   "converts a string-like object to a lower case string
  
    (lower-case \"helloWorld\")
-   => hello world
+   => \"hello world\"
  
    (lower-case 'hello-world)
-   => hello world"
+   => \"hello world\""
   {:added "2.1"}
   [value]
   (->> (-> (common/to-string value)

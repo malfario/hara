@@ -2,7 +2,7 @@
 
 [[:chapter {:title "Introduction"}]]
 
-"`hara.concurrent.procedure` provides a wrapper around a function in order to control the execution of a function such as caching, asynchronous dispatch, timing and other runtime information. This is a very useful construct for workflow modelling and concurrent applications where the library provides rich information about the execution of a particular running instance:
+"`hara.concurrent.procedure` provides a wrapper in order to control the execution of a function such as restarts, timeouts, caching, synchronous/asynchronous dispatch, timing and other related params. This is a very useful construct for workflow modelling and concurrent applications where the library provides rich information about the execution of a particular running instance:
 
 - the function that originated the process instance
 - the thread or future on which the instance is executing
@@ -23,3 +23,4 @@
 (comment (use 'hara.concurrent.procedure))
 
 [[:section {:title "Motivation"}]]
+

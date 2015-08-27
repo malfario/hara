@@ -7,13 +7,13 @@
 (defn java->clojure
   "turns a java name into a clojure one.
  
-   (java->clojure \"getKebabCase\") => kebab-case
+   (java->clojure \"getKebabCase\") => \"kebab-case\"
  
-   (java->clojure \"setKebabCase\") => kebab-case
+   (java->clojure \"setKebabCase\") => \"kebab-case\"
  
-   (java->clojure \"isKebabCase\")  => kebab-case?
+   (java->clojure \"isKebabCase\")  => \"kebab-case?\"
  
-   (java->clojure \"hasKebabCase\") => kebab-case!"
+   (java->clojure \"hasKebabCase\") => \"kebab-case!\""
   {:added "2.2"}
   [^String name]
   (let [nname (cond (re-find #"(^get)|(^set)[A-Z].+" name)
@@ -31,11 +31,11 @@
 (defn clojure->java
   "turns a clojure name into a java one.
  
-   (clojure->java \"camel-case\") => getCamelCase
+   (clojure->java \"camel-case\") => \"getCamelCase\"
  
-   (clojure->java \"camel-case?\") => isCamelCase
+   (clojure->java \"camel-case?\") => \"isCamelCase\"
  
-   (clojure->java \"camel-case!\") => hasCamelCase"
+   (clojure->java \"camel-case!\") => \"hasCamelCase\""
   {:added "2.2"}
   ([name] (clojure->java name :get))
   ([^String name suffix]

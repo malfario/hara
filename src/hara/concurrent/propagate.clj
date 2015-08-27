@@ -144,10 +144,10 @@
    @cell-a => :hara.concurrent.propagate/nothing
  
    (def cell-b (cell \"Hello\"))
-   @cell-b => Hello
+   @cell-b => \"Hello\"
  
    (cell-b \"World\")    ;; invoking sets the state of the cell
-   @cell-b => World"
+   @cell-b => \"World\""
   {:added "2.1"}
   ([] (cell nothing))
   ([content] (cell content {}) )

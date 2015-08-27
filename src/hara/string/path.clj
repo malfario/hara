@@ -7,7 +7,7 @@
   "joins a sequence of elements into a path seperated value
  
    (path/join [\"a\" \"b\" \"c\"])
-   => a/b/c
+   => \"a/b/c\"
  
    (path/join '[a b c] '-)
    => 'a-b-c"
@@ -75,7 +75,7 @@
   "returns the path namespace of the string/keyword/symbol
  
    (path/path-ns \"a/b/c/d\")
-   => a/b/c"
+   => \"a/b/c\""
   {:added "2.1"}
   [k]
   (join (path-vec k)))
@@ -96,7 +96,7 @@
   "returns the path root of the string/keyword/symbol
  
    (path/path-root \"a/b/c/d\")
-   => a"
+   => \"a\""
   {:added "2.1"}
   [k]
   (first (path-vec k)))
@@ -132,7 +132,7 @@
   "returns the path stem of the string/keyword/symbol
  
    (path/path-stem \"a/b/c/d\")
-   => b/c/d"
+   => \"b/c/d\""
   {:added "2.1"}
   [k]
   (join (path-stem-vec k)))
@@ -150,7 +150,7 @@
   "returns the val of the string/keyword/symbol
  
    (path/val \"a/b/c/d\")
-   => d"
+   => \"d\""
   {:added "2.1"}
   [k]
   (last (split k)))

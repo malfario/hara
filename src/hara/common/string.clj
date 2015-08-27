@@ -33,10 +33,10 @@
   "converts symbols and keywords to string representation
  
    (to-string 'hello/world)
-   => hello/world
+   => \"hello/world\"
  
    (to-string :hello/world)
-   => hello/world"
+   => \"hello/world\""
   {:added "2.1"}
   ^String [x]
   (-to-string x))

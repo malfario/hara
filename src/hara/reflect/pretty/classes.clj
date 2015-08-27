@@ -8,8 +8,8 @@
 (defn type->raw
   "converts to the raw representation
  
-   (type->raw Class) => java.lang.Class
-   (type->raw 'byte) => B"
+   (type->raw Class) => \"java.lang.Class\"
+   (type->raw 'byte) => \"B\""
   {:added "2.1"}
   [v]
   (let [raw (string/to-string v)]
@@ -21,8 +21,8 @@
 (defn raw-array->string
   "converts the raw representation to a more readable form
  
-   (raw-array->string \"[[B\") => byte[][]
-   (raw-array->string \"[Ljava.lang.Class;\") => java.lang.Class[]"
+   (raw-array->string \"[[B\") => \"byte[][]\"
+   (raw-array->string \"[Ljava.lang.Class;\") => \"java.lang.Class[]\""
   {:added "2.1"}
   [v]
   (if-let [obj-name (second (re-find #"^L(.*);" v))]
@@ -32,8 +32,8 @@
 (defn raw->string
   "converts the raw array representation to a human readable form
  
-   (raw->string \"[[V\") => void[][]
-   (raw->string \"[Ljava.lang.String;\") => java.lang.String[]"
+   (raw->string \"[[V\") => \"void[][]\"
+   (raw->string \"[Ljava.lang.String;\") => \"java.lang.String[]\""
   {:added "2.1"}
   [^String v]
   (if (.startsWith v "[")
@@ -59,9 +59,9 @@
 (defn string->raw
   "converts any string to it's raw representation
  
-   (string->raw \"java.lang.String[]\") => [Ljava.lang.String;
+   (string->raw \"java.lang.String[]\") => \"[Ljava.lang.String;\"
  
-   (string->raw \"int[][][]\") => [[[I"
+   (string->raw \"int[][][]\") => \"[[[I\""
   {:added "2.1"}
   [v]
   (or (primitive-convert v :string :raw)
@@ -70,7 +70,7 @@
 (defmulti class-convert-impl
   "converts a string to its representation. Implementation function
  
-   (class-convert-impl Class  :string) => java.lang.Class
+   (class-convert-impl Class  :string) => \"java.lang.Class\"
  
    (class-convert-impl \"byte\" :class) => Byte/TYPE
  
@@ -83,9 +83,9 @@
  
    (class-convert \"byte\") => Byte/TYPE
  
-   (class-convert 'byte :string) => byte
+   (class-convert 'byte :string) => \"byte\"
  
-   (class-convert (Class/forName \"[[B\") :string) => byte[][]"
+   (class-convert (Class/forName \"[[B\") :string) => \"byte[][]\""
   {:added "2.1"}
   ([v] (class-convert v :class))
   ([v to] (class-convert-impl v to)))

@@ -38,10 +38,10 @@
    is a key witthin a hashset
  
    (map-walk-submap {:hello \"world\"} :hello)
-   => world
+   => \"world\"
  
    (map-walk-submap {#{:hello} \"world\"} :hello)
-   => world"
+   => \"world\""
   {:added "2.1"}
   [m search-key]
   (->> m
@@ -60,7 +60,7 @@
              [\"again\"]  identity
              (fn [_ _ _] :none)
              (fn [obj func arg1] (func obj arg1)))
-   => hello world again"
+   => \"hello world again\""
   {:added "2.1"}
   [obj mapobj args f-obj f-nil f-nonmap]
   (cond (nil? mapobj) (apply f-nil obj mapobj args)

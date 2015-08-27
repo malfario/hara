@@ -74,19 +74,6 @@
              (deliver (:result instance) {:type :error
                                           :data e}))))))
 
-#_(defn wrap-exception [f]
-  (fn [{:keys [retry arglist] :as instance} args]
-    (try (f instance args)
-         (catch Throwable t
-           (if (and (:count retry) (> (:count retry) 0))
-             (do (let [_  (Thread/sleep (:wait retry))
-                       retry (update-in retry [:count] dec)
-                       instance (assoc-in instance [:retry] retry)
-                       res ((wrap-exception f) instance (update-args args arglist retry instance))]
-                   res))
-             (deliver (:result instance) {:type :error
-                                          :data t}))))))
-
 (defn invoke-base
   [instance args]
   (let [result (apply (:handler instance) args)]
