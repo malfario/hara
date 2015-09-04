@@ -1,6 +1,13 @@
 (ns hara.namespace.eval
   (:require [hara.common.error :refer [error suppress]]))
 
+(defn eval-ns
+  [ns forms]
+  (binding [*ns* (the-ns ns)]
+    (->> forms
+         (mapv (fn [form] (eval form)))
+         last)))
+
 (defmacro with-ns
   "Evaluates `body` forms in an existing namespace given by `ns`.
 
@@ -11,6 +18,14 @@
   [ns & forms]
   `(binding [*ns* (the-ns ~ns)]
      ~@(map (fn [form] `(eval '~form)) forms)))
+
+(defn eval-temp-ns
+  [forms]
+  (let [sym (gensym)]
+    (try
+      (create-ns sym)
+      (eval-ns sym (cons '(clojure.core/refer-clojure) forms))
+      (finally (remove-ns sym)))))
 
 (defmacro with-temp-ns
   "Evaluates `body` forms in a temporaryily created namespace.
@@ -29,7 +44,7 @@
   `(try
      (create-ns 'sym#)
      (let [res# (with-ns 'sym#
-                            (clojure.core/refer-clojure)
-                            ~@forms)]
+                  (clojure.core/refer-clojure)
+                  ~@forms)]
        res#)
      (finally (remove-ns 'sym#))))
