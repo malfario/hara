@@ -26,8 +26,7 @@
 
 [[:section {:title "Motivation"}]]
 
-
-(defprocedure hello )
+;;(defprocedure hello )
 
 (procedure {:name    "println"
             :handler (fn [t params instance]

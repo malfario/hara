@@ -10,20 +10,24 @@ Code patterns and utilities. Please see [finding a middle ground](http://z.cauda
 Add to `project.clj`:
 
 ```clojure
-[im.chit/hara "2.2.7"]
+[im.chit/hara "2.2.11"]
 
 or
 
-[im.chit/hara.<PACKAGE> "2.2.7"]
+[im.chit/hara.<PACKAGE> "2.2.11"]
 
 or
 
-[im.chit/hara.<PACKAGE>.<NAMESPACE> "2.2.7"]
+[im.chit/hara.<PACKAGE>.<NAMESPACE> "2.2.11"]
 ```
 
 Where `PACKAGE` and `NAMESPACE` can be seen from the [website](http://docs.caudate.me/hara/). Please see documentation for usage.
 
 ## Versions
+
+#### 2.2.11
+- fixes for `hara.object`
+- new package: `hara.group`
 
 #### 2.2.7
 - `hara.object`
