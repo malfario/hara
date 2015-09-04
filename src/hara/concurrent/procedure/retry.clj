@@ -105,7 +105,8 @@
                  :state {}}
                 (Exception.))
    => {:file-errors 1}"
-  {:added "2.2"} [{:keys [apply state] :as handler} e]
+  {:added "2.2"}
+  [{:keys [apply state] :as handler} e]
   (cond (nil? apply)
         state
 

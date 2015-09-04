@@ -1,4 +1,6 @@
-(ns documentation.hara-concurrent-procedure)
+(ns documentation.hara-concurrent-procedure
+  (:use midje.sweet)
+  (:require [hara.concurrent.procedure :refer :all]))
 
 [[:chapter {:title "Introduction"}]]
 
@@ -24,3 +26,25 @@
 
 [[:section {:title "Motivation"}]]
 
+
+(defprocedure hello )
+
+(procedure {:name    "println"
+            :handler (fn [t params instance]
+                       (println "INSTANCE: " instance)
+                       (Thread/sleep 500)
+                       (println "ENDED" t))
+            :id-fn :timestamp
+            :cached true
+            :params {:b 2}
+            ; :overwrite true
+            ; :mode :sync
+            }
+           [:timestamp :params :instance])
+
+(defprocedure hello
+  [:timestamp :params :instance]
+  [t params instance]
+  (println t params instance))
+
+(hello 123 {} {})

@@ -1,5 +1,6 @@
 (ns hara.reflect
   (:require [hara.reflect.core apply delegate class extract query]
+            [hara.reflect.common]
             [hara.namespace.import :as ns]))
 
 (ns/import
