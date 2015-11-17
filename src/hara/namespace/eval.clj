@@ -2,6 +2,11 @@
   (:require [hara.common.error :refer [error suppress]]))
 
 (defn eval-ns
+  "Evaluates a list of forms in an existing namespace
+   (eval-ns 'hara.common.checks
+                 '[(long? 1)])
+   => true"
+  {:added "2.2"}
   [ns forms]
   (binding [*ns* (the-ns ns)]
     (->> forms
@@ -20,6 +25,17 @@
      ~@(map (fn [form] `(eval '~form)) forms)))
 
 (defn eval-temp-ns
+  "Evaluates a list of forms in a temporary namespace
+   (eval-temp-ns
+    '[(def  inc1 inc)
+      (defn inc2 [x] (+ 1 x))
+      (-> 1 inc1 inc2)])
+   => 3
+   
+   All created vars will be destroyed after evaluation.
+ 
+   (resolve 'inc1) => nil"
+  {:added "2.2"}
   [forms]
   (let [sym (gensym)]
     (try

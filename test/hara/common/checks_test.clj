@@ -81,7 +81,7 @@
 
 ^{:refer hara.common.checks/ref? :added "2.0"}
 (fact "Returns `true` if `x` is of type `clojure.lang.Ref`."
-      
+
   (ref? (ref nil)) => true
 )
 

@@ -7,7 +7,8 @@
   :profiles {:dev {:dependencies [[midje "1.6.3"]
                                   [compojure "1.4.0"]
                                   [ring "1.4.0"]
-                                  [clj-http "1.1.2"]]
+                                  [clj-http "1.1.2"]
+                                  [helpshift/hydrox "0.1.2"]]
                    :plugins [[lein-midje "3.1.3"]
                              [lein-repack "0.2.10"]]}}
   :documentation {:site   "hara"

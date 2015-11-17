@@ -21,6 +21,11 @@
   ([type l tz]
    (common/from-long type l tz)))
 
+(defn time? [t]
+  (->> (.getMethodTable ^clojure.lang.MultiFn common/from-long)
+       keys
+       (some #(instance? % t))))
+
 (defn equal? [t1 t2]
   (= (time/-to-long t1) (time/-to-long t2)))
 
