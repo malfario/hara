@@ -1,0 +1,324 @@
+
+
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <meta name="google" value="notranslate">
+
+
+    <title>common</title>
+
+    
+  <link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/languages/clojure.min.js"></script>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/magula.min.css">
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular.min.js"></script>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-cookies.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
+  <script type="text/javascript" src="js/angular-highlightjs.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="css/rdash.min.css">
+  <link rel="stylesheet" type="text/css" href="css/scrollspy.css">
+
+
+  <script>
+    window.console = window.console || function(t) {};
+    window.open = function(){ console.log("window.open is disabled."); };
+    window.print   = function(){ console.log("window.print is disabled."); };
+  </script>
+
+  <script>
+    var app = angular.module('app', ['hljs']);
+  </script>
+  </head>
+
+  <body ng-app="app" data-spy="scroll" data-target=".scrollspy">
+  <!-- Fixed navbar -->
+    <nav class="navbar navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html"><img src="img/logo.png"></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Guides <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="hara-class.html">class</a></li>
+                <li><a href="hara-common.html">common</a></li>
+                <li><a href="hara-component.html">component</a></li>
+                <li><a href="hara-concurrent.html">concurrent</a></li>
+                <li><a href="hara-concurrent-ova.html">concurrent.ova</a></li>
+                <!--li><a href="hara-concurrent-procedure.html">concurrent.procedure</a></li-->
+                <li><a href="hara-data.html">data</a></li>
+                <li><a href="hara-event.html">event</a></li>
+                <li><a href="hara-expression.html">expression</a></li>
+                <li><a href="hara-extend.html">extend</a></li>
+                <li><a href="hara-function.html">function</a></li>
+                <li><a href="hara-group.html">group</a></li>
+                <li><a href="hara-io-scheduler.html">io.scheduler</a></li>
+                <li><a href="hara-io-watch.html">io.watch</a></li>
+                <li><a href="hara-namespace.html">namespace</a></li>
+                <!--li><a href="hara-object.html">object</a></li-->
+                <li><a href="hara-reflect.html">reflect</a></li>
+                <li><a href="hara-sort.html">sort</a></li>
+                <li><a href="hara-string.html">string</a></li>
+            </ul>
+            </li>
+            <li>
+              <a href="https://github.com/zcaudate/hara" target="_blank">Github</a></li>
+            <li>
+              <a href="http://gitter.im/zcaudate/hara" target="_blank">Gitter</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+
+  <div class="container row">
+    <div class="col-md-4 scrollspy pull-right">
+      <ul id="nav" class="nav hidden-xs hidden-sm" data-spy="affix">
+        <li><a href="#introduction">1  &nbsp;&nbsp; Introduction</a><ul class="nav"><li><a href="#installation">1.1  &nbsp;&nbsp; Installation</a></li></ul></li><li><a href="#api---checks">2  &nbsp;&nbsp; API - checks</a></li><li><a href="#api---errors">3  &nbsp;&nbsp; API - errors</a></li><li><a href="#api---hash">4  &nbsp;&nbsp; API - hash</a></li><li><a href="#api---primitives">5  &nbsp;&nbsp; API - primitives</a></li><li><a href="#api---state">6  &nbsp;&nbsp; API - state</a></li><li><a href="#api---string">7  &nbsp;&nbsp; API - string</a></li><li><a href="#api---watch">8  &nbsp;&nbsp; API - watch</a></li>
+      </ul>
+    </div>
+    <div class="col-md-8" id="content">
+      <div class="jumbotron">
+        <div class="container">
+          <h1>common</h1>
+          <h4>primitives declarations and functions</h4>
+        </div>
+      </div>
+      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/common.clj'>hara.common</a> are a set of primitive declarations and functions that extend on top of <code>clojure.core</code> and are used by many of the other namespaces in the <code>hara</code> ecosystem.</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.common &quot;2.2.12&quot;&#93;
+</code></pre><p>Individual namespaces can be added seperately:</p><pre><code>&#91;im.chit/hara.common.checks &quot;2.2.12&quot;&#93;
+&#91;im.chit/hara.common.error &quot;2.2.12&quot;&#93;
+&#91;im.chit/hara.common.hash &quot;2.2.12&quot;&#93;
+&#91;im.chit/hara.common.primitives &quot;2.2.12&quot;&#93;
+&#91;im.chit/hara.common.state &quot;2.2.12&quot;&#93;
+&#91;im.chit/hara.common.string &quot;2.2.12&quot;&#93;
+&#91;im.chit/hara.common.watch &quot;2.2.12&quot;&#93;
+</code></pre></div></section></section><section class="chapter" id="api---checks"><h2 class="chapter">2  &nbsp;&nbsp; API - checks</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/common/checks.clj'>hara.common.checks</a> contain type predicates that are missing from the <code>clojure.core</code>:</p></div><div class="api"><hr /><div><a name="api-hara-common-checks"></a><h4><i>API</i></h4><a href="#api-hara-common-checks--agent?">agent?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--atom?">atom?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--bigdec?">bigdec?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--bigint?">bigint?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--boolean?">boolean?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--bytes?">bytes?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--double?">double?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--hash-map?">hash-map?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--ideref?">ideref?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--instant?">instant?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--iref?">iref?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--lazy-seq?">lazy-seq?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--long?">long?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--promise?">promise?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--ref?">ref?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--regex?">regex?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--thread?">thread?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--type-checker">type-checker</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--uri?">uri?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--uuid?">uuid?</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-common-checks--agent?"></a><h4>agent? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` is of type `clojure.lang.Agent`.&quot;
+
+(agent? (agent nil)) =&gt; true</div></div><div><a name="api-hara-common-checks--atom?"></a><h4>atom? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` is of type `clojure.lang.Atom`.&quot;
+
+(atom? (atom nil)) =&gt; true</div></div><div><a name="api-hara-common-checks--bigdec?"></a><h4>bigdec? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` is of type `java.math.BigDecimal`.&quot;
+
+(bigdec? 1M)       =&gt; true
+(bigdec? 1.0)      =&gt; false</div></div><div><a name="api-hara-common-checks--bigint?"></a><h4>bigint? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` is of type `clojure.lang.BigInt`.&quot;
+
+(bigint? 1N)       =&gt; true
+(bigint? 1)        =&gt;  false</div></div><div><a name="api-hara-common-checks--boolean?"></a><h4>boolean? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` is of type `java.lang.Boolean`.&quot;
+
+ (boolean? true)   =&gt; true
+ (boolean? false)  =&gt; true</div></div><div><a name="api-hara-common-checks--bytes?"></a><h4>bytes? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` is a primitive `byte` array.&quot;
+
+(bytes? (byte-array 8)) =&gt; true</div></div><div><a name="api-hara-common-checks--double?"></a><h4>double? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` is of type `java.lang.Double`.&quot;
+
+(double? 1)            =&gt; false
+(double? (double 1))   =&gt; true</div></div><div><a name="api-hara-common-checks--hash-map?"></a><h4>hash-map? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` implements `clojure.lang.APersistentMap`.&quot;
+
+ (hash-map? {})    =&gt; true
+ (hash-map? [])    =&gt; false</div></div><div><a name="api-hara-common-checks--ideref?"></a><h4>ideref? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` is of type `java.lang.IDeref`.&quot;
+
+(ideref? (atom 0))  =&gt; true
+(ideref? (promise)) =&gt; true
+(ideref? (future))  =&gt; true</div></div><div><a name="api-hara-common-checks--instant?"></a><h4>instant? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` is of type `java.util.Date`.&quot;
+
+(instant? (java.util.Date.)) =&gt; true</div></div><div><a name="api-hara-common-checks--iref?"></a><h4>iref? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` is of type `clojure.lang.IRef`.&quot;
+
+(iref? (atom 0))  =&gt; true
+(iref? (ref 0))   =&gt; true
+(iref? (agent 0)) =&gt; true
+(iref? (promise)) =&gt; false
+(iref? (future))  =&gt; false</div></div><div><a name="api-hara-common-checks--lazy-seq?"></a><h4>lazy-seq? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` implements `clojure.lang.LazySeq`.&quot;
+
+(lazy-seq? (map inc [1 2 3]))  =&gt; true
+(lazy-seq? ())    =&gt; false</div></div><div><a name="api-hara-common-checks--long?"></a><h4>long? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` is of type `java.lang.Long`.&quot;
+
+(long? 1)          =&gt; true
+(long? 1N)         =&gt; false</div></div><div><a name="api-hara-common-checks--promise?"></a><h4>promise? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` is `x` is a promise&quot;
+
+(promise? (promise)) =&gt; true
+(promise? (future))  =&gt; false</div></div><div><a name="api-hara-common-checks--ref?"></a><h4>ref? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` is of type `clojure.lang.Ref`.&quot;
+
+(ref? (ref nil)) =&gt; true</div></div><div><a name="api-hara-common-checks--regex?"></a><h4>regex? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` implements `clojure.lang.IPersistentMap`.&quot;
+
+(regex? #&quot;&#92;d+&quot;) =&gt; true</div></div><div><a name="api-hara-common-checks--thread?"></a><h4>thread? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` is `x` is a thread&quot;
+
+(thread? (Thread/currentThread)) =&gt; true</div></div><div><a name="api-hara-common-checks--type-checker"></a><h4>type-checker <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns the checking function associated with `k`&quot;
+
+(type-checker :string) =&gt; #'clojure.core/string?
+
+(require '[hara.common.checks :refer [bytes?]])
+(type-checker :bytes)  =&gt; #'hara.common.checks/bytes?</div></div><div><a name="api-hara-common-checks--uri?"></a><h4>uri? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` is of type `java.net.URI`.&quot;
+
+(uri? (java.net.URI. &quot;http://www.google.com&quot;)) =&gt; true</div></div><div><a name="api-hara-common-checks--uuid?"></a><h4>uuid? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` is of type `java.util.UUID`.&quot;
+
+(uuid? (java.util.UUID/randomUUID)) =&gt; true</div></div></div></div></div></section><section class="chapter" id="api---errors"><h2 class="chapter">3  &nbsp;&nbsp; API - errors</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/common/error.clj'>hara.common.error</a> contain simple macros for throwing and processing errors:</p></div><div class="api"><hr /><div><a name="api-hara-common-error"></a><h4><i>API</i></h4><a href="#api-hara-common-error--error">error</a>&nbsp;&nbsp;<a href="#api-hara-common-error--suppress">suppress</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-common-error--error"></a><h4>error <a href="#api-hara-common-error">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Throws an exception when called.&quot;
+
+(error &quot;This is an error&quot;)
+=&gt; (throws Exception &quot;This is an error&quot;)
+
+(error (Exception. &quot;This is an error&quot;)
+       &quot;This is a chained error&quot;)
+=&gt; (throws Exception &quot;This is a chained error&quot;)</div></div><div><a name="api-hara-common-error--suppress"></a><h4>suppress <a href="#api-hara-common-error">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Suppresses any errors thrown in the body.&quot;
+
+(suppress (error &quot;Error&quot;)) =&gt; nil
+
+(suppress (error &quot;Error&quot;) :error) =&gt; :error
+
+(suppress (error &quot;Error&quot;)
+          (fn [e]
+            (.getMessage e))) =&gt; &quot;Error&quot;</div></div></div></div></div></section><section class="chapter" id="api---hash"><h2 class="chapter">4  &nbsp;&nbsp; API - hash</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/common/hash.clj'>hara.common.hash</a> contain methods for working with object hashes:</p></div><div class="api"><hr /><div><a name="api-hara-common-hash"></a><h4><i>API</i></h4><a href="#api-hara-common-hash--hash-label">hash-label</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-common-hash--hash-label"></a><h4>hash-label <a href="#api-hara-common-hash">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns a keyword repesentation of the hash-code. For use in 
+generating internally unique keys&quot;
+
+ (hash-label 1) =&gt; &quot;__1__&quot;
+ (hash-label &quot;a&quot; &quot;b&quot; &quot;c&quot;) =&gt; &quot;__97_98_99__&quot;
+ (hash-label &quot;abc&quot;) =&gt; &quot;__96354__&quot;</div></div></div></div></div></section><section class="chapter" id="api---primitives"><h2 class="chapter">5  &nbsp;&nbsp; API - primitives</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/common/primitives.clj'>hara.common.primitives</a> contain contructs that are missing from <code>clojure.core</code>:</p></div><div class="api"><hr /><div><a name="api-hara-common-primitives"></a><h4><i>API</i></h4><a href="#api-hara-common-primitives--F">F</a>&nbsp;&nbsp;<a href="#api-hara-common-primitives--NIL">NIL</a>&nbsp;&nbsp;<a href="#api-hara-common-primitives--T">T</a>&nbsp;&nbsp;<a href="#api-hara-common-primitives--instant">instant</a>&nbsp;&nbsp;<a href="#api-hara-common-primitives--queue">queue</a>&nbsp;&nbsp;<a href="#api-hara-common-primitives--uri">uri</a>&nbsp;&nbsp;<a href="#api-hara-common-primitives--uuid">uuid</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-common-primitives--F"></a><h4>F <a href="#api-hara-common-primitives">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `false` for any combination of input `args`&quot;
+
+(F) =&gt; false
+(F :hello) =&gt; false
+(F 1 2 3) =&gt; false</div></div><div><a name="api-hara-common-primitives--NIL"></a><h4>NIL <a href="#api-hara-common-primitives">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `nil` for any combination of input `args`&quot;
+
+(NIL) =&gt; nil
+(NIL :hello) =&gt; nil
+(NIL 1 2 3) =&gt; nil</div></div><div><a name="api-hara-common-primitives--T"></a><h4>T <a href="#api-hara-common-primitives">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` for any combination of input `args`&quot;
+
+(T) =&gt; true
+(T :hello) =&gt; true
+(T 1 2 3) =&gt; true</div></div><div><a name="api-hara-common-primitives--instant"></a><h4>instant <a href="#api-hara-common-primitives">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns a `java.util.Date` object&quot;
+
+(instant) =&gt; #(instance? java.util.Date %)
+
+(instant 0) =&gt; #inst &quot;1970-01-01T00:00:00.000-00:00&quot;</div></div><div><a name="api-hara-common-primitives--queue"></a><h4>queue <a href="#api-hara-common-primitives">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns a `clojure.lang.PersistentQueue` object.&quot;
+
+(def a (queue 1 2 3 4))
+(pop a) =&gt; [2 3 4]</div></div><div><a name="api-hara-common-primitives--uri"></a><h4>uri <a href="#api-hara-common-primitives">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns a `java.net.URI` object&quot;
+
+(uri &quot;http://www.google.com&quot;)
+=&gt; #(instance? java.net.URI %)</div></div><div><a name="api-hara-common-primitives--uuid"></a><h4>uuid <a href="#api-hara-common-primitives">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns a `java.util.UUID` object&quot;
+
+(uuid) =&gt; #(instance? java.util.UUID %)
+
+(uuid &quot;00000000-0000-0000-0000-000000000000&quot;)
+=&gt; #uuid &quot;00000000-0000-0000-0000-000000000000&quot;</div></div></div></div></div></section><section class="chapter" id="api---state"><h2 class="chapter">6  &nbsp;&nbsp; API - state</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/common/state.clj'>hara.common.state</a> contain extensible methods for manipulating stateful datastructures:</p></div><div class="api"><hr /><div><a name="api-hara-common-state"></a><h4><i>API</i></h4><a href="#api-hara-common-state--dispatch">dispatch</a>&nbsp;&nbsp;<a href="#api-hara-common-state--empty">empty</a>&nbsp;&nbsp;<a href="#api-hara-common-state--get">get</a>&nbsp;&nbsp;<a href="#api-hara-common-state--set">set</a>&nbsp;&nbsp;<a href="#api-hara-common-state--update">update</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-common-state--dispatch"></a><h4>dispatch <a href="#api-hara-common-state">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Updates the value contained within a container using another thread.&quot;
+
+(let [res (state/dispatch (atom 0)
+              (fn [x]  (inc x)))]
+  res   =&gt; future?
+  @res  =&gt; atom?
+  @@res =&gt; 1)</div></div><div><a name="api-hara-common-state--empty"></a><h4>empty <a href="#api-hara-common-state">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;empties the state, extensible through the IStateSet protocol&quot;
+(let [a (atom 1)]
+  (state/empty a)
+@a) =&gt; nil</div></div><div><a name="api-hara-common-state--get"></a><h4>get <a href="#api-hara-common-state">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Like deref but is extensible through the IStateGet protocol&quot;
+
+(state/get (atom 1)) =&gt; 1
+
+(state/get (ref 1)) =&gt; 1</div></div><div><a name="api-hara-common-state--set"></a><h4>set <a href="#api-hara-common-state">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Like reset! but is extensible through the IStateSet protocol&quot;
+
+(let [a (atom nil)]
+  (state/set a 1)
+  @a) =&gt; 1</div></div><div><a name="api-hara-common-state--update"></a><h4>update <a href="#api-hara-common-state">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Like swap! but is extensible through the IStateSet protocol&quot;
+
+(let [a (atom 0)]
+  (state/update a + 1)
+  @a) =&gt; 1</div></div></div></div></div></section><section class="chapter" id="api---string"><h2 class="chapter">7  &nbsp;&nbsp; API - string</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/common/string.clj'>hara.common.string</a> contain methods for string manipulation:</p></div><div class="api"><hr /><div><a name="api-hara-common-string"></a><h4><i>API</i></h4><a href="#api-hara-common-string--from-string">from-string</a>&nbsp;&nbsp;<a href="#api-hara-common-string--to-meta">to-meta</a>&nbsp;&nbsp;<a href="#api-hara-common-string--to-string">to-string</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-common-string--from-string"></a><h4>from-string <a href="#api-hara-common-string">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;meta information of keywords and symbols&quot;
+
+(from-string {:type clojure.lang.Symbol} &quot;hello/world&quot;)
+=&gt; 'hello/world
+
+(from-string {:type clojure.lang.Keyword} &quot;hello/world&quot;)
+=&gt; :hello/world</div></div><div><a name="api-hara-common-string--to-meta"></a><h4>to-meta <a href="#api-hara-common-string">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;meta information of keywords and symbols&quot;
+
+(to-meta 'hello/world)
+=&gt; {:type clojure.lang.Symbol}
+
+(to-meta :hello/world)
+=&gt; {:type clojure.lang.Keyword}</div></div><div><a name="api-hara-common-string--to-string"></a><h4>to-string <a href="#api-hara-common-string">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;converts symbols and keywords to string representation&quot;
+
+(to-string 'hello/world)
+=&gt; &quot;hello/world&quot;
+
+(to-string :hello/world)
+=&gt; &quot;hello/world&quot;</div></div></div></div></div></section><section class="chapter" id="api---watch"><h2 class="chapter">8  &nbsp;&nbsp; API - watch</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/common/watch.clj'>hara.common.watch</a> contain extensible methods for observation of state:</p></div><div class="api"><hr /><div><a name="api-hara-common-watch"></a><h4><i>API</i></h4><a href="#api-hara-common-watch--add">add</a>&nbsp;&nbsp;<a href="#api-hara-common-watch--clear">clear</a>&nbsp;&nbsp;<a href="#api-hara-common-watch--copy">copy</a>&nbsp;&nbsp;<a href="#api-hara-common-watch--list">list</a>&nbsp;&nbsp;<a href="#api-hara-common-watch--remove">remove</a>&nbsp;&nbsp;<a href="#api-hara-common-watch--set">set</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-common-watch--add"></a><h4>add <a href="#api-hara-common-watch">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;testing the watch/add with ova functionality&quot;
+(let [ov     (ova [])
+      out    (atom [])
+      o-fn  (fn  [_ _ p v]
+              (swap! out conj [p v]))
+      _      (watch/add ov :conj o-fn
+                        {:type :ova
+                         :select #(mapv deref %)})
+      _      (dosync (conj! ov 1))
+      _      (dosync (conj! ov 2))
+      _      (dosync (conj! ov 3))]
+  (persistent! ov) =&gt; [1 2 3]
+  (sort @out) =&gt; [[[] [1]] [[1] [1 2]] [[1 2] [1 2 3]]])</div></div><div><a name="api-hara-common-watch--clear"></a><h4>clear <a href="#api-hara-common-watch">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Clears all watches form the object&quot;
+
+(let [subject   (atom nil)
+      observer  (atom nil)]
+  (watch/add subject :a (fn [_ _ _ n]))
+  (watch/add subject :b (fn [_ _ _ n]))
+  (watch/clear subject)
+  (watch/list subject)) =&gt; {}</div></div><div><a name="api-hara-common-watch--copy"></a><h4>copy <a href="#api-hara-common-watch">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Copies watches from one object to another&quot;
+
+(let [obj-a   (atom nil)
+      obj-b   (atom nil)]
+  (watch/set obj-a {:a (fn [_ _ _ n])
+                    :b (fn [_ _ _ n])})
+  (watch/copy obj-b obj-a)
+  (watch/list obj-b) =&gt; (contains {:a fn? :b fn?}))</div></div><div><a name="api-hara-common-watch--list"></a><h4>list <a href="#api-hara-common-watch">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Lists watch functions through the IWatch protocol&quot;
+
+(let [subject   (atom nil)
+      observer  (atom nil)]
+  (watch/add subject :a (fn [_ _ _ n]))
+  (watch/add subject :b (fn [_ _ _ n]))
+  (watch/list subject) =&gt; (contains {:a fn? :b fn?}))</div></div><div><a name="api-hara-common-watch--remove"></a><h4>remove <a href="#api-hara-common-watch">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Removes watch function through the IWatch protocol&quot;
+
+(let [subject   (atom nil)
+      observer  (atom nil)]
+  (watch/add subject :a (fn [_ _ _ n]))
+  (watch/add subject :b (fn [_ _ _ n]))
+  (watch/remove subject :b)
+  (watch/list subject)) =&gt; (contains {:a fn?})</div></div><div><a name="api-hara-common-watch--set"></a><h4>set <a href="#api-hara-common-watch">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Sets a watch in the form of a map&quot;
+
+(let [obj   (atom nil)]
+  (watch/set obj {:a (fn [_ _ _ n])
+                  :b (fn [_ _ _ n])})
+  (watch/list obj) =&gt; (contains {:a fn? :b fn?}))</div></div></div></div></div></section>
+    </div>
+</div><!--end of .container-->
+
+  <section class="application">
+    
+  </section>
+</body>
+
+<script>
+  $('#nav').affix({
+    offset: {
+        top: $('#nav').offset().top,
+        bottom: $('footer').outerHeight(true) + $('.application').outerHeight(true) + 40
+    }});
+</script>
+
+
+<script>
+  if (document.location.search.match(/type=embed/gi)) {
+    window.parent.postMessage("resize", "*");
+  }
+</script>
+</body>
+</html>

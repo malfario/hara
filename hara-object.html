@@ -1,0 +1,153 @@
+
+
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <meta name="google" value="notranslate">
+
+
+    <title>object</title>
+
+    
+  <link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/languages/clojure.min.js"></script>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/magula.min.css">
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular.min.js"></script>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-cookies.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
+  <script type="text/javascript" src="js/angular-highlightjs.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="css/rdash.min.css">
+  <link rel="stylesheet" type="text/css" href="css/scrollspy.css">
+
+
+  <script>
+    window.console = window.console || function(t) {};
+    window.open = function(){ console.log("window.open is disabled."); };
+    window.print   = function(){ console.log("window.print is disabled."); };
+  </script>
+
+  <script>
+    var app = angular.module('app', ['hljs']);
+  </script>
+  </head>
+
+  <body ng-app="app" data-spy="scroll" data-target=".scrollspy">
+  <!-- Fixed navbar -->
+    <nav class="navbar navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html"><img src="img/logo.png"></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Guides <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="hara-class.html">class</a></li>
+                <li><a href="hara-common.html">common</a></li>
+                <li><a href="hara-component.html">component</a></li>
+                <li><a href="hara-concurrent.html">concurrent</a></li>
+                <li><a href="hara-concurrent-ova.html">concurrent.ova</a></li>
+                <!--li><a href="hara-concurrent-procedure.html">concurrent.procedure</a></li-->
+                <li><a href="hara-data.html">data</a></li>
+                <li><a href="hara-event.html">event</a></li>
+                <li><a href="hara-expression.html">expression</a></li>
+                <li><a href="hara-extend.html">extend</a></li>
+                <li><a href="hara-function.html">function</a></li>
+                <li><a href="hara-group.html">group</a></li>
+                <li><a href="hara-io-scheduler.html">io.scheduler</a></li>
+                <li><a href="hara-io-watch.html">io.watch</a></li>
+                <li><a href="hara-namespace.html">namespace</a></li>
+                <!--li><a href="hara-object.html">object</a></li-->
+                <li><a href="hara-reflect.html">reflect</a></li>
+                <li><a href="hara-sort.html">sort</a></li>
+                <li><a href="hara-string.html">string</a></li>
+            </ul>
+            </li>
+            <li>
+              <a href="https://github.com/zcaudate/hara" target="_blank">Github</a></li>
+            <li>
+              <a href="http://gitter.im/zcaudate/hara" target="_blank">Gitter</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+
+  <div class="container row">
+    <div class="col-md-4 scrollspy pull-right">
+      <ul id="nav" class="nav hidden-xs hidden-sm" data-spy="affix">
+        <li><a href="#introduction">1  &nbsp;&nbsp; Introduction</a><ul class="nav"><li><a href="#installation">1.1  &nbsp;&nbsp; Installation</a></li><li><a href="#motivation">1.2  &nbsp;&nbsp; Motivation</a></li></ul></li><li><a href="#understanding-java-fx">2  &nbsp;&nbsp; Understanding JavaFX</a></li>
+      </ul>
+    </div>
+    <div class="col-md-8" id="content">
+      <div class="jumbotron">
+        <div class="container">
+          <h1>object</h1>
+          <h4>turn everything into clojure data</h4>
+        </div>
+      </div>
+      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/object.clj'>hara.object</a> is a library for converting java classes into clojure data types. It is somewhat like the <code>bean</code> command but enables more control and customisation of the output data.</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><p>   [im.chit/hara.object "2.2.12"]</p></div><div class="paragraph"><p>All functionality is found contained in the <code>hara.object</code> namespace</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(require '[hara.object :as obj])</div></div></section><section class="section" id="motivation"><h3 class="section">1.2  &nbsp;&nbsp; Motivation</h3><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/object.clj'>hara.object</a> has been extracted out from <a href='https://github.com/zcaudate/gita'>gita</a> where it was used to analyse the <a href='https://wiki.eclipse.org/JGit/User&#95;Guide#Porcelain&#95;API'>jgit porcelain</a> api and to reflectively generate an interface for git. A similar technique was used to recursively access cassandra datastructures in <a href='https://github.com/mypost/cassius'>cassius</a> though it was done through protocols and not in such a generic fashion.</p><p>The reason one may wish to use such a library would be to quickly visualize the structure of a class as well as to customize how the class looks in the repl. It can also be used to wrap java apis. The library is very similar in concept to the <code>def-map-type</code> and <code>def-derived-type</code> in <a href='https://github.com/ztellman/potemkin'>potemkin</a> but in . Currently the implementation is not optimised though it has an extremely broad use cases.</p><p>Libraries that are using <code>hara.object</code> for wrapping functionality:<ul><li><a href='https://github.com/zcaudate/gita'>gita</a></li><li><a href='https://github.com/helpshift/gulfstream'>gulfstream</a></li></ul></div></section></section><section class="chapter" id="understanding-java-fx"><h2 class="chapter">2  &nbsp;&nbsp; Understanding JavaFX</h2><div class="group"><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(import javafx.scene.layout.StackPane
+        javafx.scene.Scene
+        javafx.stage.Stage
+        javafx.scene.control.Button)
+
+(defonce force-toolkit-init (javafx.embed.swing.JFXPanel.))
+
+(extend-maplike java.awt.Container
+                {:tag &quot;container&quot;
+                 :include [:components :x :y :size]}
+                java.awt.Dimension
+                {:tag &quot;dimension&quot;
+                 :include [:width :height]})
+
+(StackPane)
+
+(.* force-toolkit-init #&quot;arent&quot; :name)
+
+
+(count (object-getters force-toolkit-init))
+
+
+(def root (StackPane.))
+(def scene (Scene. root 300 250))
+(def stage (Stage.))</div></div></div></section>
+    </div>
+</div><!--end of .container-->
+
+  <section class="application">
+    
+  </section>
+</body>
+
+<script>
+  $('#nav').affix({
+    offset: {
+        top: $('#nav').offset().top,
+        bottom: $('footer').outerHeight(true) + $('.application').outerHeight(true) + 40
+    }});
+</script>
+
+
+<script>
+  if (document.location.search.match(/type=embed/gi)) {
+    window.parent.postMessage("resize", "*");
+  }
+</script>
+</body>
+</html>

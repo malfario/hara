@@ -1,0 +1,217 @@
+
+
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <meta name="google" value="notranslate">
+
+
+    <title>string</title>
+
+    
+  <link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/languages/clojure.min.js"></script>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/magula.min.css">
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular.min.js"></script>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-cookies.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
+  <script type="text/javascript" src="js/angular-highlightjs.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="css/rdash.min.css">
+  <link rel="stylesheet" type="text/css" href="css/scrollspy.css">
+
+
+  <script>
+    window.console = window.console || function(t) {};
+    window.open = function(){ console.log("window.open is disabled."); };
+    window.print   = function(){ console.log("window.print is disabled."); };
+  </script>
+
+  <script>
+    var app = angular.module('app', ['hljs']);
+  </script>
+  </head>
+
+  <body ng-app="app" data-spy="scroll" data-target=".scrollspy">
+  <!-- Fixed navbar -->
+    <nav class="navbar navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html"><img src="img/logo.png"></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Guides <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="hara-class.html">class</a></li>
+                <li><a href="hara-common.html">common</a></li>
+                <li><a href="hara-component.html">component</a></li>
+                <li><a href="hara-concurrent.html">concurrent</a></li>
+                <li><a href="hara-concurrent-ova.html">concurrent.ova</a></li>
+                <!--li><a href="hara-concurrent-procedure.html">concurrent.procedure</a></li-->
+                <li><a href="hara-data.html">data</a></li>
+                <li><a href="hara-event.html">event</a></li>
+                <li><a href="hara-expression.html">expression</a></li>
+                <li><a href="hara-extend.html">extend</a></li>
+                <li><a href="hara-function.html">function</a></li>
+                <li><a href="hara-group.html">group</a></li>
+                <li><a href="hara-io-scheduler.html">io.scheduler</a></li>
+                <li><a href="hara-io-watch.html">io.watch</a></li>
+                <li><a href="hara-namespace.html">namespace</a></li>
+                <!--li><a href="hara-object.html">object</a></li-->
+                <li><a href="hara-reflect.html">reflect</a></li>
+                <li><a href="hara-sort.html">sort</a></li>
+                <li><a href="hara-string.html">string</a></li>
+            </ul>
+            </li>
+            <li>
+              <a href="https://github.com/zcaudate/hara" target="_blank">Github</a></li>
+            <li>
+              <a href="http://gitter.im/zcaudate/hara" target="_blank">Gitter</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+
+  <div class="container row">
+    <div class="col-md-4 scrollspy pull-right">
+      <ul id="nav" class="nav hidden-xs hidden-sm" data-spy="affix">
+        <li><a href="#introduction">1  &nbsp;&nbsp; Introduction</a><ul class="nav"><li><a href="#installation">1.1  &nbsp;&nbsp; Installation</a></li></ul></li><li><a href="#api---case">2  &nbsp;&nbsp; API - case</a></li><li><a href="#api---path">3  &nbsp;&nbsp; API - path</a></li>
+      </ul>
+    </div>
+    <div class="col-md-8" id="content">
+      <div class="jumbotron">
+        <div class="container">
+          <h1>string</h1>
+          <h4>methods for string manipulation</h4>
+        </div>
+      </div>
+      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/string.clj'>hara.string</a> contain functions and utilities for strings.</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.string &quot;2.2.12&quot;&#93;
+</code></pre><p>Individual namespaces can be added seperately:</p><pre><code>&#91;im.chit/hara.string.case &quot;2.2.12&quot;&#93;
+&#91;im.chit/hara.string.path &quot;2.2.12&quot;&#93;
+</code></pre></div></section></section><section class="chapter" id="api---case"><h2 class="chapter">2  &nbsp;&nbsp; API - case</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/string/case.clj'>hara.string.case</a></p></div><div class="api"><hr /><div><a name="api-hara-string-case"></a><h4><i>API</i></h4><a href="#api-hara-string-case--camel-case">camel-case</a>&nbsp;&nbsp;<a href="#api-hara-string-case--lower-case">lower-case</a>&nbsp;&nbsp;<a href="#api-hara-string-case--snake-case">snake-case</a>&nbsp;&nbsp;<a href="#api-hara-string-case--spear-case">spear-case</a>&nbsp;&nbsp;<a href="#api-hara-string-case--title-case">title-case</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-string-case--camel-case"></a><h4>camel-case <a href="#api-hara-string-case">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;converts a string-like object to camel case representation&quot;
+
+(camel-case :hello-world)
+=&gt; :helloWorld
+
+(camel-case 'hello_world)
+=&gt; 'helloWorld</div></div><div><a name="api-hara-string-case--lower-case"></a><h4>lower-case <a href="#api-hara-string-case">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;converts a string-like object to a lower case string&quot;
+
+(lower-case &quot;helloWorld&quot;)
+=&gt; &quot;hello world&quot;
+
+(lower-case 'hello-world)
+=&gt; &quot;hello world&quot;</div></div><div><a name="api-hara-string-case--snake-case"></a><h4>snake-case <a href="#api-hara-string-case">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;converts a string-like object to snake case representation&quot;
+
+(snake-case :hello-world)
+=&gt; :hello_world
+
+(snake-case 'helloWorld)
+=&gt; 'hello_world</div></div><div><a name="api-hara-string-case--spear-case"></a><h4>spear-case <a href="#api-hara-string-case">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;converts a string-like object to spear case representation&quot;
+
+(spear-case :hello_world)
+=&gt; :hello-world
+
+(spear-case 'helloWorld)
+=&gt; 'hello-world</div></div><div><a name="api-hara-string-case--title-case"></a><h4>title-case <a href="#api-hara-string-case">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;converts a string-like object to a title case string&quot;
+
+(title-case &quot;helloWorld&quot;)
+
+=&gt; &quot;Hello World&quot;
+
+(title-case :hello-world)
+=&gt; &quot;Hello World&quot;</div></div></div></div></div></section><section class="chapter" id="api---path"><h2 class="chapter">3  &nbsp;&nbsp; API - path</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/string/path.clj'>hara.string.path</a></p></div><div class="api"><hr /><div><a name="api-hara-string-path"></a><h4><i>API</i></h4><a href="#api-hara-string-path--contains">contains</a>&nbsp;&nbsp;<a href="#api-hara-string-path--join">join</a>&nbsp;&nbsp;<a href="#api-hara-string-path--path-ns">path-ns</a>&nbsp;&nbsp;<a href="#api-hara-string-path--path-ns?">path-ns?</a>&nbsp;&nbsp;<a href="#api-hara-string-path--path-root">path-root</a>&nbsp;&nbsp;<a href="#api-hara-string-path--path-root?">path-root?</a>&nbsp;&nbsp;<a href="#api-hara-string-path--path-stem">path-stem</a>&nbsp;&nbsp;<a href="#api-hara-string-path--path-stem-vec">path-stem-vec</a>&nbsp;&nbsp;<a href="#api-hara-string-path--path-stem-vec?">path-stem-vec?</a>&nbsp;&nbsp;<a href="#api-hara-string-path--path-stem?">path-stem?</a>&nbsp;&nbsp;<a href="#api-hara-string-path--path-vec">path-vec</a>&nbsp;&nbsp;<a href="#api-hara-string-path--path-vec?">path-vec?</a>&nbsp;&nbsp;<a href="#api-hara-string-path--split">split</a>&nbsp;&nbsp;<a href="#api-hara-string-path--val">val</a>&nbsp;&nbsp;<a href="#api-hara-string-path--val?">val?</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-string-path--contains"></a><h4>contains <a href="#api-hara-string-path">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;check that a path contains the subkey&quot;
+
+(path/contains :hello/world :hello)
+=&gt; true
+
+(path/contains &quot;a/b/c/d&quot; &quot;a/b/c&quot;)
+=&gt; true</div></div><div><a name="api-hara-string-path--join"></a><h4>join <a href="#api-hara-string-path">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;joins a sequence of elements into a path seperated value&quot;
+
+(path/join [&quot;a&quot; &quot;b&quot; &quot;c&quot;])
+=&gt; &quot;a/b/c&quot;
+
+(path/join '[a b c] '-)
+=&gt; 'a-b-c</div></div><div><a name="api-hara-string-path--path-ns"></a><h4>path-ns <a href="#api-hara-string-path">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;returns the path namespace of the string/keyword/symbol&quot;
+
+(path/path-ns &quot;a/b/c/d&quot;)
+=&gt; &quot;a/b/c&quot;</div></div><div><a name="api-hara-string-path--path-ns?"></a><h4>path-ns? <a href="#api-hara-string-path">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;check for the path namespace of the string/keyword/symbol&quot;
+
+(path/path-ns? &quot;a/b/c/d&quot; &quot;a/b/c&quot;)
+=&gt; true</div></div><div><a name="api-hara-string-path--path-root"></a><h4>path-root <a href="#api-hara-string-path">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;returns the path root of the string/keyword/symbol&quot;
+
+(path/path-root &quot;a/b/c/d&quot;)
+=&gt; &quot;a&quot;</div></div><div><a name="api-hara-string-path--path-root?"></a><h4>path-root? <a href="#api-hara-string-path">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;check for the path root of the string/keyword/symbol&quot;
+
+(path/path-root? &quot;a/b/c/d&quot; &quot;a&quot;)
+=&gt; true</div></div><div><a name="api-hara-string-path--path-stem"></a><h4>path-stem <a href="#api-hara-string-path">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;returns the path stem of the string/keyword/symbol&quot;
+
+(path/path-stem &quot;a/b/c/d&quot;)
+=&gt; &quot;b/c/d&quot;</div></div><div><a name="api-hara-string-path--path-stem-vec"></a><h4>path-stem-vec <a href="#api-hara-string-path">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;returns the path stem vector of the string/keyword/symbol&quot;
+
+(path/path-stem-vec &quot;a/b/c/d&quot;)
+=&gt;  [&quot;b&quot; &quot;c&quot; &quot;d&quot;]</div></div><div><a name="api-hara-string-path--path-stem-vec?"></a><h4>path-stem-vec? <a href="#api-hara-string-path">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;check for the path stem vector of the string/keyword/symbol&quot;
+
+(path/path-stem-vec? &quot;a/b/c/d&quot; [&quot;b&quot; &quot;c&quot; &quot;d&quot;])
+=&gt; true</div></div><div><a name="api-hara-string-path--path-stem?"></a><h4>path-stem? <a href="#api-hara-string-path">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;check for the path stem of the string/keyword/symbol&quot;
+
+(path/path-stem? &quot;a/b/c/d&quot; &quot;b/c/d&quot;)
+=&gt; true</div></div><div><a name="api-hara-string-path--path-vec"></a><h4>path-vec <a href="#api-hara-string-path">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;returns the path vector of the string/keyword/symbol&quot;
+
+(path/path-vec &quot;a/b/c/d&quot;)
+=&gt; [&quot;a&quot; &quot;b&quot; &quot;c&quot;]</div></div><div><a name="api-hara-string-path--path-vec?"></a><h4>path-vec? <a href="#api-hara-string-path">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;check for the path vector of the string/keyword/symbol&quot;
+
+(path/path-vec? &quot;a/b/c/d&quot; [&quot;a&quot; &quot;b&quot; &quot;c&quot;])
+=&gt; true</div></div><div><a name="api-hara-string-path--split"></a><h4>split <a href="#api-hara-string-path">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;splits a sequence of elements into a path seperated value&quot;
+
+(path/split :hello/world)
+=&gt; [:hello :world]
+
+(path/split &quot;a/b/c/d&quot;)
+=&gt; '[&quot;a&quot; &quot;b&quot; &quot;c&quot; &quot;d&quot;]</div></div><div><a name="api-hara-string-path--val"></a><h4>val <a href="#api-hara-string-path">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;returns the val of the string/keyword/symbol&quot;
+
+(path/val &quot;a/b/c/d&quot;)
+=&gt; &quot;d&quot;</div></div><div><a name="api-hara-string-path--val?"></a><h4>val? <a href="#api-hara-string-path">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;check for the val of the string/keyword/symbol&quot;
+
+(path/val? &quot;a/b/c/d&quot; &quot;d&quot;)
+=&gt; true</div></div></div></div></div></section>
+    </div>
+</div><!--end of .container-->
+
+  <section class="application">
+    
+  </section>
+</body>
+
+<script>
+  $('#nav').affix({
+    offset: {
+        top: $('#nav').offset().top,
+        bottom: $('footer').outerHeight(true) + $('.application').outerHeight(true) + 40
+    }});
+</script>
+
+
+<script>
+  if (document.location.search.match(/type=embed/gi)) {
+    window.parent.postMessage("resize", "*");
+  }
+</script>
+</body>
+</html>

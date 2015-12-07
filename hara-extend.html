@@ -1,0 +1,240 @@
+
+
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <meta name="google" value="notranslate">
+
+
+    <title>extend</title>
+
+    
+  <link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/languages/clojure.min.js"></script>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/magula.min.css">
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular.min.js"></script>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-cookies.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
+  <script type="text/javascript" src="js/angular-highlightjs.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="css/rdash.min.css">
+  <link rel="stylesheet" type="text/css" href="css/scrollspy.css">
+
+
+  <script>
+    window.console = window.console || function(t) {};
+    window.open = function(){ console.log("window.open is disabled."); };
+    window.print   = function(){ console.log("window.print is disabled."); };
+  </script>
+
+  <script>
+    var app = angular.module('app', ['hljs']);
+  </script>
+  </head>
+
+  <body ng-app="app" data-spy="scroll" data-target=".scrollspy">
+  <!-- Fixed navbar -->
+    <nav class="navbar navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html"><img src="img/logo.png"></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Guides <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="hara-class.html">class</a></li>
+                <li><a href="hara-common.html">common</a></li>
+                <li><a href="hara-component.html">component</a></li>
+                <li><a href="hara-concurrent.html">concurrent</a></li>
+                <li><a href="hara-concurrent-ova.html">concurrent.ova</a></li>
+                <!--li><a href="hara-concurrent-procedure.html">concurrent.procedure</a></li-->
+                <li><a href="hara-data.html">data</a></li>
+                <li><a href="hara-event.html">event</a></li>
+                <li><a href="hara-expression.html">expression</a></li>
+                <li><a href="hara-extend.html">extend</a></li>
+                <li><a href="hara-function.html">function</a></li>
+                <li><a href="hara-group.html">group</a></li>
+                <li><a href="hara-io-scheduler.html">io.scheduler</a></li>
+                <li><a href="hara-io-watch.html">io.watch</a></li>
+                <li><a href="hara-namespace.html">namespace</a></li>
+                <!--li><a href="hara-object.html">object</a></li-->
+                <li><a href="hara-reflect.html">reflect</a></li>
+                <li><a href="hara-sort.html">sort</a></li>
+                <li><a href="hara-string.html">string</a></li>
+            </ul>
+            </li>
+            <li>
+              <a href="https://github.com/zcaudate/hara" target="_blank">Github</a></li>
+            <li>
+              <a href="http://gitter.im/zcaudate/hara" target="_blank">Gitter</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+
+  <div class="container row">
+    <div class="col-md-4 scrollspy pull-right">
+      <ul id="nav" class="nav hidden-xs hidden-sm" data-spy="affix">
+        <li><a href="#introduction">1  &nbsp;&nbsp; Introduction</a><ul class="nav"><li><a href="#installation">1.1  &nbsp;&nbsp; Installation</a></li></ul></li><li><a href="#api---abstract">2  &nbsp;&nbsp; API - abstract</a></li><li><a href="#api---all">3  &nbsp;&nbsp; API - all</a></li>
+      </ul>
+    </div>
+    <div class="col-md-8" id="content">
+      <div class="jumbotron">
+        <div class="container">
+          <h1>extend</h1>
+          <h4>macros for extensible objects</h4>
+        </div>
+      </div>
+      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/extend.clj'>hara.extend</a> provide additional functionality on top of <code>defrecord</code> and <code>defmulti</code>/<code>defmethod</code>.</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.extend &quot;2.2.12&quot;&#93;
+</code></pre><p>Individual namespaces can be added seperately:</p><pre><code>&#91;im.chit/hara.extend.abstract &quot;2.2.12&quot;&#93;
+&#91;im.chit/hara.extend.all &quot;2.2.12&quot;&#93;
+</code></pre></div></section></section><section class="chapter" id="api---abstract"><h2 class="chapter">2  &nbsp;&nbsp; API - abstract</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/extend/abstract.clj'>hara.extend.abstract</a></p></div><div class="api"><hr /><div><a name="api-hara-extend-abstract"></a><h4><i>API</i></h4><a href="#api-hara-extend-abstract--extend-abstract">extend-abstract</a>&nbsp;&nbsp;<a href="#api-hara-extend-abstract--extend-implementations">extend-implementations</a>&nbsp;&nbsp;<a href="#api-hara-extend-abstract--map-walk">map-walk</a>&nbsp;&nbsp;<a href="#api-hara-extend-abstract--map-walk-submap">map-walk-submap</a>&nbsp;&nbsp;<a href="#api-hara-extend-abstract--protocol-basis">protocol-basis</a>&nbsp;&nbsp;<a href="#api-hara-extend-abstract--protocol-default-form">protocol-default-form</a>&nbsp;&nbsp;<a href="#api-hara-extend-abstract--protocol-extend-type">protocol-extend-type</a>&nbsp;&nbsp;<a href="#api-hara-extend-abstract--protocol-extend-type-function">protocol-extend-type-function</a>&nbsp;&nbsp;<a href="#api-hara-extend-abstract--protocol-extend-type-wrappers">protocol-extend-type-wrappers</a>&nbsp;&nbsp;<a href="#api-hara-extend-abstract--protocol-multi-form">protocol-multi-form</a>&nbsp;&nbsp;<a href="#api-hara-extend-abstract--protocol-multimethods">protocol-multimethods</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-extend-abstract--extend-abstract"></a><h4>extend-abstract <a href="#api-hara-extend-abstract">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Creates a set of abstract multimethods as well as extends a set of
+protocols to a given type&quot;
+
+(extend-abstract
+ Envelope [IData]
+ :select -
+ :suffix -env
+ :prefix nil
+ :wrappers   {-data (str &quot;hello &quot; %)}
+ :dispatch   :type
+ :defaults   {nil   ([this &amp; args] (Exception. &quot;No input&quot;))
+              -data ([this] (:hello this))})
+
+(data-env (map-&gt;Envelope {:hello &quot;world&quot;}))
+=&gt; &quot;world&quot;
+
+(-data (map-&gt;Envelope {:hello &quot;world&quot;}))
+=&gt; &quot;hello world&quot;</div></div><div><a name="api-hara-extend-abstract--extend-implementations"></a><h4>extend-implementations <a href="#api-hara-extend-abstract">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Creates a set of implementation functions for implementation
+of protocol functionality&quot;
+
+(extend-implementations
+ [IData]
+ :wrappers (fn [form _]
+             (list 'str form &quot; again&quot;)))
+
+(data (map-&gt;Envelope {:hello &quot;world&quot;}))
+=&gt; &quot;hello world again&quot;</div></div><div><a name="api-hara-extend-abstract--map-walk"></a><h4>map-walk <a href="#api-hara-extend-abstract">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Helper function for evaluation of various utility functions
+within the namespace&quot;
+
+(map-walk :hello {#{:hello} (fn [k arg1] (str (name k) &quot; world &quot; arg1))}
+          [&quot;again&quot;]  identity
+          (fn [_ _ _] :none)
+          (fn [obj func arg1] (func obj arg1)))
+=&gt; &quot;hello world again&quot;</div></div><div><a name="api-hara-extend-abstract--map-walk-submap"></a><h4>map-walk-submap <a href="#api-hara-extend-abstract">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Gets a submap depending on whether it is a key or it
+is a key witthin a hashset&quot;
+
+(map-walk-submap {:hello &quot;world&quot;} :hello)
+=&gt; &quot;world&quot;
+
+(map-walk-submap {#{:hello} &quot;world&quot;} :hello)
+=&gt; &quot;world&quot;</div></div><div><a name="api-hara-extend-abstract--protocol-basis"></a><h4>protocol-basis <a href="#api-hara-extend-abstract">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Helper function that transforms the functions in the protocol to
+the neccessary format in preparation for extend-abstract and extend-implementations&quot;
+
+(defprotocol IVal
+  (-set [this val])
+  (-get [this]))
+
+(protocol-basis IVal '- 'pre- '-tail)
+=&gt; '({:args [this], :fn pre-get-tail, :name -get}
+     {:args [this val], :fn pre-set-tail, :name -set})</div></div><div><a name="api-hara-extend-abstract--protocol-default-form"></a><h4>protocol-default-form <a href="#api-hara-extend-abstract">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;creates a :default defmethod form from a protocol basis&quot;
+
+(protocol-default-form '{:args [this], :fn data-env, :name -data}
+                       '{#{-data} ([this &amp; args] nil)})
+=&gt; '(defmethod data-env :default [this &amp; args] nil)
+
+(protocol-default-form '{:args [this], :fn data-env, :name -data}
+                       '{#{-data} (fn [basis]
+                                    `(~(:args basis)
+                                      (throw (Exception. (str ~(str &quot;No implementation of &quot; (:fn basis) &quot; for &quot;)
+                                                              (-&gt; ~(-&gt; basis :args first) :meta :type))))))})
+=&gt; '(defmethod data-env :default [this]
+      (throw (java.lang.Exception.
+              (clojure.core/str &quot;No implementation of data-env for &quot;
+                                (clojure.core/-&gt; this :meta :type)))))</div></div><div><a name="api-hara-extend-abstract--protocol-extend-type"></a><h4>protocol-extend-type <a href="#api-hara-extend-abstract">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;utility to create an extend-type form&quot;
+(protocol-extend-type 'Type 'IProtocol
+                      '[{:args [this], :fn data-env, :name -data}]
+                      '{:wrappers (fn [form basis] (concat ['apply] form [[]]))})
+=&gt; '(extend-type Type IProtocol
+                 (-data [this] (apply data-env this [])))</div></div><div><a name="api-hara-extend-abstract--protocol-extend-type-function"></a><h4>protocol-extend-type-function <a href="#api-hara-extend-abstract">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;utility to create a extend-type function  with template and macros&quot;
+
+(protocol-extend-type-function '{:args [this], :fn data-env, :name -data}
+                               '{-data (fn [form basis] (concat ['apply] form [[]]))})
+=&gt; '(-data [this] (apply data-env this []))</div></div><div><a name="api-hara-extend-abstract--protocol-extend-type-wrappers"></a><h4>protocol-extend-type-wrappers <a href="#api-hara-extend-abstract">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;applies form template for simple template rewrites&quot;
+
+(protocol-extend-type-wrappers '{:args [this], :fn data-env, :name -data}
+                               '{-data (process %)}
+                               '(data-env this))
+=&gt; '(process (data-env this))
+
+(protocol-extend-type-wrappers '{:args [this], :fn data-env, :name -data}
+                               '{-data (fn [form basis] (concat ['apply] form [[]]))}
+                               '(data-env this))
+=&gt; '(apply data-env this [])</div></div><div><a name="api-hara-extend-abstract--protocol-multi-form"></a><h4>protocol-multi-form <a href="#api-hara-extend-abstract">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;creates a :default defmethod form from a protocol basis&quot;
+
+(protocol-multi-form '{:args [this], :fn data-env, :name -data}
+                     '{#{-data} (-&gt; % :meta :type)})
+=&gt; '(defmulti data-env (fn [this] (-&gt; this :meta :type)))</div></div><div><a name="api-hara-extend-abstract--protocol-multimethods"></a><h4>protocol-multimethods <a href="#api-hara-extend-abstract">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;creates a set of defmulti and defmethods for each entry in all-basis&quot;
+
+(protocol-multimethods '[{:args [this], :fn data-env, :name -data}]
+                       {:defaults '([this &amp; args] (Exception. &quot;No input&quot;))
+                        :dispatch '(-&gt; % :meta :type)})
+=&gt; '((defmulti data-env (fn [this] (-&gt; this :meta :type)))
+     (defmethod data-env :default [this &amp; args] (Exception. &quot;No input&quot;)))</div></div></div></div></div></section><section class="chapter" id="api---all"><h2 class="chapter">3  &nbsp;&nbsp; API - all</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/extend/all.clj'>hara.extend.all</a></p></div><div class="api"><hr /><div><a name="api-hara-extend-all"></a><h4><i>API</i></h4><a href="#api-hara-extend-all--extend-all">extend-all</a>&nbsp;&nbsp;<a href="#api-hara-extend-all--extend-single">extend-single</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-extend-all--extend-all"></a><h4>extend-all <a href="#api-hara-extend-all">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Transforms a protocl template into multiple extend-type expresions&quot;
+
+(macroexpand-1
+ '(extend-all Magma
+              [(op ([x y] (% x y)) )]
+
+              Number        [op-number]
+              [List Vector] [op-list]))
+=&gt; '(do (clojure.core/extend-type Number Magma (op ([x y] (op-number x y))))
+        (clojure.core/extend-type List Magma (op ([x y] (op-list x y))))
+        (clojure.core/extend-type Vector Magma (op ([x y] (op-list x y)))))</div></div><div><a name="api-hara-extend-all--extend-single"></a><h4>extend-single <a href="#api-hara-extend-all">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Transforms a protocol template into an extend-type expression&quot;
+
+(extend-single 'Type
+               'IProtocol
+               '[(op [x y] (% x y))]
+               '[op-object])
+=&gt; '(clojure.core/extend-type Type IProtocol (op [x y] (op-object x y)))</div></div></div></div></div></section>
+    </div>
+</div><!--end of .container-->
+
+  <section class="application">
+    
+  </section>
+</body>
+
+<script>
+  $('#nav').affix({
+    offset: {
+        top: $('#nav').offset().top,
+        bottom: $('footer').outerHeight(true) + $('.application').outerHeight(true) + 40
+    }});
+</script>
+
+
+<script>
+  if (document.location.search.match(/type=embed/gi)) {
+    window.parent.postMessage("resize", "*");
+  }
+</script>
+</body>
+</html>

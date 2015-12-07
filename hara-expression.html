@@ -1,0 +1,223 @@
+
+
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <meta name="google" value="notranslate">
+
+
+    <title>expression</title>
+
+    
+  <link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/languages/clojure.min.js"></script>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/magula.min.css">
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular.min.js"></script>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-cookies.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
+  <script type="text/javascript" src="js/angular-highlightjs.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="css/rdash.min.css">
+  <link rel="stylesheet" type="text/css" href="css/scrollspy.css">
+
+
+  <script>
+    window.console = window.console || function(t) {};
+    window.open = function(){ console.log("window.open is disabled."); };
+    window.print   = function(){ console.log("window.print is disabled."); };
+  </script>
+
+  <script>
+    var app = angular.module('app', ['hljs']);
+  </script>
+  </head>
+
+  <body ng-app="app" data-spy="scroll" data-target=".scrollspy">
+  <!-- Fixed navbar -->
+    <nav class="navbar navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html"><img src="img/logo.png"></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Guides <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="hara-class.html">class</a></li>
+                <li><a href="hara-common.html">common</a></li>
+                <li><a href="hara-component.html">component</a></li>
+                <li><a href="hara-concurrent.html">concurrent</a></li>
+                <li><a href="hara-concurrent-ova.html">concurrent.ova</a></li>
+                <!--li><a href="hara-concurrent-procedure.html">concurrent.procedure</a></li-->
+                <li><a href="hara-data.html">data</a></li>
+                <li><a href="hara-event.html">event</a></li>
+                <li><a href="hara-expression.html">expression</a></li>
+                <li><a href="hara-extend.html">extend</a></li>
+                <li><a href="hara-function.html">function</a></li>
+                <li><a href="hara-group.html">group</a></li>
+                <li><a href="hara-io-scheduler.html">io.scheduler</a></li>
+                <li><a href="hara-io-watch.html">io.watch</a></li>
+                <li><a href="hara-namespace.html">namespace</a></li>
+                <!--li><a href="hara-object.html">object</a></li-->
+                <li><a href="hara-reflect.html">reflect</a></li>
+                <li><a href="hara-sort.html">sort</a></li>
+                <li><a href="hara-string.html">string</a></li>
+            </ul>
+            </li>
+            <li>
+              <a href="https://github.com/zcaudate/hara" target="_blank">Github</a></li>
+            <li>
+              <a href="http://gitter.im/zcaudate/hara" target="_blank">Gitter</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+
+  <div class="container row">
+    <div class="col-md-4 scrollspy pull-right">
+      <ul id="nav" class="nav hidden-xs hidden-sm" data-spy="affix">
+        <li><a href="#introduction">1  &nbsp;&nbsp; Introduction</a><ul class="nav"><li><a href="#installation">1.1  &nbsp;&nbsp; Installation</a></li></ul></li><li><a href="#api---compile">2  &nbsp;&nbsp; API - compile</a></li><li><a href="#api---form">3  &nbsp;&nbsp; API - form</a></li><li><a href="#api---load">4  &nbsp;&nbsp; API - load</a></li><li><a href="#api---shorthand">5  &nbsp;&nbsp; API - shorthand</a></li>
+      </ul>
+    </div>
+    <div class="col-md-8" id="content">
+      <div class="jumbotron">
+        <div class="container">
+          <h1>expression</h1>
+          <h4>interchange between code and data</h4>
+        </div>
+      </div>
+      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/expression.clj'>hara.expression</a> are a set of functions that manipulate expressions.</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.expression &quot;2.2.12&quot;&#93;
+</code></pre><p>Individual namespaces can be added seperately:</p><pre><code>&#91;im.chit/hara.expression.compile &quot;2.2.12&quot;&#93;
+&#91;im.chit/hara.expression.form &quot;2.2.12&quot;&#93;
+&#91;im.chit/hara.expression.load &quot;2.2.12&quot;&#93;
+&#91;im.chit/hara.expression.shorthand &quot;2.2.12&quot;&#93;
+</code></pre></div></section></section><section class="chapter" id="api---compile"><h2 class="chapter">2  &nbsp;&nbsp; API - compile</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/expression/compile.clj'>hara.expression.compile</a></p></div><div class="api"><hr /><div><a name="api-hara-expression-compile"></a><h4><i>API</i></h4><a href="#api-hara-expression-compile--applym">applym</a>&nbsp;&nbsp;<a href="#api-hara-expression-compile--const">const</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-expression-compile--applym"></a><h4>applym <a href="#api-hara-expression-compile">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Allow macros to be applied to arguments just like functions&quot;
+
+(applym const '((+ 1 2))) =&gt; 3
+  
+(macroexpand '(applym const '((+ 1 2))))
+=&gt; 3</div></div><div><a name="api-hara-expression-compile--const"></a><h4>const <a href="#api-hara-expression-compile">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;converts an expression into a constant at compile time&quot;
+
+(const (+ 1 2)) =&gt; 3
+  
+(macroexpand '(const (+ 1 2))) =&gt; 3</div></div></div></div></div></section><section class="chapter" id="api---form"><h2 class="chapter">3  &nbsp;&nbsp; API - form</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/expression/form.clj'>hara.expression.form</a>:</p></div><div class="api"><hr /><div><a name="api-hara-expression-form"></a><h4><i>API</i></h4><a href="#api-hara-expression-form--form-apply">form-apply</a>&nbsp;&nbsp;<a href="#api-hara-expression-form--form-eval">form-eval</a>&nbsp;&nbsp;<a href="#api-hara-expression-form--form-fn">form-fn</a>&nbsp;&nbsp;<a href="#api-hara-expression-form--form-prep">form-prep</a>&nbsp;&nbsp;<a href="#api-hara-expression-form--form-require">form-require</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-expression-form--form-apply"></a><h4>form-apply <a href="#api-hara-expression-form">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Applies a list as a function to an argument vector&quot;
+
+(form-apply '(+ 1 %1 %2) [2 3]) =&gt; 6</div></div><div><a name="api-hara-expression-form--form-eval"></a><h4>form-eval <a href="#api-hara-expression-form">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Evaluates a list as a functions and to a set of arguments.&quot;
+
+(form-eval '(+ 1 %1 %2) 2 3) =&gt; 6</div></div><div><a name="api-hara-expression-form--form-fn"></a><h4>form-fn <a href="#api-hara-expression-form">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Creates a function out of a list&quot;
+
+(let [my-inc (form-fn '(+ 1 %))]
+  
+  (my-inc 1) =&gt; 2
+  
+  (meta my-inc) =&gt; {:source &quot;#(+ 1 %)&#92;n&quot;})</div></div><div><a name="api-hara-expression-form--form-prep"></a><h4>form-prep <a href="#api-hara-expression-form">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Prepares the form into a function form&quot;</div></div><div><a name="api-hara-expression-form--form-require"></a><h4>form-require <a href="#api-hara-expression-form">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Makes sure that the namespace is loaded for a particular symbol&quot;
+
+(form-require 'cons) =&gt; 'cons
+  
+(form-require 'clojure.core/cons) =&gt; 'clojure.core/cons</div></div></div></div></div></section><section class="chapter" id="api---load"><h2 class="chapter">4  &nbsp;&nbsp; API - load</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/expression/load.clj'>hara.expression.load</a>:</p></div><div class="api"><hr /><div><a name="api-hara-expression-load"></a><h4><i>API</i></h4><a href="#api-hara-expression-load--load">load</a>&nbsp;&nbsp;<a href="#api-hara-expression-load--load-single">load-single</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-expression-load--load"></a><h4>load <a href="#api-hara-expression-load">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Seeds an initial map using forms&quot;
+
+(load {:a 1} [:b '(inc (:a %))
+              :c '(+ (:a %) (:b %))]) 
+=&gt; {:a 1 :b 2 :c 3}</div></div><div><a name="api-hara-expression-load--load-single"></a><h4>load-single <a href="#api-hara-expression-load">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Perform a single step in the load process&quot;</div></div></div></div></div></section><section class="chapter" id="api---shorthand"><h2 class="chapter">5  &nbsp;&nbsp; API - shorthand</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/expression/shorthand.clj'>hara.expression.shorthand</a>:</p></div><div class="api"><hr /><div><a name="api-hara-expression-shorthand"></a><h4><i>API</i></h4><a href="#api-hara-expression-shorthand--call-&gt;">call-></a>&nbsp;&nbsp;<a href="#api-hara-expression-shorthand--check">check</a>&nbsp;&nbsp;<a href="#api-hara-expression-shorthand--check-&gt;">check-></a>&nbsp;&nbsp;<a href="#api-hara-expression-shorthand--check-all">check-all</a>&nbsp;&nbsp;<a href="#api-hara-expression-shorthand--check?-&gt;">check?-></a>&nbsp;&nbsp;<a href="#api-hara-expression-shorthand--eq-&gt;">eq-></a>&nbsp;&nbsp;<a href="#api-hara-expression-shorthand--fn-&gt;">fn-></a>&nbsp;&nbsp;<a href="#api-hara-expression-shorthand--get-&gt;">get-></a>&nbsp;&nbsp;<a href="#api-hara-expression-shorthand--shorthand-fn-expr">shorthand-fn-expr</a>&nbsp;&nbsp;<a href="#api-hara-expression-shorthand--shorthand-form">shorthand-form</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-expression-shorthand--call-&gt;"></a><h4>call-> <a href="#api-hara-expression-shorthand">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Indirect call, takes `obj` and a list containing either a function,
+a symbol representing the function or the symbol `?` and any additional
+arguments. Used for calling functions that have been stored as symbols.&quot;
+
+(call-&gt; 1 '(+ 2 3 4)) =&gt; 10
+
+(call-&gt; 1 '(&lt; 2)) =&gt; true
+
+(call-&gt; {:a {:b 1}} '((get-in [:a :b]) = 1))
+=&gt; true</div></div><div><a name="api-hara-expression-shorthand--check"></a><h4>check <a href="#api-hara-expression-shorthand">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;checks&quot;
+
+(check 2 2) =&gt; true
+
+(check 2 even?) =&gt; true
+
+(check 2 '(&gt; 1)) =&gt; true
+
+(check {:a {:b 1}} '([:a :b] (= 1))) =&gt; true
+
+(check {:a {:b 1}} :a vector?) =&gt; false
+
+(check {:a {:b 1}} [:a :b] 1) =&gt; true</div></div><div><a name="api-hara-expression-shorthand--check-&gt;"></a><h4>check-> <a href="#api-hara-expression-shorthand">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Shorthand ways of checking where `m` fits `prchk`&quot;
+
+(check-&gt; {:a 1} :a) =&gt; true
+
+(check-&gt; {:a 1 :val 1} [:val 1]) =&gt; true
+
+(check-&gt; {:a {:b 1}} [[:a :b] odd?]) =&gt; true</div></div><div><a name="api-hara-expression-shorthand--check-all"></a><h4>check-all <a href="#api-hara-expression-shorthand">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `obj` satisfies all pairs of sel and chk&quot;
+
+(check-all {:a {:b 1}}
+  :a       #(instance? clojure.lang.IPersistentMap %)
+  [:a :b]  1)
+=&gt; true</div></div><div><a name="api-hara-expression-shorthand--check?-&gt;"></a><h4>check?-> <a href="#api-hara-expression-shorthand">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Tests obj using prchk and returns `obj` or `res` if true&quot;
+
+(check?-&gt; :3 even?) =&gt; nil
+
+(check?-&gt; 3 even?) =&gt; nil
+
+(check?-&gt; 2 even?) =&gt; true
+
+(check?-&gt; {:id :1} '[:id (= :1)]) =&gt; true</div></div><div><a name="api-hara-expression-shorthand--eq-&gt;"></a><h4>eq-> <a href="#api-hara-expression-shorthand">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Compare if two vals are equal.&quot;
+
+(eq-&gt; {:id 1 :a 1} {:id 1 :a 2} :id)
+=&gt; true
+
+(eq-&gt; {:db {:id 1} :a 1}
+      {:db {:id 1} :a 2} [:db :id])
+=&gt; true</div></div><div><a name="api-hara-expression-shorthand--fn-&gt;"></a><h4>fn-> <a href="#api-hara-expression-shorthand">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Constructs a function from a form representation.&quot;
+
+((fn-&gt; '(+ 10)) 10) =&gt; 20</div></div><div><a name="api-hara-expression-shorthand--get-&gt;"></a><h4>get-> <a href="#api-hara-expression-shorthand">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Provides a shorthand way of getting a return value.
+`sel` can be a function, a vector, or a value.&quot;
+
+(get-&gt; {:a {:b {:c 1}}} :a) =&gt; {:b {:c 1}}
+
+(get-&gt; {:a {:b {:c 1}}} [:a :b]) =&gt; {:c 1}</div></div><div><a name="api-hara-expression-shorthand--shorthand-fn-expr"></a><h4>shorthand-fn-expr <a href="#api-hara-expression-shorthand">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Makes a function expression out of the form&quot;
+
+(shorthand-fn-expr '(+ 2))
+=&gt; '(fn [%] (+ % 2))</div></div><div><a name="api-hara-expression-shorthand--shorthand-form"></a><h4>shorthand-form <a href="#api-hara-expression-shorthand">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Makes an expression using `sym`&quot;
+
+(shorthand-form 'y '(str)) =&gt; '(str y)
+
+(shorthand-form 'x '((inc) (- 2) (+ 2)))
+=&gt; '(+ (- (inc x) 2) 2)</div></div></div></div></div></section>
+    </div>
+</div><!--end of .container-->
+
+  <section class="application">
+    
+  </section>
+</body>
+
+<script>
+  $('#nav').affix({
+    offset: {
+        top: $('#nav').offset().top,
+        bottom: $('footer').outerHeight(true) + $('.application').outerHeight(true) + 40
+    }});
+</script>
+
+
+<script>
+  if (document.location.search.match(/type=embed/gi)) {
+    window.parent.postMessage("resize", "*");
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+
+
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <meta name="google" value="notranslate">
+
+
+    <title>class</title>
+
+    
+  <link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/languages/clojure.min.js"></script>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/magula.min.css">
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular.min.js"></script>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-cookies.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
+  <script type="text/javascript" src="js/angular-highlightjs.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="css/rdash.min.css">
+  <link rel="stylesheet" type="text/css" href="css/scrollspy.css">
+
+
+  <script>
+    window.console = window.console || function(t) {};
+    window.open = function(){ console.log("window.open is disabled."); };
+    window.print   = function(){ console.log("window.print is disabled."); };
+  </script>
+
+  <script>
+    var app = angular.module('app', ['hljs']);
+  </script>
+  </head>
+
+  <body ng-app="app" data-spy="scroll" data-target=".scrollspy">
+  <!-- Fixed navbar -->
+    <nav class="navbar navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html"><img src="img/logo.png"></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Guides <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="hara-class.html">class</a></li>
+                <li><a href="hara-common.html">common</a></li>
+                <li><a href="hara-component.html">component</a></li>
+                <li><a href="hara-concurrent.html">concurrent</a></li>
+                <li><a href="hara-concurrent-ova.html">concurrent.ova</a></li>
+                <!--li><a href="hara-concurrent-procedure.html">concurrent.procedure</a></li-->
+                <li><a href="hara-data.html">data</a></li>
+                <li><a href="hara-event.html">event</a></li>
+                <li><a href="hara-expression.html">expression</a></li>
+                <li><a href="hara-extend.html">extend</a></li>
+                <li><a href="hara-function.html">function</a></li>
+                <li><a href="hara-group.html">group</a></li>
+                <li><a href="hara-io-scheduler.html">io.scheduler</a></li>
+                <li><a href="hara-io-watch.html">io.watch</a></li>
+                <li><a href="hara-namespace.html">namespace</a></li>
+                <!--li><a href="hara-object.html">object</a></li-->
+                <li><a href="hara-reflect.html">reflect</a></li>
+                <li><a href="hara-sort.html">sort</a></li>
+                <li><a href="hara-string.html">string</a></li>
+            </ul>
+            </li>
+            <li>
+              <a href="https://github.com/zcaudate/hara" target="_blank">Github</a></li>
+            <li>
+              <a href="http://gitter.im/zcaudate/hara" target="_blank">Gitter</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+
+  <div class="container row">
+    <div class="col-md-4 scrollspy pull-right">
+      <ul id="nav" class="nav hidden-xs hidden-sm" data-spy="affix">
+        <li><a href="#introduction">1  &nbsp;&nbsp; Introduction</a><ul class="nav"><li><a href="#installation">1.1  &nbsp;&nbsp; Installation</a></li></ul></li><li><a href="#api---checks">2  &nbsp;&nbsp; API - checks</a></li><li><a href="#api---inheritance">3  &nbsp;&nbsp; API - inheritance</a></li>
+      </ul>
+    </div>
+    <div class="col-md-8" id="content">
+      <div class="jumbotron">
+        <div class="container">
+          <h1>class</h1>
+          <h4>functions for reasoning about classes</h4>
+        </div>
+      </div>
+      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/class.clj'>hara.class</a> are a set of functions that give information about class properties. There used by <a href='hara-reflect.html'>hara.reflect</a> and <a href='hara-object.html'>hara.object</a> for their reflection calls.</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.class &quot;2.2.12&quot;&#93;
+</code></pre><p>Individual namespaces can be added seperately:</p><pre><code>&#91;im.chit/hara.class.checks &quot;2.2.12&quot;&#93;
+&#91;im.chit/hara.class.inheritance &quot;2.2.12&quot;&#93;
+</code></pre></div></section></section><section class="chapter" id="api---checks"><h2 class="chapter">2  &nbsp;&nbsp; API - checks</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/class/checks.clj'>hara.class.checks</a> contain class checking predicates:</p></div><div class="api"><hr /><div><a name="api-hara-class-checks"></a><h4><i>API</i></h4><a href="#api-hara-class-checks--abstract?">abstract?</a>&nbsp;&nbsp;<a href="#api-hara-class-checks--interface?">interface?</a>&nbsp;&nbsp;<a href="#api-hara-class-checks--multimethod?">multimethod?</a>&nbsp;&nbsp;<a href="#api-hara-class-checks--protocol?">protocol?</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-class-checks--abstract?"></a><h4>abstract? <a href="#api-hara-class-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `class` is an abstract class&quot;
+
+(abstract? java.util.Map) =&gt; true
+(abstract? Class) =&gt; false</div></div><div><a name="api-hara-class-checks--interface?"></a><h4>interface? <a href="#api-hara-class-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `class` is an interface&quot;
+
+(interface? java.util.Map) =&gt; true
+(interface? Class) =&gt; false</div></div><div><a name="api-hara-class-checks--multimethod?"></a><h4>multimethod? <a href="#api-hara-class-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `obj` is a multimethod&quot;
+
+(multimethod? print-method) =&gt; true
+(multimethod? println) =&gt; false</div></div><div><a name="api-hara-class-checks--protocol?"></a><h4>protocol? <a href="#api-hara-class-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `obj` is a protocol&quot;
+
+(defprotocol ISomeProtocol)
+(protocol? ISomeProtocol) =&gt; true
+
+(protocol? clojure.lang.ILookup) =&gt; false</div></div></div></div></div></section><section class="chapter" id="api---inheritance"><h2 class="chapter">3  &nbsp;&nbsp; API - inheritance</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/class/inheritance.clj'>hara.class.inheritance</a> contain inheritance checking predicates:</p></div><div class="api"><hr /><div><a name="api-hara-class-inheritance"></a><h4><i>API</i></h4><a href="#api-hara-class-inheritance--ancestor-list">ancestor-list</a>&nbsp;&nbsp;<a href="#api-hara-class-inheritance--ancestor-tree">ancestor-tree</a>&nbsp;&nbsp;<a href="#api-hara-class-inheritance--best-match">best-match</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-class-inheritance--ancestor-list"></a><h4>ancestor-list <a href="#api-hara-class-inheritance">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Lists the direct ancestors of a class&quot;
+(ancestor-list clojure.lang.PersistentHashMap)
+=&gt; [clojure.lang.PersistentHashMap
+    clojure.lang.APersistentMap
+    clojure.lang.AFn
+    java.lang.Object]</div></div><div><a name="api-hara-class-inheritance--ancestor-tree"></a><h4>ancestor-tree <a href="#api-hara-class-inheritance">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Lists the hierarchy of bases and interfaces of a class.&quot;
+(ancestor-tree Class)
+=&gt; [[java.lang.Object #{java.io.Serializable
+                        java.lang.reflect.Type
+                        java.lang.reflect.AnnotatedElement
+                        java.lang.reflect.GenericDeclaration}]]</div></div><div><a name="api-hara-class-inheritance--best-match"></a><h4>best-match <a href="#api-hara-class-inheritance">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;finds the best matching interface or class from a list of candidates&quot;
+
+(best-match #{Object} Long) =&gt; Object
+(best-match #{String} Long) =&gt; nil
+(best-match #{Object Number} Long) =&gt; Number</div></div></div></div></div></section>
+    </div>
+</div><!--end of .container-->
+
+  <section class="application">
+    
+  </section>
+</body>
+
+<script>
+  $('#nav').affix({
+    offset: {
+        top: $('#nav').offset().top,
+        bottom: $('footer').outerHeight(true) + $('.application').outerHeight(true) + 40
+    }});
+</script>
+
+
+<script>
+  if (document.location.search.match(/type=embed/gi)) {
+    window.parent.postMessage("resize", "*");
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,523 @@
+
+
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <meta name="google" value="notranslate">
+
+
+    <title>data</title>
+
+    
+  <link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/languages/clojure.min.js"></script>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/magula.min.css">
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular.min.js"></script>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-cookies.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
+  <script type="text/javascript" src="js/angular-highlightjs.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="css/rdash.min.css">
+  <link rel="stylesheet" type="text/css" href="css/scrollspy.css">
+
+
+  <script>
+    window.console = window.console || function(t) {};
+    window.open = function(){ console.log("window.open is disabled."); };
+    window.print   = function(){ console.log("window.print is disabled."); };
+  </script>
+
+  <script>
+    var app = angular.module('app', ['hljs']);
+  </script>
+  </head>
+
+  <body ng-app="app" data-spy="scroll" data-target=".scrollspy">
+  <!-- Fixed navbar -->
+    <nav class="navbar navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html"><img src="img/logo.png"></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Guides <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="hara-class.html">class</a></li>
+                <li><a href="hara-common.html">common</a></li>
+                <li><a href="hara-component.html">component</a></li>
+                <li><a href="hara-concurrent.html">concurrent</a></li>
+                <li><a href="hara-concurrent-ova.html">concurrent.ova</a></li>
+                <!--li><a href="hara-concurrent-procedure.html">concurrent.procedure</a></li-->
+                <li><a href="hara-data.html">data</a></li>
+                <li><a href="hara-event.html">event</a></li>
+                <li><a href="hara-expression.html">expression</a></li>
+                <li><a href="hara-extend.html">extend</a></li>
+                <li><a href="hara-function.html">function</a></li>
+                <li><a href="hara-group.html">group</a></li>
+                <li><a href="hara-io-scheduler.html">io.scheduler</a></li>
+                <li><a href="hara-io-watch.html">io.watch</a></li>
+                <li><a href="hara-namespace.html">namespace</a></li>
+                <!--li><a href="hara-object.html">object</a></li-->
+                <li><a href="hara-reflect.html">reflect</a></li>
+                <li><a href="hara-sort.html">sort</a></li>
+                <li><a href="hara-string.html">string</a></li>
+            </ul>
+            </li>
+            <li>
+              <a href="https://github.com/zcaudate/hara" target="_blank">Github</a></li>
+            <li>
+              <a href="http://gitter.im/zcaudate/hara" target="_blank">Gitter</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+
+  <div class="container row">
+    <div class="col-md-4 scrollspy pull-right">
+      <ul id="nav" class="nav hidden-xs hidden-sm" data-spy="affix">
+        <li><a href="#introduction">1  &nbsp;&nbsp; Introduction</a><ul class="nav"><li><a href="#installation">1.1  &nbsp;&nbsp; Installation</a></li></ul></li><li><a href="#api---map">2  &nbsp;&nbsp; API - map</a></li><li><a href="#api---nested">3  &nbsp;&nbsp; API - nested</a></li><li><a href="#api---diff">4  &nbsp;&nbsp; API - diff</a></li><li><a href="#api---combine">5  &nbsp;&nbsp; API - combine</a></li><li><a href="#api---complex">6  &nbsp;&nbsp; API - complex</a></li><li><a href="#api---record">7  &nbsp;&nbsp; API - record</a></li><li><a href="#api---path">8  &nbsp;&nbsp; API - path</a></li><li><a href="#api---seq">9  &nbsp;&nbsp; API - seq</a></li>
+      </ul>
+    </div>
+    <div class="col-md-8" id="content">
+      <div class="jumbotron">
+        <div class="container">
+          <h1>data</h1>
+          <h4>manipulation of maps and representations of data</h4>
+        </div>
+      </div>
+      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/data.clj'>hara.data</a> are a set of functions that act on clojure hash-maps and map-like representations of data. The level of complexity needed for working with data increases as it becomes nested and then relational. The functions of <code>hara.data</code> get increasingly sophisticated, with the <code>hara.data.complex</code> namespace built specifically for working with datomic datastructures.</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.data &quot;2.2.12&quot;&#93;
+</code></pre><p>Individual namespaces can be added seperately:</p><pre><code>&#91;im.chit/hara.data.map &quot;2.2.12&quot;&#93;
+&#91;im.chit/hara.data.nested &quot;2.2.12&quot;&#93;
+&#91;im.chit/hara.data.diff &quot;2.2.12&quot;&#93;
+&#91;im.chit/hara.data.combine &quot;2.2.12&quot;&#93;
+&#91;im.chit/hara.data.complex &quot;2.2.12&quot;&#93;
+&#91;im.chit/hara.data.record &quot;2.2.12&quot;&#93;
+&#91;im.chit/hara.data.path &quot;2.2.12&quot;&#93;
+&#91;im.chit/hara.data.seq &quot;2.2.12&quot;&#93;
+</code></pre></div></section></section><section class="chapter" id="api---map"><h2 class="chapter">2  &nbsp;&nbsp; API - map</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/data/map.clj'>hara.data.map</a> contain functions for updating hashmaps.</p></div><div class="api"><hr /><div><a name="api-hara-data-map"></a><h4><i>API</i></h4><a href="#api-hara-data-map--assoc-if">assoc-if</a>&nbsp;&nbsp;<a href="#api-hara-data-map--assoc-in-if">assoc-in-if</a>&nbsp;&nbsp;<a href="#api-hara-data-map--assoc-in-nil">assoc-in-nil</a>&nbsp;&nbsp;<a href="#api-hara-data-map--assoc-nil">assoc-nil</a>&nbsp;&nbsp;<a href="#api-hara-data-map--dissoc-in">dissoc-in</a>&nbsp;&nbsp;<a href="#api-hara-data-map--into-if">into-if</a>&nbsp;&nbsp;<a href="#api-hara-data-map--merge-if">merge-if</a>&nbsp;&nbsp;<a href="#api-hara-data-map--merge-nil">merge-nil</a>&nbsp;&nbsp;<a href="#api-hara-data-map--select-keys-if">select-keys-if</a>&nbsp;&nbsp;<a href="#api-hara-data-map--unique">unique</a>&nbsp;&nbsp;<a href="#api-hara-data-map--update-in-if">update-in-if</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-data-map--assoc-if"></a><h4>assoc-if <a href="#api-hara-data-map">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;assoc key/value pairs to the map only on non-nil values&quot;
+
+(assoc-if {} :a 1)
+=&gt; {:a 1}
+
+(assoc-if {} :a 1 :b nil)
+=&gt; {:a 1}</div></div><div><a name="api-hara-data-map--assoc-in-if"></a><h4>assoc-in-if <a href="#api-hara-data-map">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;assoc-in a nested key/value pair to a map only on non-nil values&quot;
+
+(assoc-in-if {} [:a :b] 1)
+=&gt; {:a {:b 1}}
+
+(assoc-in-if {} [:a :b] nil)
+=&gt; {}</div></div><div><a name="api-hara-data-map--assoc-in-nil"></a><h4>assoc-in-nil <a href="#api-hara-data-map">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;only assoc-in if the value in the original map is nil&quot;
+
+(assoc-in-nil {} [:a :b] 2)
+=&gt; {:a {:b 2}}
+
+(assoc-in-nil {:a {:b 1}} [:a :b] 2)
+=&gt; {:a {:b 1}}</div></div><div><a name="api-hara-data-map--assoc-nil"></a><h4>assoc-nil <a href="#api-hara-data-map">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;only assoc if the value in the original map is nil&quot;
+
+(assoc-nil {:a 1} :b 2)
+=&gt; {:a 1 :b 2}
+
+(assoc-nil {:a 1} :a 2 :b 2)
+=&gt; {:a 1 :b 2}</div></div><div><a name="api-hara-data-map--dissoc-in"></a><h4>dissoc-in <a href="#api-hara-data-map">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;disassociates keys from a nested map. Setting `keep` to `true` will
+not remove a empty map after dissoc&quot;
+
+(dissoc-in {:a {:b 10 :c 20}} [:a :b])
+=&gt; {:a {:c 20}}
+
+(dissoc-in {:a {:b 10}} [:a :b])
+=&gt; {}
+
+(dissoc-in {:a {:b 10}} [:a :b] true)
+=&gt; {:a {}}</div></div><div><a name="api-hara-data-map--into-if"></a><h4>into-if <a href="#api-hara-data-map">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;like into but filters nil values for both key/value pairs
+and sequences&quot;
+
+(into-if [] [1 nil 2 3])
+=&gt; [1 2 3]
+
+(into-if {:a 1} {:b nil :c 2})
+=&gt; {:a 1 :c 2}</div></div><div><a name="api-hara-data-map--merge-if"></a><h4>merge-if <a href="#api-hara-data-map">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;merges key/value pairs into a single map only if the value exists&quot;
+
+(merge-if {:a nil :b 1})
+=&gt; {:b 1}
+
+(merge-if {:a 1} {:b nil :c 2})
+=&gt; {:a 1 :c 2}
+
+(merge-if {:a 1} {:b nil} {:c 2})
+=&gt; {:a 1 :c 2}</div></div><div><a name="api-hara-data-map--merge-nil"></a><h4>merge-nil <a href="#api-hara-data-map">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;only merge if the value in the original map is nil&quot;
+
+(merge-nil {:a 1} {:b 2})
+=&gt; {:a 1 :b 2}
+
+(merge-nil {:a 1} {:a 2})
+=&gt; {:a 1}</div></div><div><a name="api-hara-data-map--select-keys-if"></a><h4>select-keys-if <a href="#api-hara-data-map">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;selects only the non-nil key/value pairs from a map&quot;
+
+(select-keys-if {:a 1 :b nil} [:a :b])
+=&gt; {:a 1}
+
+(select-keys-if {:a 1 :b nil :c 2} [:a :b :c])
+=&gt; {:a 1 :c 2}</div></div><div><a name="api-hara-data-map--unique"></a><h4>unique <a href="#api-hara-data-map">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;returns a map of all key/value pairs that differ from a second map&quot;
+
+(unique {:a 1} {:a 2})
+=&gt; {:a 1}
+
+(unique {:a 1 :b 2} {:b 2})
+=&gt; {:a 1}
+
+(unique {:b 2} {:b 2 :a 1})
+=&gt; nil</div></div><div><a name="api-hara-data-map--update-in-if"></a><h4>update-in-if <a href="#api-hara-data-map">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;update-in a nested key/value pair only if the value exists&quot;
+
+(update-in-if {:a {:b 1}} [:a :b] inc)
+=&gt; {:a {:b 2}}
+
+(update-in-if {} [:a :b] inc)
+=&gt; {}</div></div></div></div></div></section><section class="chapter" id="api---nested"><h2 class="chapter">3  &nbsp;&nbsp; API - nested</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/data/nested.clj'>hara.data.nested</a> contain functions for updating nested hashmaps.</p></div><div class="api"><hr /><div><a name="api-hara-data-nested"></a><h4><i>API</i></h4><a href="#api-hara-data-nested--clean-nested">clean-nested</a>&nbsp;&nbsp;<a href="#api-hara-data-nested--dissoc-nested">dissoc-nested</a>&nbsp;&nbsp;<a href="#api-hara-data-nested--key-paths">key-paths</a>&nbsp;&nbsp;<a href="#api-hara-data-nested--keys-nested">keys-nested</a>&nbsp;&nbsp;<a href="#api-hara-data-nested--merge-nested">merge-nested</a>&nbsp;&nbsp;<a href="#api-hara-data-nested--merge-nil-nested">merge-nil-nested</a>&nbsp;&nbsp;<a href="#api-hara-data-nested--unique-nested">unique-nested</a>&nbsp;&nbsp;<a href="#api-hara-data-nested--update-keys-in">update-keys-in</a>&nbsp;&nbsp;<a href="#api-hara-data-nested--update-vals-in">update-vals-in</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-data-nested--clean-nested"></a><h4>clean-nested <a href="#api-hara-data-nested">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns a associative with nils and empty hash-maps removed.&quot;
+
+ (clean-nested {:a {:b {:c {}}}})
+ =&gt; {}
+
+ (clean-nested {:a {:b {:c {} :d 1 :e nil}}})
+ =&gt; {:a {:b {:d 1}}}</div></div><div><a name="api-hara-data-nested--dissoc-nested"></a><h4>dissoc-nested <a href="#api-hara-data-nested">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `m` without all nested keys in `ks`.&quot;
+
+(dissoc-nested {:a {:b 1 :c {:b 1}}} [:b])
+=&gt; {:a {:c {}}}</div></div><div><a name="api-hara-data-nested--key-paths"></a><h4>key-paths <a href="#api-hara-data-nested">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;The set of all paths in a map, governed by a max level of nesting&quot;
+
+(key-paths {:a {:b 1} :c {:d 1}})
+=&gt; [[:c :d] [:a :b]]
+
+(key-paths {:a {:b 1} :c {:d 1}} 1)
+=&gt; [[:c] [:a]]</div></div><div><a name="api-hara-data-nested--keys-nested"></a><h4>keys-nested <a href="#api-hara-data-nested">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;The set of all nested keys in a map&quot;
+
+(keys-nested {:a {:b 1 :c {:d 1}}})
+=&gt; #{:a :b :c :d}</div></div><div><a name="api-hara-data-nested--merge-nested"></a><h4>merge-nested <a href="#api-hara-data-nested">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Merges nested values from left to right.&quot;
+
+(merge-nested {:a {:b {:c 3}}} {:a {:b 3}})
+=&gt; {:a {:b 3}}
+
+(merge-nested {:a {:b {:c 1 :d 2}}}
+              {:a {:b {:c 3}}})
+=&gt; {:a {:b {:c 3 :d 2}}}</div></div><div><a name="api-hara-data-nested--merge-nil-nested"></a><h4>merge-nil-nested <a href="#api-hara-data-nested">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Merges nested values from left to right, provided the merged value does not exist&quot;
+
+(merge-nil-nested {:a {:b 2}} {:a {:c 2}})
+=&gt; {:a {:b 2 :c 2}}
+
+(merge-nil-nested {:b {:c :old}} {:b {:c :new}})
+=&gt; {:b {:c :old}}</div></div><div><a name="api-hara-data-nested--unique-nested"></a><h4>unique-nested <a href="#api-hara-data-nested">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;All nested values in `m1` that are unique to those in `m2`.&quot;
+
+(unique-nested {:a {:b 1}}
+             {:a {:b 1 :c 1}})
+=&gt; {}
+
+(unique-nested {:a {:b 1 :c 1}}
+             {:a {:b 1}})
+=&gt; {:a {:c 1}}</div></div><div><a name="api-hara-data-nested--update-keys-in"></a><h4>update-keys-in <a href="#api-hara-data-nested">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;updates all keys in a map with given function&quot;
+  
+(update-keys-in {:x {[&quot;a&quot; &quot;b&quot;] 1 [&quot;c&quot; &quot;d&quot;] 2}} [:x] string/join)
+=&gt; {:x {&quot;ab&quot; 1 &quot;cd&quot; 2}}
+
+(update-keys-in {:a {:c 1} :b {:d 2}} 2 name)
+=&gt; {:b {&quot;d&quot; 2}, :a {&quot;c&quot; 1}}</div></div><div><a name="api-hara-data-nested--update-vals-in"></a><h4>update-vals-in <a href="#api-hara-data-nested">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;updates all values in a map with given function&quot;
+
+(update-vals-in {:a 1 :b 2} [] inc)
+=&gt; {:a 2 :b 3}
+  
+(update-vals-in {:a {:c 1} :b 2} [:a] inc)
+=&gt; {:a {:c 2} :b 2}
+
+(update-vals-in {:a {:c 1} :b {:d 2}} 2 inc)
+=&gt; {:a {:c 2} :b {:d 3}}
+
+(update-vals-in {:a 1 :b 2} 1 inc)
+=&gt; {:a 2, :b 3}</div></div></div></div></div></section><section class="chapter" id="api---diff"><h2 class="chapter">4  &nbsp;&nbsp; API - diff</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/data/diff.clj'>hara.data.diff</a> contain functions for comparing maps as well as functions to patch changes.</p></div><div class="api"><hr /><div><a name="api-hara-data-diff"></a><h4><i>API</i></h4><a href="#api-hara-data-diff--diff">diff</a>&nbsp;&nbsp;<a href="#api-hara-data-diff--diff-changes">diff-changes</a>&nbsp;&nbsp;<a href="#api-hara-data-diff--diff-new">diff-new</a>&nbsp;&nbsp;<a href="#api-hara-data-diff--patch">patch</a>&nbsp;&nbsp;<a href="#api-hara-data-diff--unpatch">unpatch</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-data-diff--diff"></a><h4>diff <a href="#api-hara-data-diff">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Finds the difference between two maps&quot;
+  
+(diff {:a 2} {:a 1})
+=&gt; {:+ {} :- {} :&gt; {[:a] 2}}
+
+(diff {:a {:b 1 :d 3}} {:a {:c 2 :d 4}} true)
+=&gt; {:+ {[:a :b] 1}
+    :- {[:a :c] 2}
+    :&gt; {[:a :d] 3}
+    :&lt; {[:a :d] 4}}</div></div><div><a name="api-hara-data-diff--diff-changes"></a><h4>diff-changes <a href="#api-hara-data-diff">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Finds changes in nested maps, does not consider new elements&quot;
+  
+(diff-changes {:a 2} {:a 1})
+=&gt; {[:a] 2}
+
+(diff-changes {:a {:b 1 :c 2}} {:a {:b 1 :c 3}})
+=&gt; {[:a :c] 2}</div></div><div><a name="api-hara-data-diff--diff-new"></a><h4>diff-new <a href="#api-hara-data-diff">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Finds new elements in nested maps, does not consider changes&quot;
+  
+(diff-new {:a 2} {:a 1})
+=&gt; {}
+
+(diff-new {:a {:b 1}} {:a {:c 2}})
+=&gt; {[:a :b] 1}</div></div><div><a name="api-hara-data-diff--patch"></a><h4>patch <a href="#api-hara-data-diff">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Use the diff to convert one map to another in the forward 
+direction based upon changes between the two.&quot;
+  
+(let [m1  {:a {:b 1 :d 3}}
+      m2  {:a {:c 2 :d 4}}
+      df  (diff m2 m1)]
+  (patch m1 df)
+  =&gt; m2)</div></div><div><a name="api-hara-data-diff--unpatch"></a><h4>unpatch <a href="#api-hara-data-diff">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Use the diff to convert one map to another in the reverse 
+direction based upon changes between the two.&quot;
+  
+(let [m1  {:a {:b 1 :d 3}}
+      m2  {:a {:c 2 :d 4}}
+      df  (diff m2 m1 true)]
+  (unpatch m2 df)
+  =&gt; m1)</div></div></div></div></div></section><section class="chapter" id="api---combine"><h2 class="chapter">5  &nbsp;&nbsp; API - combine</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/data/combine.clj'>hara.data.combine</a> contain functions for working with sets of data.</p></div><div class="api"><hr /><div><a name="api-hara-data-combine"></a><h4><i>API</i></h4><a href="#api-hara-data-combine--combine">combine</a>&nbsp;&nbsp;<a href="#api-hara-data-combine--combine-internal">combine-internal</a>&nbsp;&nbsp;<a href="#api-hara-data-combine--combine-select">combine-select</a>&nbsp;&nbsp;<a href="#api-hara-data-combine--combine-set">combine-set</a>&nbsp;&nbsp;<a href="#api-hara-data-combine--combine-value">combine-value</a>&nbsp;&nbsp;<a href="#api-hara-data-combine--decombine">decombine</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-data-combine--combine"></a><h4>combine <a href="#api-hara-data-combine">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;takes `v1` and `v2`, which can be either
+values or sets of values and merges them into a new set.&quot;
+
+(combine 1 2) =&gt; #{1 2}
+
+(combine #{1} 1) =&gt; #{1}
+
+(combine #{{:id 1} {:id 2}}
+         #{{:id 1 :val 1} {:id 2 :val 2}}
+         :id merge)
+=&gt; #{{:id 1 :val 1} {:id 2 :val 2}}</div></div><div><a name="api-hara-data-combine--combine-internal"></a><h4>combine-internal <a href="#api-hara-data-combine">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Combines all elements in a single using sel and func&quot;
+
+ (combine-internal #{{:id 1} {:id 2} {:id 1 :val 1} {:id 2 :val 2}}
+                    :id merge)
+ =&gt; #{{:id 1 :val 1} {:id 2 :val 2}}</div></div><div><a name="api-hara-data-combine--combine-select"></a><h4>combine-select <a href="#api-hara-data-combine">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;selects an element out of the set that matches sel when it is applied&quot;
+
+(combine-select #{1 2 3} 2 identity)
+=&gt; 2
+
+(combine-select #{{:id 1 :val 2} {:id 2 :val 2}} {:id 1 :val 1} :id)
+=&gt; {:id 1 :val 2}</div></div><div><a name="api-hara-data-combine--combine-set"></a><h4>combine-set <a href="#api-hara-data-combine">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns the combined set of `s1` and `s2` using sel for item
+comparison and func as the combine function&quot;
+
+(combine-set #{{:id 1 :val 0} {:id 2 :a 0}}
+              #{{:id 1 :val 1} {:id 2 :val 2}}
+              :id merge)
+=&gt; #{{:id 1 :val 1} {:id 2 :val 2 :a 0}}</div></div><div><a name="api-hara-data-combine--combine-value"></a><h4>combine-value <a href="#api-hara-data-combine">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;returns a single set, sel is used for item comparison while func
+is used as the combine function&quot;
+
+(combine-value #{{:id 1 :a 1} {:id 2 :a 2}}
+                 {:id 3 :b 3}
+                 :id merge)
+=&gt; #{{:id 1, :a 1} {:id 2, :a 2} {:id 3, :b 3}}
+
+(combine-value #{{:id 1 :a 1} {:id 2 :a 2}}
+                 {:id 1 :b 3}
+                 :id merge)
+=&gt; #{{:id 1 :a 1 :b 3} {:id 2 :a 2}}</div></div><div><a name="api-hara-data-combine--decombine"></a><h4>decombine <a href="#api-hara-data-combine">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;takes set or value `v` and returns a set with
+elements matching sel removed&quot;
+
+(decombine 1 1) =&gt; nil
+
+(decombine 1 2) =&gt; 1
+
+(decombine #{1} 1) =&gt; nil
+
+(decombine #{1 2 3 4} #{1 2}) =&gt; #{3 4}
+
+(decombine #{1 2 3 4} even?) =&gt; #{1 3}</div></div></div></div></div></section><section class="chapter" id="api---complex"><h2 class="chapter">6  &nbsp;&nbsp; API - complex</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/data/complex.clj'>hara.data.complex</a> combine functions for working with relational data such as that coming out from datomic.</p></div><div class="api"><hr /><div><a name="api-hara-data-complex"></a><h4><i>API</i></h4><a href="#api-hara-data-complex--assocs">assocs</a>&nbsp;&nbsp;<a href="#api-hara-data-complex--assocs-in">assocs-in</a>&nbsp;&nbsp;<a href="#api-hara-data-complex--dissocs">dissocs</a>&nbsp;&nbsp;<a href="#api-hara-data-complex--dissocs-in">dissocs-in</a>&nbsp;&nbsp;<a href="#api-hara-data-complex--gets">gets</a>&nbsp;&nbsp;<a href="#api-hara-data-complex--gets-in">gets-in</a>&nbsp;&nbsp;<a href="#api-hara-data-complex--merges">merges</a>&nbsp;&nbsp;<a href="#api-hara-data-complex--merges-nested">merges-nested</a>&nbsp;&nbsp;<a href="#api-hara-data-complex--merges-nested*">merges-nested*</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-data-complex--assocs"></a><h4>assocs <a href="#api-hara-data-complex">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Similar to `assoc` but conditions of association is specified
+through `sel` (default: `identity`) and well as merging specified
+through `func` (default: `combine`).&quot;
+(assocs {:a #{1}} :a #{2 3 4})
+=&gt; {:a #{1 2 3 4}}
+
+(assocs {:a {:id 1}} :a {:id 1 :val 1} :id merge)
+=&gt; {:a {:val 1, :id 1}}
+
+(assocs {:a #{{:id 1 :val 2}
+              {:id 1 :val 3}}} :a {:id 1 :val 4} :id merges)
+=&gt; {:a #{{:id 1 :val #{2 3 4}}}}</div></div><div><a name="api-hara-data-complex--assocs-in"></a><h4>assocs-in <a href="#api-hara-data-complex">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Similar to assoc-in but can move through sets&quot;
+
+(assocs-in {:a {:b 1}} [:a :b] 2)
+=&gt; {:a {:b #{1 2}}}
+
+(assocs-in {:a #{{:b 1}}} [:a :b] 2)
+=&gt; {:a #{{:b #{1 2}}}}
+
+(assocs-in {:a #{{:b {:id 1}} {:b {:id 2}}}}
+           [:a [:b [:id 1]] :c] 2)
+=&gt; {:a #{{:b {:id 1 :c 2}} {:b {:id 2}}}}</div></div><div><a name="api-hara-data-complex--dissocs"></a><h4>dissocs <a href="#api-hara-data-complex">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Similar to `dissoc` but allows dissassociation of sets of values from a map.&quot;
+
+(dissocs {:a 1} :a)
+=&gt; {}
+
+(dissocs {:a #{1 2}} [:a #{0 1}])
+=&gt; {:a #{2}}
+
+(dissocs {:a #{1 2}} [:a #{1 2}])
+=&gt; {}</div></div><div><a name="api-hara-data-complex--dissocs-in"></a><h4>dissocs-in <a href="#api-hara-data-complex">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Similiar to `dissoc-in` but can move through sets.&quot;
+
+ (dissocs-in {:a #{{:b 1 :c 1} {:b 2 :c 2}}}
+              [:a :b])
+ =&gt; {:a #{{:c 1} {:c 2}}}
+
+ (dissocs-in {:a #{{:b #{1 2 3} :c 1}
+                   {:b #{1 2 3} :c 2}}}
+             [[:a [:c 1]] [:b 1]])
+ =&gt; {:a #{{:b #{2 3} :c 1} {:b #{1 2 3} :c 2}}}</div></div><div><a name="api-hara-data-complex--gets"></a><h4>gets <a href="#api-hara-data-complex">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns the associated values either specified by a key or a key and predicate pair.&quot;
+
+(gets {:a 1} :a) =&gt; 1
+
+(gets {:a #{0 1}} [:a zero?]) =&gt; #{0}
+
+(gets {:a #{{:b 1} {}}} [:a :b]) =&gt; #{{:b 1}}</div></div><div><a name="api-hara-data-complex--gets-in"></a><h4>gets-in <a href="#api-hara-data-complex">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Similar in style to `get-in` with operations on sets. returns a set of values.&quot;
+
+(gets-in {:a 1} [:a]) =&gt; #{1}
+
+(gets-in {:a 1} [:b]) =&gt; #{}
+
+(gets-in {:a #{{:b 1} {:b 2}}} [:a :b]) =&gt; #{1 2}</div></div><div><a name="api-hara-data-complex--merges"></a><h4>merges <a href="#api-hara-data-complex">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Like `merge` but works across sets and will also
+combine duplicate key/value pairs together into sets of values.&quot;
+
+ (merges {:a 1} {:a 2})
+ =&gt; {:a #{1 2}}
+
+ (merges {:a #{{:id 1 :val 1}}}
+         {:a {:id 1 :val 2}}
+         :id merges)
+ =&gt; {:a #{{:id 1 :val #{1 2}}}}</div></div><div><a name="api-hara-data-complex--merges-nested"></a><h4>merges-nested <a href="#api-hara-data-complex">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Like `merges` but works on nested maps&quot;
+
+ (merges-nested {:a {:b 1}} {:a {:b 2}})
+ =&gt; {:a {:b #{1 2}}}
+
+ (merges-nested {:a #{{:foo #{{:bar #{{:baz 1}}}}}}}
+            {:a #{{:foo #{{:bar #{{:baz 2}}}}}}}
+            hash-map?
+            merges-nested)
+ =&gt; {:a #{{:foo #{{:bar #{{:baz 2}}}
+                  {:bar #{{:baz 1}}}}}}}</div></div><div><a name="api-hara-data-complex--merges-nested*"></a><h4>merges-nested* <a href="#api-hara-data-complex">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Like `merges-nested but can recursively merge nested sets and values&quot;
+
+(merges-nested* {:a #{{:id 1 :foo
+                       #{{:id 2 :bar
+                          #{{:id 3 :baz 1}}}}}}}
+                {:a {:id 1 :foo
+                     {:id 2 :bar
+                      {:id 3 :baz 2}}}}
+                :id)
+
+=&gt; {:a #{{:id 1 :foo
+          #{{:id 2 :bar
+             #{{:id 3 :baz #{1 2}}}}}}}}</div></div></div></div></div></section><section class="chapter" id="api---record"><h2 class="chapter">7  &nbsp;&nbsp; API - record</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/data/record.clj'>hara.data.record</a> contain functions for working with clojure records</p></div><div class="api"><hr /><div><a name="api-hara-data-record"></a><h4><i>API</i></h4><a href="#api-hara-data-record--empty-record">empty-record</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-data-record--empty-record"></a><h4>empty-record <a href="#api-hara-data-record">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;creates an empty record from an existing one&quot;
+
+(empty-record (Database. &quot;localhost&quot; 8080))
+=&gt; (just {:host nil :port nil})</div></div></div></div></div></section><section class="chapter" id="api---path"><h2 class="chapter">8  &nbsp;&nbsp; API - path</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/data/path.clj'>hara.data.path</a> concerns itself with the translation between data contained in a nested versus data contained in a single map with paths as keys.</p></div><div class="api"><hr /><div><a name="api-hara-data-path"></a><h4><i>API</i></h4><a href="#api-hara-data-path--contains-ns-key?">contains-ns-key?</a>&nbsp;&nbsp;<a href="#api-hara-data-path--flatten-keys">flatten-keys</a>&nbsp;&nbsp;<a href="#api-hara-data-path--flatten-keys-nested">flatten-keys-nested</a>&nbsp;&nbsp;<a href="#api-hara-data-path--group-by-set">group-by-set</a>&nbsp;&nbsp;<a href="#api-hara-data-path--group-keys">group-keys</a>&nbsp;&nbsp;<a href="#api-hara-data-path--list-ns-keys">list-ns-keys</a>&nbsp;&nbsp;<a href="#api-hara-data-path--nest-keys">nest-keys</a>&nbsp;&nbsp;<a href="#api-hara-data-path--treeify-keys">treeify-keys</a>&nbsp;&nbsp;<a href="#api-hara-data-path--treeify-keys-nested">treeify-keys-nested</a>&nbsp;&nbsp;<a href="#api-hara-data-path--unnest-keys">unnest-keys</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-data-path--contains-ns-key?"></a><h4>contains-ns-key? <a href="#api-hara-data-path">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if any key in map contains a namespace value&quot;
+
+(contains-ns-key? {:hello/a 1 :hello/b 2
+                   :there/a 3 :there/b 4} :hello)
+=&gt; true</div></div><div><a name="api-hara-data-path--flatten-keys"></a><h4>flatten-keys <a href="#api-hara-data-path">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;takes map `m` and flattens the first nested layer onto the root layer.&quot;
+
+(flatten-keys {:a {:b 2 :c 3} :e 4})
+=&gt; {:a/b 2 :a/c 3 :e 4}
+
+(flatten-keys {:a {:b {:c 3 :d 4}
+                   :e {:f 5 :g 6}}
+               :h {:i 7}
+               :j 8})
+=&gt; {:a/b {:c 3 :d 4} :a/e {:f 5 :g 6} :h/i 7 :j 8}</div></div><div><a name="api-hara-data-path--flatten-keys-nested"></a><h4>flatten-keys-nested <a href="#api-hara-data-path">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns a single associative map with all of the nested
+keys of `m` flattened. If `keep` is added, it preserves all the
+empty sets&quot;
+
+(flatten-keys-nested {&quot;a&quot; {&quot;b&quot; {&quot;c&quot; 3 &quot;d&quot; 4}
+                             &quot;e&quot; {&quot;f&quot; 5 &quot;g&quot; 6}}
+                        &quot;h&quot; {&quot;i&quot; {}}})
+=&gt; {&quot;a/b/c&quot; 3 &quot;a/b/d&quot; 4 &quot;a/e/f&quot; 5 &quot;a/e/g&quot; 6}
+
+(flatten-keys-nested {&quot;a&quot; {&quot;b&quot; {&quot;c&quot; 3 &quot;d&quot; 4}
+                             &quot;e&quot; {&quot;f&quot; 5 &quot;g&quot; 6}}
+                        &quot;h&quot; {&quot;i&quot; {}}}
+                     -1 true)
+=&gt; {&quot;a/b/c&quot; 3 &quot;a/b/d&quot; 4 &quot;a/e/f&quot; 5 &quot;a/e/g&quot; 6 &quot;h/i&quot; {}}</div></div><div><a name="api-hara-data-path--group-by-set"></a><h4>group-by-set <a href="#api-hara-data-path">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns a map of the elements of coll keyed by the result of
+f on each element. The value at each key will be a set of the
+corresponding elements, in the order they appeared in coll.&quot;
+
+(group-by-set even? [1 2 3 4 5])
+=&gt; {false #{1 3 5}, true #{2 4}}</div></div><div><a name="api-hara-data-path--group-keys"></a><h4>group-keys <a href="#api-hara-data-path">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns the set of keys in `fm` that has keyword namespace
+of `ns`&quot;
+(group-keys {:hello/a 1 :hello/b 2
+             :there/a 3 :there/b 4})
+=&gt; {:there #{:there/a :there/b}, :hello #{:hello/b :hello/a}}
+
+(group-keys {:hello/a 1 :hello/b 2
+             :there/a 3 :there/b 4} :hello)
+=&gt; #{:hello/a :hello/b}</div></div><div><a name="api-hara-data-path--list-ns-keys"></a><h4>list-ns-keys <a href="#api-hara-data-path">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns the set of keyword namespaces within a map&quot;
+
+(list-ns-keys {:hello/a 1 :hello/b 2
+               :there/a 3 :there/b 4})
+=&gt; #{:hello :there}</div></div><div><a name="api-hara-data-path--nest-keys"></a><h4>nest-keys <a href="#api-hara-data-path">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns a map that takes `m` and extends all keys with the
+`nskv` vector. `ex` is the list of keys that are not extended.&quot;
+
+(nest-keys {:a 1 :b 2} [:hello :there])
+ =&gt; {:hello {:there {:a 1 :b 2}}}
+
+ (nest-keys {:there 1 :b 2} [:hello] [:there])
+ =&gt; {:hello {:b 2} :there 1}</div></div><div><a name="api-hara-data-path--treeify-keys"></a><h4>treeify-keys <a href="#api-hara-data-path">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns a nested map, expanding out the first
+level of keys into additional hash-maps.&quot;
+
+(treeify-keys {:a/b 2 :a/c 3})
+=&gt; {:a {:b 2 :c 3}}
+
+(treeify-keys {:a/b {:e/f 1} :a/c {:g/h 1}})
+=&gt; {:a {:b {:e/f 1}
+        :c {:g/h 1}}}</div></div><div><a name="api-hara-data-path--treeify-keys-nested"></a><h4>treeify-keys-nested <a href="#api-hara-data-path">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns a nested map, expanding out all
+levels of keys into additional hash-maps.&quot;
+
+(treeify-keys-nested {:a/b 2 :a/c 3})
+=&gt; {:a {:b 2 :c 3}}
+
+(treeify-keys-nested {:a/b {:e/f 1} :a/c {:g/h 1}})
+=&gt; {:a {:b {:e {:f 1}}
+        :c {:g {:h 1}}}}</div></div><div><a name="api-hara-data-path--unnest-keys"></a><h4>unnest-keys <a href="#api-hara-data-path">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;The reverse of `nest-keys`. Takes `m` and returns a map
+with all keys with a `keyword-nsvec` of `nskv` being 'unnested'&quot;
+
+(unnest-keys {:hello/a 1
+              :hello/b 2
+              :there/a 3
+              :there/b 4} [:hello])
+=&gt; {:a 1 :b 2
+    :there {:a 3 :b 4}}
+
+(unnest-keys {:hello {:there {:a 1 :b 2}}
+              :again {:c 3 :d 4}} [:hello :there] [:+] )
+=&gt; {:a 1 :b 2
+    :+ {:again {:c 3 :d 4}}}</div></div></div></div></div></section><section class="chapter" id="api---seq"><h2 class="chapter">9  &nbsp;&nbsp; API - seq</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/data/seq.clj'>hara.data.seq</a> is a support namespace used internally</p></div><div class="api"><hr /><div><a name="api-hara-data-seq"></a><h4><i>API</i></h4><a href="#api-hara-data-seq--positions">positions</a>&nbsp;&nbsp;<a href="#api-hara-data-seq--remove-index">remove-index</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-data-seq--positions"></a><h4>positions <a href="#api-hara-data-seq">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;find positions of elements matching the predicate&quot;
+(positions even? [5 5 4 4 3 3 2 2])
+=&gt; [2 3 6 7]</div></div><div><a name="api-hara-data-seq--remove-index"></a><h4>remove-index <a href="#api-hara-data-seq">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;removes element at the specified index&quot;
+(remove-index [:a :b :c :d] 2)
+=&gt; [:a :b :d]</div></div></div></div></div></section>
+    </div>
+</div><!--end of .container-->
+
+  <section class="application">
+    
+  </section>
+</body>
+
+<script>
+  $('#nav').affix({
+    offset: {
+        top: $('#nav').offset().top,
+        bottom: $('footer').outerHeight(true) + $('.application').outerHeight(true) + 40
+    }});
+</script>
+
+
+<script>
+  if (document.location.search.match(/type=embed/gi)) {
+    window.parent.postMessage("resize", "*");
+  }
+</script>
+</body>
+</html>

@@ -9,7 +9,7 @@
 
     <title>hara</title>
 
-
+    
   <link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
@@ -69,24 +69,62 @@
     </li-->
     <li class="sidebar-title"><span>guides</span></li>
     <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-class.html">&bull;<span class="submenu-item">class</span></a>
+    </li>
+    <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-common.html">&bull;<span class="submenu-item">common</span></a>
+    </li>
+    <li class="sidebar-list" ng-show="toggle">
       <a href="hara-component.html">&bull;<span class="submenu-item">component</span></a>
+    </li>
+    <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-concurrent.html">&bull;<span class="submenu-item">concurrent</span></a>
     </li>
     <li class="sidebar-list" ng-show="toggle">
       <a href="hara-concurrent-ova.html">&bull;<span class="submenu-item">concurrent.ova</span></a>
     </li>
+    <!--li class="sidebar-list" ng-show="toggle">
+      <a href="hara-concurrent-procedure.html">&bull;<span class="submenu-item">concurrent.procedure</span></a>
+    </li-->
+    <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-data.html">&bull;<span class="submenu-item">data</span></a>
+    </li>
     <li class="sidebar-list" ng-show="toggle">
       <a href="hara-event.html">&bull;<span class="submenu-item">event</span></a>
     </li>
-    <!--li class="sidebar-list" ng-show="toggle">
-      <a href="hara-io-watch.html">&bull;<span class="submenu-item">io.watch</span></a>
-    </li-->
+    <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-expression.html">&bull;<span class="submenu-item">expression</span></a>
+    </li>
+    <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-extend.html">&bull;<span class="submenu-item">extend</span></a>
+    </li>
+    <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-function.html">&bull;<span class="submenu-item">function</span></a>
+    </li>
+    <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-group.html">&bull;<span class="submenu-item">group</span></a>
+    </li>
     <li class="sidebar-list" ng-show="toggle">
       <a href="hara-io-scheduler.html">&bull;<span class="submenu-item">io.scheduler</span></a>
     </li>
     <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-io-watch.html">&bull;<span class="submenu-item">io.watch</span></a>
+    </li>
+    <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-namespace.html">&bull;<span class="submenu-item">namespace</span></a>
+    </li>
+    <!--li class="sidebar-list" ng-show="toggle">
+      <a href="hara-object.html">&bull;<span class="submenu-item">object</span></a>
+    </li-->
+    <li class="sidebar-list" ng-show="toggle">
       <a href="hara-reflect.html">&bull;<span class="submenu-item">reflect</span></a>
     </li>
-
+    <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-sort.html">&bull;<span class="submenu-item">sort</span></a>
+    </li>
+    <li class="sidebar-list" ng-show="toggle">
+      <a href="hara-string.html">&bull;<span class="submenu-item">string</span></a>
+    </li>
     <li class="sidebar-title"><span>links</span></li>
     <li class="sidebar-list">
       <a href="http://www.gitter.im/zcaudate/hara" target="_blank">support <span class="menu-icon fa fa-support"></span></a>
@@ -190,12 +228,12 @@
 				<div class="comment">In your <code>project.clj</code> add the following to include the entire <code>hara</code> library:</div>
         <div class="comment">&nbsp;</div>
         <div hljs language="clojure">
-[im.chit/hara "2.2.3"]</div>
+[im.chit/hara "2.2.12"]</div>
         <div class="comment">&nbsp;</div>
 				<div class="comment">Include selected functionality by including the specific package. For example, if the <code>hara.io.watch</code> namespace is required, use the following instead:</div>
         <div class="comment">&nbsp;</div>
         <div hljs language="clojure">
-[im.chit/hara.io.watch "2.2.3"]</div>
+[im.chit/hara.io.watch "2.2.12"]</div>
     <div class="comment">&nbsp;</div>
 			</rd-widget-body>
 		</rd-widget>
