@@ -32,7 +32,7 @@
 ^{:refer hara.common.primitives/uuid :added "2.0"}
 (fact "Returns a `java.util.UUID` object"
 
-  (uuid) => #(instance? java.util.UUID %) ; <random uuid>
+  (uuid) => #(instance? java.util.UUID %)
 
   (uuid "00000000-0000-0000-0000-000000000000")
   => #uuid "00000000-0000-0000-0000-000000000000")
@@ -40,7 +40,7 @@
 ^{:refer hara.common.primitives/instant :added "2.0"}
 (fact "Returns a `java.util.Date` object"
 
-  (instant) => #(instance? java.util.Date %) ; <current time>
+  (instant) => #(instance? java.util.Date %)
 
   (instant 0) => #inst "1970-01-01T00:00:00.000-00:00")
 
@@ -49,14 +49,3 @@
 
   (uri "http://www.google.com")
   => #(instance? java.net.URI %))
-
-^{:refer hara.common.primitives/class-array :added "2.0"}
-(fact "Returns a Class array"
-
-  (let [^"[Ljava.lang.String;" a (class-array ["a" "b" "c"])]
-
-    (type a) => (Class/forName "[Ljava.lang.String;")
-
-    (aget a 0) => "a"
-
-    (count a) => 3))

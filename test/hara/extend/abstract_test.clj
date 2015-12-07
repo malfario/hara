@@ -108,7 +108,7 @@
    :select -
    :suffix -env
    :prefix nil
-   :wrappers   {-data  (str "hello " %)}
+   :wrappers   {-data (str "hello " %)}
    :dispatch   :type
    :defaults   {nil   ([this & args] (Exception. "No input"))
                 -data ([this] (:hello this))})

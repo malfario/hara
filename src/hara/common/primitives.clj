@@ -2,11 +2,9 @@
   (:require [hara.common.checks :refer [bytes?]]
             [hara.common.error :refer [error]]))
 
-;; Constants
-
 (defn T
   "Returns `true` for any combination of input `args`
- 
+
    (T) => true
    (T :hello) => true
    (T 1 2 3) => true"
@@ -15,7 +13,7 @@
 
 (defn F
   "Returns `false` for any combination of input `args`
- 
+
    (F) => false
    (F :hello) => false
    (F 1 2 3) => false"
@@ -24,17 +22,16 @@
 
 (defn NIL
   "Returns `nil` for any combination of input `args`
- 
+
    (NIL) => nil
    (NIL :hello) => nil
    (NIL 1 2 3) => nil"
   {:added "2.0"}
   [& args] nil)
-;; ## Constructors
 
 (defn queue
   "Returns a `clojure.lang.PersistentQueue` object.
- 
+
    (def a (queue 1 2 3 4))
    (pop a) => [2 3 4]"
   {:added "2.0"}
@@ -44,9 +41,9 @@
 
 (defn uuid
   "Returns a `java.util.UUID` object
- 
+
    (uuid) => #(instance? java.util.UUID %) ; <random uuid>
- 
+
    (uuid \"00000000-0000-0000-0000-000000000000\")
    => #uuid \"00000000-0000-0000-0000-000000000000\""
   {:added "2.0"}
@@ -62,9 +59,9 @@
 
 (defn instant
   "Returns a `java.util.Date` object
- 
+
    (instant) => #(instance? java.util.Date %) ; <current time>
- 
+
    (instant 0) => #inst \"1970-01-01T00:00:00.000-00:00\""
   {:added "2.0"}
   ([] (java.util.Date.))
@@ -72,7 +69,7 @@
 
 (defn uri
   "Returns a `java.net.URI` object
- 
+
    (uri \"http://www.google.com\")
    => #(instance? java.net.URI %)"
   {:added "2.0"}
@@ -80,13 +77,13 @@
 
 (defn class-array
   "Returns a Class array
- 
+
    (let [^\"[Ljava.lang.String;\" a (class-array [\"a\" \"b\" \"c\"])]
 
      (type a) => (Class/forName \"[Ljava.lang.String;\")
- 
+
      (aget a 0) => \"a\"
- 
+
      (count a) => 3)"
   {:added "2.0"}
   ([seq] (class-array (-> seq first type) seq))

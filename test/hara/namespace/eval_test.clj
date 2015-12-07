@@ -38,4 +38,5 @@
 
   "All created vars will be destroyed after evaluation."
 
-  (resolve 'inc1) => nil)
+  (resolve 'inc1) => nil
+)

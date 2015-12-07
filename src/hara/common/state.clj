@@ -73,6 +73,9 @@
 
 (extend-type clojure.lang.Atom
   IStateSet
+  (-empty-state [obj _]
+    (-set-state obj nil nil))
+
   (-set-state [obj _ v]
     (reset! obj v))
 
@@ -81,6 +84,9 @@
 
 (extend-type clojure.lang.Ref
   IStateSet
+  (-empty-state [obj _]
+    (-set-state obj nil nil))
+
   (-set-state [obj _ v]
     (dosync (ref-set obj v)))
 
@@ -89,6 +95,9 @@
 
 (extend-type clojure.lang.Agent
   IStateSet
+  (-empty-state [obj _]
+    (-set-state obj nil nil))
+  
   (-set-state [obj _ v]
     (send obj (fn [_] v)))
 

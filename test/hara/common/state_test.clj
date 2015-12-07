@@ -18,6 +18,12 @@
     (state/set a 1)
     @a) => 1)
 
+^{:refer hara.common.state/empty :added "2.2"}
+(fact "empties the state, extensible through the IStateSet protocol"
+  (let [a (atom 1)]
+    (state/empty a)
+  @a) => nil)
+
 ^{:refer hara.common.state/update :added "2.1"}
 (fact "Like swap! but is extensible through the IStateSet protocol"
 
