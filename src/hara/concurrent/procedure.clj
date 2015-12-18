@@ -69,10 +69,11 @@
   (fn [{:keys [retry arglist] :as instance} args]
     (try (f instance args)
          (catch Throwable e
-           (if-let [[instance args] (retry/retry instance args e)] 
-             ((wrap-exception f) instance args)
-             (deliver (:result instance) {:type :error
-                                          :data e}))))))
+           (let [[instance args] (retry/retry instance args e)]
+             (if (:retry instance)
+               ((wrap-exception f) instance args)
+               (deliver (:result instance) {:type :error
+                                            :data e})))))))
 
 (defn invoke-base
   [instance args]
@@ -169,7 +170,6 @@
   (.write w (str v)))
 
 (defn procedure
-  "creates"
   {:added "2.2"}
   ([tk arglist]
    (cond (fn? tk)

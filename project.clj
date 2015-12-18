@@ -1,4 +1,4 @@
-(defproject im.chit/hara "2.2.12"
+(defproject im.chit/hara "2.2.13"
   :description "patterns and utilities"
   :url "https://github.com/zcaudate/hara"
   :license {:name "The MIT License"
@@ -112,20 +112,7 @@
                            :title "string"
                            :subtitle "methods for string manipulation"}}
                 :html {:logo "hara.png"
-                       :home  "index",
-                       :navigation ["home"
-                                    {:link "api", :text "api"}
-                                    ["guides" ["hara-component"
-                                               "hara-concurrent-ova"
-                                               ;;"hara-concurrent-procedure"
-                                               "hara-event"
-                                               ;;"hara-io-watch"
-                                               "hara-io-scheduler"
-                                               "hara-reflect"]]
-                                    {:link "https://gitter.im/zcaudate/hara",
-                                     :text "support"}
-                                    {:link "https://www.github.com/zcaudate/hara",
-                                     :text "source"}]}
+                       :home  "index"}
                 :link {:auto-tag    true
                        :auto-number true}}
 

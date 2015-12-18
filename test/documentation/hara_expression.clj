@@ -3,7 +3,7 @@
 [[:chapter {:title "Introduction"}]]
 
 "
-[hara.expression](https://github.com/zcaudate/hara/blob/master/src/hara/expression.clj) are a set of functions that manipulate expressions."
+[hara.expression](https://github.com/zcaudate/hara/blob/master/src/hara/expression.clj) allow transformations of forms into functions and predicates in a succint way."
 
 [[:section {:title "Installation"}]]
 

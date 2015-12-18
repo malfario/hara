@@ -147,36 +147,19 @@
   (let [handlers  (:handlers retry)
         default  (-> retry
                      (dissoc :handlers)
-                     (map/merge-nil {:on Throwable}))
-        _        (println handlers)
+                     (map/merge-nil {:on Throwable
+                                     :count 0}))
         handler  (->> (conj handlers default)
                       (filter #(retry-pick % e))
                       (first))
         handler  (if handler
                    (map/merge-nil handler default))]
-    (if handler      
-      (let [_       (retry-wait handler)
-            nstate  (retry-state handler e)
-            nretry  (-> retry
-                        (assoc :state nstate)
-                        (update-in [:count] (fnil inc 0)))]
-        (retry-args args arglist nretry (assoc instance :retry nretry))))))
-
-(comment
-  "Sample `:retry` options:"
-  
-  {:retry {:handlers [{:on #{Exception}
-                       :apply   (fn [state e])
-                      :limit   (fn [state count])
-                       :wait    (fn [state count])}
-                      {:on Error
-                       :apply (fn [state e])
-                       :limit :no}
-                      {:on (fn [e] (instance? Throwable e))
-                       :apply (fn [state e])
-                       :limit :no}]
-           :on Throwable
-           :count 0
-           :state  {:a 1 :b 2}
-           :limit 10
-           :wait  100}})
+    (if (and handler (retry-check handler))      
+      (let [_        (retry-wait handler)
+            nstate   (retry-state handler e)
+            nretry   (-> retry
+                         (assoc :state nstate)
+                         (update-in [:count] (fnil inc 0)))
+            ninstance (assoc instance :retry nretry)]
+        [ninstance (or (retry-args args arglist nretry ninstance) [])])
+      [(dissoc instance :retry) args])))

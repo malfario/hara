@@ -238,16 +238,23 @@ Where `PACKAGE` and `NAMESPACE` can be glean from the sections listed in the sub
 
 [[:file {:src "test/hara/string/path_test.clj"}]]
 
-
 (comment
-  (use 'hydrox.core)
-  (dive)
+  (do  (use 'hydrox.core)
+       (dive)
 
-  (def reg (first hydrox.core.regulator/*running*))
+       (def reg (first hydrox.core.regulator/*running*))
+       (generate-docs reg "hara-concurrent-procedure"))
 
+  (do  (use 'hydrox.core)
+       (dive)
+       (generate-docs)
+       )
+
+  (generate-docs)
   (generate-docs reg "hara-class")
   (generate-docs reg "hara-common")
   (generate-docs reg "hara-concurrent")
+  (generate-docs reg "hara-concurrent-procedure")
   (generate-docs reg "hara-data")
   (generate-docs reg "hara-function")
   (generate-docs reg "hara-extend")
