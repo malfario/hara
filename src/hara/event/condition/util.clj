@@ -8,7 +8,7 @@
 
 (defn is-special-form
   ([k form]
-     (and (list? form)
+     (and (instance? clojure.lang.ISeq form)
           (symbol? (first form))
           (contains? (sp-forms k) (first form))))
   ([k form syms]
