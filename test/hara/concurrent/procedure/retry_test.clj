@@ -61,7 +61,7 @@
 ^{:refer hara.concurrent.procedure.retry/retry :added "2.2"}
 (fact "sets up arguments if retrying. if no retry, returns nil"
 
-  (retry {:arglist [:age :gender :retry]
+  (-> (retry {:arglist [:age :gender :retry]
               :retry {:handlers [{:on {:cats odd?}
                                   :apply   (fn [state e]
                                              (update-in state [:types (type e)] (fnil inc 0)))
@@ -74,6 +74,7 @@
                       :wait  100}}
              [:a :b {}]
              (ex-info "hello" {:cats 11}))
+      second)
   => (contains [:a :b (contains
                        {:handlers
                         (contains

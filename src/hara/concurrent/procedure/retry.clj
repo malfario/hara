@@ -161,5 +161,5 @@
                          (assoc :state nstate)
                          (update-in [:count] (fnil inc 0)))
             ninstance (assoc instance :retry nretry)]
-        [ninstance (or (retry-args args arglist nretry ninstance) [])])
+        [ninstance (retry-args args arglist nretry ninstance)])
       [(dissoc instance :retry) args])))
