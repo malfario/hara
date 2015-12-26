@@ -73,7 +73,7 @@
                 <li><a href="hara-io-scheduler.html">io.scheduler</a></li>
                 <li><a href="hara-io-watch.html">io.watch</a></li>
                 <li><a href="hara-namespace.html">namespace</a></li>
-                <!--li><a href="hara-object.html">object</a></li-->
+                <li><a href="hara-object.html">object</a></li>
                 <li><a href="hara-reflect.html">reflect</a></li>
                 <li><a href="hara-sort.html">sort</a></li>
                 <li><a href="hara-string.html">string</a></li>
@@ -92,41 +92,93 @@
   <div class="container row">
     <div class="col-md-4 scrollspy pull-right">
       <ul id="nav" class="nav hidden-xs hidden-sm" data-spy="affix">
-        <li><a href="#introduction">1  &nbsp;&nbsp; Introduction</a><ul class="nav"><li><a href="#installation">1.1  &nbsp;&nbsp; Installation</a></li><li><a href="#motivation">1.2  &nbsp;&nbsp; Motivation</a></li></ul></li><li><a href="#understanding-java-fx">2  &nbsp;&nbsp; Understanding JavaFX</a></li>
+        <li><a href="#introduction">1  &nbsp;&nbsp; Introduction</a><ul class="nav"><li><a href="#installation">1.1  &nbsp;&nbsp; Installation</a></li><li><a href="#motivation">1.2  &nbsp;&nbsp; Motivation</a></li></ul></li><li><a href="#philosophy">2  &nbsp;&nbsp; Philosophy</a></li><li><a href="#stringlike">3  &nbsp;&nbsp; Stringlike</a><ul class="nav"><li><a href="#file">3.1  &nbsp;&nbsp; File</a></li><li><a href="#repository">3.2  &nbsp;&nbsp; Repository</a></li><li><a href="#enums">3.3  &nbsp;&nbsp; Enums</a></li></ul></li><li><a href="#maplike">4  &nbsp;&nbsp; Maplike</a><ul class="nav"><li><a href="#primitives">4.1  &nbsp;&nbsp; Primitives</a></li><li><a href="#extend">4.2  &nbsp;&nbsp; Extend</a></li><li><a href="#idata">4.3  &nbsp;&nbsp; IData</a></li></ul></li>
       </ul>
     </div>
     <div class="col-md-8" id="content">
       <div class="jumbotron">
         <div class="container">
           <h1>object</h1>
-          <h4>turn everything into clojure data</h4>
+          <h4>think data, escape encapsulation</h4>
         </div>
       </div>
-      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/object.clj'>hara.object</a> is a library for converting java classes into clojure data types. It is somewhat like the <code>bean</code> command but enables more control and customisation of the output data.</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><p>   [im.chit/hara.object "2.2.13"]</p></div><div class="paragraph"><p>All functionality is found contained in the <code>hara.object</code> namespace</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(require '[hara.object :as obj])</div></div></section><section class="section" id="motivation"><h3 class="section">1.2  &nbsp;&nbsp; Motivation</h3><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/object.clj'>hara.object</a> has been extracted out from <a href='https://github.com/zcaudate/gita'>gita</a> where it was used to analyse the <a href='https://wiki.eclipse.org/JGit/User&#95;Guide#Porcelain&#95;API'>jgit porcelain</a> api and to reflectively generate an interface for git. A similar technique was used to recursively access cassandra datastructures in <a href='https://github.com/mypost/cassius'>cassius</a> though it was done through protocols and not in such a generic fashion.</p><p>The reason one may wish to use such a library would be to quickly visualize the structure of a class as well as to customize how the class looks in the repl. It can also be used to wrap java apis. The library is very similar in concept to the <code>def-map-type</code> and <code>def-derived-type</code> in <a href='https://github.com/ztellman/potemkin'>potemkin</a> but in . Currently the implementation is not optimised though it has an extremely broad use cases.</p><p>Libraries that are using <code>hara.object</code> for wrapping functionality:<ul><li><a href='https://github.com/zcaudate/gita'>gita</a></li><li><a href='https://github.com/helpshift/gulfstream'>gulfstream</a></li></ul></div></section></section><section class="chapter" id="understanding-java-fx"><h2 class="chapter">2  &nbsp;&nbsp; Understanding JavaFX</h2><div class="group"><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(import javafx.scene.layout.StackPane
-        javafx.scene.Scene
-        javafx.stage.Stage
-        javafx.scene.control.Button)
+      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/object.clj'>hara.object</a> is a library for converting java classes into clojure data types. It is somewhat like the <code>bean</code> command but enables more control and customisation of the output.</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.object &quot;2.2.14-SNAPSHOT&quot;&#93;
+</code></pre></div><div class="paragraph"><p>All functionality is found contained in the <code>hara.object</code> namespace</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(require '[hara.object :as object])</div></div></section><section class="section" id="motivation"><h3 class="section">1.2  &nbsp;&nbsp; Motivation</h3><div class="paragraph"><p>Quoting Wikipedia:</p><blockquote><p> Object-oriented programming (OOP) is a programming paradigm based on the concept of objects, which are structures that contain data, in the form of fields, often known as attributes; and code, in the form of procedures, often known as methods. </p></blockquote><p>Clojure is tightly bounded to Java and so cannot escape from the world of objects. Objects provide data encapsulation, meaning that it is very difficult to access data within an object except through custom interfaces. Encapsulation run counter to the openess of Clojure's philosophy where all data can be represented as a map.</p><p>Reflection provides a way around this problem. The general technique is to query the object for the names and values of it's fields and return them as a map. <a href='https://www.github.com/zcaudate/hara'>hara.object</a> does just that. We cannot represent all fields in all objects as a datastructure (especially when there are circular references). However, in most cases, we just need to grab the most critical information from an object in order to make sense of what is going on and to then decide on a course of action; <a href='https://www.github.com/zcaudate/hara'>hara.object</a> has been built for this approach, allowing customization of what fields to return and exclude.</p></div><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/object.clj'>hara.object</a> has been extracted out from <a href='https://github.com/zcaudate/gita'>gita</a> where it was used to analyse the <a href='https://wiki.eclipse.org/JGit/User&#95;Guide#Porcelain&#95;API'>jgit porcelain</a> api and to reflectively generate an interface for git. A similar technique was used to recursively access cassandra datastructures in <a href='https://github.com/mypost/cassius'>cassius</a> though it was done through protocols and not in such a generic fashion.</p><p>The reason one may wish to use such a library would be to quickly visualize the structure of a class as well as to customize how the class looks in the repl. It can also be used to wrap java apis. The library is very similar in concept to the <code>def-map-type</code> and <code>def-derived-type</code> in <a href='https://github.com/ztellman/potemkin'>potemkin</a> but instead of defining a wrapper to the class, data with the class is accessed directly through reflection. Currently the implementation is not optimised though it has an extremely broad use cases.</p><p>Libraries that rely on <code>hara.object</code> for exposing functionality:<ul><li><a href='https://github.com/zcaudate/gita'>gita</a></li><li><a href='https://github.com/helpshift/gulfstream'>gulfstream</a></li></ul></div></section></section><section class="chapter" id="philosophy"><h2 class="chapter">2  &nbsp;&nbsp; Philosophy</h2><div class="group"><div class="paragraph"><p><code>hara.object</code> works at the level of meta-programming. As explained in the previous section, there is a correspondence between a class and the data with the class. Below shows a simple example of the concept of <code>Dog</code> as an <code>Object</code> and as data:</p></div><div class="figure"><a name="class-as-data"></a><div class="img"><img src="img/hara_object/dog.png" width="600px" /></div><h4><i>fig.1  &nbsp;-&nbsp; Class as Data</i></h4></div><div class="paragraph"><p>There are advantages of using pure data for the representation of the <code>Dog</code> concept.</p><ul><li>generic methods con be used to manipulate the data</li><li>the entire structure is transparent is better for reasoning</li><li>simpler representation (though at the cost of Type Correctness)</li></ul><p>In this way, many objects can be turned into maps/data for consumption by clojure methods. This makes working with many big java Libraries much easier before.</p></div></div></section><section class="chapter" id="stringlike"><h2 class="chapter">3  &nbsp;&nbsp; Stringlike</h2><div class="group"><div class="paragraph"><p>It is best to look at a real world example of how to use such a library.</p><p><a href='https://www.github.com/zcaudate/gita'>gita</a> is a wrapper around the popular <a href='https://eclipse.org/jgit/'>jgit</a> project. Due to the enormous amount of functionality around <a href='http://www.git.org'>git</a>, it is very difficult to manually write a wrapper around the entire suite. The novelty of <a href='https://www.github.com/zcaudate/gita'>gita</a> is that it uses <a href='https://www.github.com/zcaudate/hara'>hara.object</a> for customisation of the wrapper interface in such a way that the entire functionality of the main <code>org.eclipse.jgit.api.Git</code> class is accessible and usable in a clojure compatible convention.</p></div><div class="paragraph"><p><code>hara.object</code> is based on a very simple idea of treating objects as being <code>stringlike</code> or a <code>maplike</code> . What is meant by <code>stringlike</code> is that the object can be represented into a string. The reverse; that the object can be constructed from a string is not always true but there are very few exceptions.</p></div></div><section class="section" id="file"><h3 class="section">3.1  &nbsp;&nbsp; File</h3><div class="paragraph"><p>An example is shown below when we use the <code>extend-stringlike</code> method to extend the functionality to <code>java.io.File</code>.</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(object/extend-stringlike
+ java.io.File
+ {:tag &quot;path&quot;
+  :to .getPath
+  :from (fn [^String path _] (java.io.File. path))})</div></div><div class="paragraph"><p>The three keys that are important in the map are:</p><ul><li><code>:tag</code> identifying the type of data</li><li><code>:to</code> which converts the object to string</li><li><code>:from</code>, a function taking two paramters that constructs the object out of a string</li></ul><p>Constructing a File object, notice that the output is different from before:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(java.io.File. &quot;/home&quot;) ;;=&gt; #path &quot;/home&quot;</div></div><div class="paragraph"><p>Now that stringlike has been extended to <code>java.io.File</code>, generic data conversion methods can be used. <code>to-data</code> converts the object to a string:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(object/to-data (java.io.File. &quot;/home&quot;)) ;;=&gt; &quot;/home&quot;</div></div><div class="paragraph"><p><code>from-data</code> converts a string back into an instance of a <code>File</code>.</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(object/from-data &quot;/home&quot; java.io.File)  ;;=&gt; #path &quot;/home&quot;</div></div></section><section class="section" id="repository"><h3 class="section">3.2  &nbsp;&nbsp; Repository</h3><div class="paragraph"><p><code>extend-stringlike</code> are implementated for <code>jgit</code> classes in <a href='https://github.com/zcaudate/gita/src/gita/interop/string&#95;like.clj'>gita</a>. The example below shows the <code>Repository</code> object:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(object/extend-stringlike
+ org.eclipse.jgit.lib.Repository
+ {:tag   &quot;repository&quot;
+  :to     (fn [^org.eclipse.jgit.lib.Repository repo]
+            (-&gt; repo (.getDirectory) object/to-data))
+  :from   (fn [^String path _]
+            (org.eclipse.jgit.internal.storage.file.FileRepository. path))})</div></div><div class="paragraph"><p>It's usage can be seen:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(object/from-data &quot;/home&quot; org.eclipse.jgit.lib.Repository) ;;=&gt; #repository &quot;/home&quot;</div></div><div class="paragraph"><p>What this allows is for back and forth coercion of similar types of objects using a very generic framework. We see the back and forth conversion of a string to a File and Repository object below:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(-&gt; &quot;/home&quot;
+    (object/from-data java.io.File)
+    (object/to-data)
+    (object/from-data org.eclipse.jgit.lib.Repository)
+    (object/to-data))
+;;=&gt; &quot;/home&quot;</div></div></section><section class="section" id="enums"><h3 class="section">3.3  &nbsp;&nbsp; Enums</h3><div class="paragraph"><p>Enumerations are considered to be stringlike. Therefore <code>to-data</code> is used to convert a enum constants to a string represention</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(object/to-data java.lang.Thread$State/NEW)
+;;=&gt; &quot;NEW&quot;</div></div><div class="paragraph"><p><code>from-data</code> is used to convert a string back into the enum represention</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(object/from-data &quot;NEW&quot; java.lang.Thread$State)
+;;=&gt; #&lt;State NEW&gt;</div></div><div class="paragraph"><p>All enumeration values can be obtained using <code>enum-values</code></p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(-&gt;&gt; (object/enum-values java.lang.Thread$State)
+     (map object/to-data)
+     (sort))
+;;=&gt; (&quot;BLOCKED&quot; &quot;NEW&quot; &quot;RUNNABLE&quot; &quot;TERMINATED&quot; &quot;TIMED_WAITING&quot; &quot;WAITING&quot;)</div></div></section></section><section class="chapter" id="maplike"><h2 class="chapter">4  &nbsp;&nbsp; Maplike</h2><div class="group"><div class="paragraph"><p>Classes are containers of fields and methods. Therefore, they can be considered maplike because instances of the class contain fields that hold data about its state. <a href='hara-reflect.html'>hara.reflect</a> allows access of fields through the <a href='hara-reflect.html#delegate'>delegate</a> function. However, it has been found that this is a little too overpowered and a more subtle way would be to use the <code>getter</code> and <code>setter</code> methods.</p></div></div><section class="section" id="primitives"><h3 class="section">4.1  &nbsp;&nbsp; Primitives</h3><div class="paragraph"><p><code>hara.object</code> accesses class information through the class getters:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(-&gt; (object/object-getters org.eclipse.jgit.api.Status)
+    (keys)
+    (sort))
+;;=&gt; (:added :changed :class :clean? :conflicting :conflicting-stage-state :ignored-not-in-index :missing :modified :removed :uncommitted-changes :uncommitted-changes! :untracked :untracked-folders)</div></div><div class="paragraph"><p>And sets data through class setters. In the case for <code>Status</code>, because it is readonly, there are no setters to show</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(-&gt; (object/object-setters org.eclipse.jgit.api.Status)
+    (keys)
+    (sort))
+;;=&gt; ()</div></div><div class="paragraph"><p><code>object-getters</code> can be used on any object:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(-&gt; (object/object-getters &quot;abc&quot;)
+    (keys)
+    (sort))
+;;=&gt; (:bytes :class :empty?)</div></div><div class="paragraph"><p><code>object-data</code> is used to access data through getter calls.</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(object/object-data &quot;abc&quot;)
+;;=&gt; {:bytes #&lt;byte[] [B@97d8f46&gt;, :class java.lang.String, :empty? false}</div></div><div class="paragraph"><p>Calling <code>object-data</code> is the same as these two calls:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(-&gt; (object/object-getters &quot;abc&quot;)
+    (object/object-apply &quot;abc&quot; identity))
+;;=&gt; {:bytes #&lt;byte[] [B@551e9c78&gt;, :class java.lang.String, :empty? false}</div></div></section><section class="section" id="extend"><h3 class="section">4.2  &nbsp;&nbsp; Extend</h3><div class="paragraph"><p>As for stringlike classes, maplike classes can also be seen to be extended in <a href='https://github.com/zcaudate/gita/src/gita/interop/map&#95;like.clj'>gita</a>. Below are examples of classes that have been extended:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(object/extend-maplike
+ org.eclipse.jgit.revwalk.RevCommit
+ {:tag &quot;commit&quot;
+  :include [:commit-time :name :author-ident :full-message]})</div></div><div class="paragraph"><p>Important keys are <code>:tag</code> and either <code>:include</code> which only includes tha getter keys listed or <code>:exclude</code>, which includes all the keys except those listed. For the extension of <code>RevCommit</code>, only four keys are chosen. The <code>:author-ident</code> key is a <code>Personident</code> object and also needs to be extended:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(object/extend-maplike
+ org.eclipse.jgit.lib.PersonIdent
+ {:tag &quot;person&quot; :exclude [:time-zone]})</div></div><div class="paragraph"><p>Once classes have been extended, the typical usage would be to wrap a function returning the object wtih a <code>to-data</code> call. An example of this can be seen <a href='https://github.com/zcaudate/gita#working-locally---add-commit-log-and-rm'>here</a>, where a call to <code>git :commit</code> returns a <code>RevCommit</code> object which then is converted into a hashmap via the <code>to-data</code> wrapper:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(git :commit :message &quot;Added Hello.txt&quot;)
+;;=&gt; {:commit-time 1425683330,
+;;    :name &quot;9f1177ad928d7dea2afedd58b1fb7192b3523a6c&quot;,
+;;    :author-ident {:email-address &quot;z@caudate.me&quot;,
+;;                   :name &quot;Chris Zheng&quot;,
+;;                   :time-zone-offset 330,
+;;                   :when #inst &quot;2015-03-06T23:08:50.000-00:00&quot;},
+;;    :full-message &quot;Added Hello.txt&quot;}</div></div><div class="paragraph"><p>Notice that the datastructure is nested. Both <code>RevCommit</code> and <code>PersonIdent</code> have been turned into generic clojure maps in the format specified through <code>extend-maplike</code>. Most of <a href='https://github.com/zcaudate/gita'>gita</a> has been implementated in this way.</p></div></section><section class="section" id="idata"><h3 class="section">4.3  &nbsp;&nbsp; IData</h3><div class="paragraph"><p>For more flexibility of output, classes can implementat the <code>hara.protocol.data/IData</code> protocol and extend <code>hara.protocol.data/-meta-object</code>. The use would the same method name without prefix <code>-</code> in the <code>hara.object</code> namespace. An example of this is found <a href='https://github.com/zcaudate/gita/blob/master/src/gita/interop/status.clj'>here</a> where the <code>org.eclipse.jgit.api.Status</code> is extended:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(ns gita.interop.status
+  (:require [hara.reflect :as reflect]
+            [hara.protocol.data :as data]
+            [hara.object :as object])
+  (:import org.eclipse.jgit.api.Status))
 
-(defonce force-toolkit-init (javafx.embed.swing.JFXPanel.))
 
-(extend-maplike java.awt.Container
-                {:tag &quot;container&quot;
-                 :include [:components :x :y :size]}
-                java.awt.Dimension
-                {:tag &quot;dimension&quot;
-                 :include [:width :height]})
+(defmethod data/-meta-object Status
+  [type]
+  {:class     Status
+   :types     #{java.util.Map}
+   :to-data   data/-to-data})
 
-(StackPane)
+(extend-protocol data/IData
+  Status
+  (-to-data [status]
+    (let [methods (reflect/query-class status [:method])]
+      (-&gt;&gt; methods
+           (map (fn [ele] [(-&gt; ele :name object/java-&gt;clojure keyword)
+                           (ele status)]))
+           (reduce (fn [m [k v]]
+                     (if (and (or (instance? java.util.Collection v)
+                                  (instance? java.util.Map v))
+                              (empty? v))
+                       m
+                       (assoc m k v)))
+                   {})))))
 
-(.* force-toolkit-init #&quot;arent&quot; :name)
-
-
-(count (object-getters force-toolkit-init))
-
-
-(def root (StackPane.))
-(def scene (Scene. root 300 250))
-(def stage (Stage.))</div></div></div></section>
+(defmethod print-method Status
+  [v ^java.io.Writer w]
+  (.write w (str &quot;#status::&quot; (data/-to-data v))))</div></div><div class="paragraph"><p>An example of how is is used can be seen in the <code>gita</code> readme:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(git :status)
+=&gt; {:clean? false, :uncommitted-changes! false, :untracked #{&quot;hello.txt&quot;}}</div></div></section></section>
     </div>
 </div><!--end of .container-->
 
