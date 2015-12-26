@@ -102,9 +102,9 @@
           <h4>functions for reasoning about functions</h4>
         </div>
       </div>
-      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/function.clj'>hara.function</a> allow reasoning and dispatch of functions.</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.function &quot;2.2.14-SNAPSHOT&quot;&#93;
-</code></pre><p>Individual namespaces can be added seperately:</p><pre><code>&#91;im.chit/hara.function.args &quot;2.2.14-SNAPSHOT&quot;&#93;
-&#91;im.chit/hara.function.dispatch &quot;2.2.14-SNAPSHOT&quot;&#93;
+      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/function.clj'>hara.function</a> allow reasoning and dispatch of functions.</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.function &quot;2.2.13&quot;&#93;
+</code></pre><p>Individual namespaces can be added seperately:</p><pre><code>&#91;im.chit/hara.function.args &quot;2.2.13&quot;&#93;
+&#91;im.chit/hara.function.dispatch &quot;2.2.13&quot;&#93;
 </code></pre></div></section></section><section class="chapter" id="api---args"><h2 class="chapter">2  &nbsp;&nbsp; API - args</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/function/args.clj'>hara.function.args</a></p></div><div class="api"><hr /><div><a name="api-hara-function-args"></a><h4><i>API</i></h4><a href="#api-hara-function-args--arg-check">arg-check</a>&nbsp;&nbsp;<a href="#api-hara-function-args--arg-count">arg-count</a>&nbsp;&nbsp;<a href="#api-hara-function-args--op">op</a>&nbsp;&nbsp;<a href="#api-hara-function-args--varg-count">varg-count</a>&nbsp;&nbsp;<a href="#api-hara-function-args--vargs?">vargs?</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-function-args--arg-check"></a><h4>arg-check <a href="#api-hara-function-args">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;counts the number of non-varidic argument types&quot;
 
 (arg-check (fn [x]) 1) =&gt; true
