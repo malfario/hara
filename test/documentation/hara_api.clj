@@ -243,13 +243,14 @@ Where `PACKAGE` and `NAMESPACE` can be glean from the sections listed in the sub
        (dive)
 
        (def reg (first hydrox.core.regulator/*running*))
-       (generate-docs reg "hara-concurrent-procedure"))
+       (generate-docs reg "hara-object"))
 
   (do  (use 'hydrox.core)
        (dive)
        (generate-docs)
        )
 
+  ()
   (generate-docs)
   (generate-docs reg "hara-class")
   (generate-docs reg "hara-common")

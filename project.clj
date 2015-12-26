@@ -1,4 +1,4 @@
-(defproject im.chit/hara "2.2.14-SNAPSHOT"
+(defproject im.chit/hara "2.2.13"
   :description "patterns and utilities"
   :url "https://github.com/zcaudate/hara"
   :license {:name "The MIT License"
@@ -8,7 +8,8 @@
                                   [compojure "1.4.0"]
                                   [ring "1.4.0"]
                                   [clj-http "1.1.2"]
-                                  [helpshift/hydrox "0.1.4"]]
+                                  [helpshift/hydrox "0.1.5"]
+                                  [org.eclipse.jgit "4.0.1.201506240215-r"]]
                    :plugins [[lein-midje "3.1.3"]
                              [lein-repack "0.2.10"]]}}
   :documentation {:site   "hara"
@@ -98,7 +99,7 @@
                           "hara-object"
                           {:input "test/documentation/hara_object.clj"
                            :title "object"
-                           :subtitle "turn everything into clojure data"}
+                           :subtitle "think data, escape encapsulation"}
                           "hara-reflect"
                           {:input "test/documentation/hara_reflect.clj"
                            :title "reflect"
