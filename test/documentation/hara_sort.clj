@@ -14,8 +14,16 @@ Add to `project.clj` dependencies:
 
 Individual namespaces can be added seperately:
 
+    [im.chit/hara.sort.hierarchical \"{{PROJECT.version}}\"]
     [im.chit/hara.sort.topological \"{{PROJECT.version}}\"]
 "
+
+[[:chapter {:title "API - hierarchical"}]]
+
+"[hara.sort.hierarchical](https://github.com/zcaudate/hara/blob/master/src/hara/sort/hierarchical.clj)"
+
+[[:api {:namespace "hara.sort.hierarchical"}]]
+
 
 [[:chapter {:title "API - topological"}]]
 

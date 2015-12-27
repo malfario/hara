@@ -7,8 +7,12 @@ Code patterns and utilities. Please visit the [hara website](http://docs.caudate
 
 ## Versions
 
+#### 2.2.14
+- `hara.sort.hierarchical`
+
 #### 2.2.13
 - `hara.concurrent.procedure`
+- documentation for `hara.object`
 
 #### 2.2.11
 - fixes for `hara.object`
