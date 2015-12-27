@@ -3,7 +3,7 @@
 [[:chapter {:title "Introduction"}]]
 
 "
-[hara.sort](https://github.com/zcaudate/hara/blob/master/src/hara/sort.clj) contain functions and utilities for strings."
+[hara.sort](https://github.com/zcaudate/hara/blob/master/src/hara/sort.clj) contain functions and utilities for sorting algorithms."
 
 [[:section {:title "Installation"}]]
 
