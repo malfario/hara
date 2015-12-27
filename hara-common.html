@@ -102,14 +102,14 @@
           <h4>primitives declarations and functions</h4>
         </div>
       </div>
-      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/common.clj'>hara.common</a> are a set of primitive declarations and functions that extend on top of <code>clojure.core</code> and are used by many of the other namespaces in the <code>hara</code> ecosystem.</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.common &quot;2.2.13&quot;&#93;
-</code></pre><p>Individual namespaces can be added seperately:</p><pre><code>&#91;im.chit/hara.common.checks &quot;2.2.13&quot;&#93;
-&#91;im.chit/hara.common.error &quot;2.2.13&quot;&#93;
-&#91;im.chit/hara.common.hash &quot;2.2.13&quot;&#93;
-&#91;im.chit/hara.common.primitives &quot;2.2.13&quot;&#93;
-&#91;im.chit/hara.common.state &quot;2.2.13&quot;&#93;
-&#91;im.chit/hara.common.string &quot;2.2.13&quot;&#93;
-&#91;im.chit/hara.common.watch &quot;2.2.13&quot;&#93;
+      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/common.clj'>hara.common</a> are a set of primitive declarations and functions that extend on top of <code>clojure.core</code> and are used by many of the other namespaces in the <code>hara</code> ecosystem.</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.common &quot;2.2.14&quot;&#93;
+</code></pre><p>Individual namespaces can be added seperately:</p><pre><code>&#91;im.chit/hara.common.checks &quot;2.2.14&quot;&#93;
+&#91;im.chit/hara.common.error &quot;2.2.14&quot;&#93;
+&#91;im.chit/hara.common.hash &quot;2.2.14&quot;&#93;
+&#91;im.chit/hara.common.primitives &quot;2.2.14&quot;&#93;
+&#91;im.chit/hara.common.state &quot;2.2.14&quot;&#93;
+&#91;im.chit/hara.common.string &quot;2.2.14&quot;&#93;
+&#91;im.chit/hara.common.watch &quot;2.2.14&quot;&#93;
 </code></pre></div></section></section><section class="chapter" id="api---checks"><h2 class="chapter">2  &nbsp;&nbsp; API - checks</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/common/checks.clj'>hara.common.checks</a> contain type predicates that are missing from the <code>clojure.core</code>:</p></div><div class="api"><hr /><div><a name="api-hara-common-checks"></a><h4><i>API</i></h4><a href="#api-hara-common-checks--agent?">agent?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--atom?">atom?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--bigdec?">bigdec?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--bigint?">bigint?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--boolean?">boolean?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--bytes?">bytes?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--double?">double?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--hash-map?">hash-map?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--ideref?">ideref?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--instant?">instant?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--iref?">iref?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--lazy-seq?">lazy-seq?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--long?">long?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--promise?">promise?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--ref?">ref?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--regex?">regex?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--thread?">thread?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--type-checker">type-checker</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--uri?">uri?</a>&nbsp;&nbsp;<a href="#api-hara-common-checks--uuid?">uuid?</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-common-checks--agent?"></a><h4>agent? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` is of type `clojure.lang.Agent`.&quot;
 
 (agent? (agent nil)) =&gt; true</div></div><div><a name="api-hara-common-checks--atom?"></a><h4>atom? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` is of type `clojure.lang.Atom`.&quot;
@@ -122,16 +122,16 @@
 (bigint? 1N)       =&gt; true
 (bigint? 1)        =&gt;  false</div></div><div><a name="api-hara-common-checks--boolean?"></a><h4>boolean? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` is of type `java.lang.Boolean`.&quot;
 
- (boolean? true)   =&gt; true
- (boolean? false)  =&gt; true</div></div><div><a name="api-hara-common-checks--bytes?"></a><h4>bytes? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` is a primitive `byte` array.&quot;
+(boolean? true)   =&gt; true
+(boolean? false)  =&gt; true</div></div><div><a name="api-hara-common-checks--bytes?"></a><h4>bytes? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` is a primitive `byte` array.&quot;
 
 (bytes? (byte-array 8)) =&gt; true</div></div><div><a name="api-hara-common-checks--double?"></a><h4>double? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` is of type `java.lang.Double`.&quot;
 
 (double? 1)            =&gt; false
 (double? (double 1))   =&gt; true</div></div><div><a name="api-hara-common-checks--hash-map?"></a><h4>hash-map? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` implements `clojure.lang.APersistentMap`.&quot;
 
- (hash-map? {})    =&gt; true
- (hash-map? [])    =&gt; false</div></div><div><a name="api-hara-common-checks--ideref?"></a><h4>ideref? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` is of type `java.lang.IDeref`.&quot;
+(hash-map? {})    =&gt; true
+(hash-map? [])    =&gt; false</div></div><div><a name="api-hara-common-checks--ideref?"></a><h4>ideref? <a href="#api-hara-common-checks">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Returns `true` if `x` is of type `java.lang.IDeref`.&quot;
 
 (ideref? (atom 0))  =&gt; true
 (ideref? (promise)) =&gt; true
