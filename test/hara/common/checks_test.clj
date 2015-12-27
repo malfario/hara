@@ -5,17 +5,14 @@
 ^{:refer hara.common.checks/boolean? :added "2.0"}
 (fact "Returns `true` if `x` is of type `java.lang.Boolean`."
 
-   (boolean? true)   => true
-   (boolean? false)  => true
-   ^:hidden
-   (boolean? nil)    => false
-   (boolean? 1)      => false)
+  (boolean? true)   => true
+  (boolean? false)  => true)
 
 ^{:refer hara.common.checks/hash-map? :added "2.0"}
 (fact "Returns `true` if `x` implements `clojure.lang.APersistentMap`."
 
-   (hash-map? {})    => true
-   (hash-map? [])    => false)
+  (hash-map? {})    => true
+  (hash-map? [])    => false)
 
 ^{:refer hara.common.checks/lazy-seq? :added "2.1"}
 (fact "Returns `true` if `x` implements `clojure.lang.LazySeq`."

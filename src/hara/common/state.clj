@@ -28,6 +28,11 @@
      obj))
 
 (defn empty
+  "empties the state, extensible through the IStateSet protocol
+   (let [a (atom 1)]
+     (state/empty a)
+   @a) => nil"
+  {:added "2.2"}
   ([obj] (empty obj nil))
   ([obj opts] (-empty-state obj opts)))
 

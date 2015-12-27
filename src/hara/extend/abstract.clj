@@ -195,23 +195,23 @@
 
 (defmacro extend-abstract
   "Creates a set of abstract multimethods as well as extends a set of
-  protocols to a given type
-
-  (extend-abstract
-   Envelope [IData]
-   :select -
-   :suffix -env
-   :prefix nil
-   :wrappers   {-data  (str \"hello \" %)}
-   :dispatch   :type
-   :defaults   {nil   ([this & args] (Exception. \"No input\"))
-                -data ([this] (:hello this))})
-
-  (data-env (map->Envelope {:hello \"world\"}))
-  => \"world\"
-
-  (-data (map->Envelope {:hello \"world\"}))
-  => \"hello world\""
+   protocols to a given type
+ 
+   (extend-abstract
+    Envelope [IData]
+    :select -
+    :suffix -env
+    :prefix nil
+    :wrappers   {-data (str \"hello \" %)}
+    :dispatch   :type
+    :defaults   {nil   ([this & args] (Exception. \"No input\"))
+                 -data ([this] (:hello this))})
+ 
+   (data-env (map->Envelope {:hello \"world\"}))
+   => \"world\"
+ 
+   (-data (map->Envelope {:hello \"world\"}))
+   => \"hello world\""
   {:added "2.1"}
   [typesym protocolsyms & {:as options}]
   (list `keep `identity
@@ -237,15 +237,15 @@
 
 (defmacro extend-implementations
   "Creates a set of implementation functions for implementation
-  of protocol functionality
-
-  (extend-implementations
-   [IData]
-   :wrappers (fn [form _]
-               (list 'str form \" again\")))
-
-  (data (map->Envelope {:hello \"world\"}))
-  => \"hello world again\""
+   of protocol functionality
+ 
+   (extend-implementations
+    [IData]
+    :wrappers (fn [form _]
+                (list 'str form \" again\")))
+ 
+   (data (map->Envelope {:hello \"world\"}))
+   => \"hello world again\""
   {:added "2.1"}
   [protocolsyms & {:as options}]
   (vec

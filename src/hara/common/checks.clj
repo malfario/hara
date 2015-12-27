@@ -6,24 +6,23 @@
 
 (defn boolean?
   "Returns `true` if `x` is of type `java.lang.Boolean`.
-
-    (boolean? true)   => true
-    (boolean? false)  => true
-    "
+ 
+   (boolean? true)   => true
+   (boolean? false)  => true"
   {:added "2.0"}
   [x] (instance? java.lang.Boolean x))
 
 (defn hash-map?
   "Returns `true` if `x` implements `clojure.lang.APersistentMap`.
-
-    (hash-map? {})    => true
-    (hash-map? [])    => false"
+ 
+   (hash-map? {})    => true
+   (hash-map? [])    => false"
   {:added "2.0"}
   [x] (instance? clojure.lang.APersistentMap x))
 
 (defn lazy-seq?
   "Returns `true` if `x` implements `clojure.lang.LazySeq`.
-
+ 
    (lazy-seq? (map inc [1 2 3]))  => true
    (lazy-seq? ())    => false"
   {:added "2.1"}
@@ -31,7 +30,7 @@
 
 (defn long?
   "Returns `true` if `x` is of type `java.lang.Long`.
-
+ 
    (long? 1)          => true
    (long? 1N)         => false"
   {:added "2.0"}
@@ -39,7 +38,7 @@
 
 (defn bigint?
   "Returns `true` if `x` is of type `clojure.lang.BigInt`.
-
+ 
    (bigint? 1N)       => true
    (bigint? 1)        =>  false"
   {:added "2.0"}
@@ -47,7 +46,7 @@
 
 (defn double?
   "Returns `true` if `x` is of type `java.lang.Double`.
-
+ 
    (double? 1)            => false
    (double? (double 1))   => true"
   {:added "2.1"}
@@ -55,7 +54,7 @@
 
 (defn bigdec?
   "Returns `true` if `x` is of type `java.math.BigDecimal`.
-
+ 
    (bigdec? 1M)       => true
    (bigdec? 1.0)      => false"
   {:added "2.0"}
@@ -63,28 +62,28 @@
 
 (defn instant?
   "Returns `true` if `x` is of type `java.util.Date`.
-
+ 
    (instant? (java.util.Date.)) => true"
   {:added "2.0"}
   [x] (instance? java.util.Date x))
 
 (defn uuid?
   "Returns `true` if `x` is of type `java.util.UUID`.
-
+ 
    (uuid? (java.util.UUID/randomUUID)) => true"
   {:added "2.0"}
   [x] (instance? java.util.UUID x))
 
 (defn uri?
   "Returns `true` if `x` is of type `java.net.URI`.
-
+ 
    (uri? (java.net.URI. \"http://www.google.com\")) => true"
   {:added "2.0"}
   [x] (instance? java.net.URI x))
 
 (defn regex?
   "Returns `true` if `x` implements `clojure.lang.IPersistentMap`.
-
+ 
    (regex? #\"\\d+\") => true
   "
   {:added "2.0"}
@@ -92,7 +91,7 @@
 
 (defn bytes?
   "Returns `true` if `x` is a primitive `byte` array.
-
+ 
    (bytes? (byte-array 8)) => true"
   {:added "2.0"}
   [^Object x]
@@ -101,7 +100,7 @@
 
 (defn atom?
   "Returns `true` if `x` is of type `clojure.lang.Atom`.
-
+ 
    (atom? (atom nil)) => true"
   {:added "2.0"}
   [obj]
@@ -109,7 +108,7 @@
 
 (defn ref?
   "Returns `true` if `x` is of type `clojure.lang.Ref`.
-
+ 
    (ref? (ref nil)) => true"
   {:added "2.0"}
   [obj]
@@ -117,7 +116,7 @@
 
 (defn agent?
   "Returns `true` if `x` is of type `clojure.lang.Agent`.
-
+ 
    (agent? (agent nil)) => true"
   {:added "2.0"}
   [obj]
@@ -125,7 +124,7 @@
 
 (defn iref?
   "Returns `true` if `x` is of type `clojure.lang.IRef`.
-
+ 
    (iref? (atom 0))  => true
    (iref? (ref 0))   => true
    (iref? (agent 0)) => true
@@ -137,7 +136,7 @@
 
 (defn ideref?
   "Returns `true` if `x` is of type `java.lang.IDeref`.
-
+ 
    (ideref? (atom 0))  => true
    (ideref? (promise)) => true
    (ideref? (future))  => true"
@@ -147,7 +146,7 @@
 
 (defn promise?
   "Returns `true` is `x` is a promise
-
+ 
    (promise? (promise)) => true
    (promise? (future))  => false"
   {:added "2.0"}
@@ -157,7 +156,7 @@
 
 (defn thread?
   "Returns `true` is `x` is a thread
-
+ 
    (thread? (Thread/currentThread)) => true"
   {:added "2.2"}
   [obj]
@@ -165,9 +164,9 @@
 
 (defn type-checker
   "Returns the checking function associated with `k`
-
+ 
    (type-checker :string) => #'clojure.core/string?
-
+ 
    (require '[hara.common.checks :refer [bytes?]])
    (type-checker :bytes)  => #'hara.common.checks/bytes?"
   {:added "2.0"}

@@ -15,13 +15,13 @@
 
 (defmacro error
   "Throws an exception when called.
-
-  (error \"This is an error\")
-  => (throws Exception \"This is an error\")
-
-  (error (Exception. \"This is an error\")
-         \"This is a chained error\")
-  => (throws Exception \"This is a chained error\")"
+ 
+   (error \"This is an error\")
+   => (throws Exception \"This is an error\")
+ 
+   (error (Exception. \"This is an error\")
+          \"This is a chained error\")
+   => (throws Exception \"This is a chained error\")"
   {:added "2.0"}
   [e & [opt? & more]]
   `(if (instance? Throwable ~e)
@@ -30,14 +30,14 @@
 
 (defmacro suppress
   "Suppresses any errors thrown in the body.
-
-  (suppress (error \"Error\")) => nil
-
-  (suppress (error \"Error\") :error) => :error
-
-  (suppress (error \"Error\")
-            (fn [e]
-              (.getMessage e))) => \"Error\""
+ 
+   (suppress (error \"Error\")) => nil
+ 
+   (suppress (error \"Error\") :error) => :error
+ 
+   (suppress (error \"Error\")
+             (fn [e]
+               (.getMessage e))) => \"Error\""
   {:added "2.0"}
   ([body]
      `(try ~body (catch Throwable ~'t)))

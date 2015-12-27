@@ -15,10 +15,10 @@
 
 (defmacro with-ns
   "Evaluates `body` forms in an existing namespace given by `ns`.
-
-  (require '[hara.common.checks])
-  (with-ns 'hara.common.checks
-    (long? 1)) => true"
+ 
+   (require '[hara.common.checks])
+   (with-ns 'hara.common.checks
+     (long? 1)) => true"
   {:added "2.0"}
   [ns & forms]
   `(binding [*ns* (the-ns ~ns)]
@@ -44,17 +44,17 @@
       (finally (remove-ns sym)))))
 
 (defmacro with-temp-ns
-  "Evaluates `body` forms in a temporaryily created namespace.
-
-  (with-temp-ns
-    (def  inc1 inc)
-    (defn inc2 [x] (+ 1 x))
-    (-> 1 inc1 inc2))
-  => 3
-
-  All created vars will be destroyed after evaluation.
-
-  (resolve 'inc1) => nil"
+  "Evaluates `body` forms in a temporary namespace.
+ 
+   (with-temp-ns
+     (def  inc1 inc)
+     (defn inc2 [x] (+ 1 x))
+     (-> 1 inc1 inc2))
+   => 3
+ 
+   All created vars will be destroyed after evaluation.
+ 
+   (resolve 'inc1) => nil"
   {:added "2.0"}
   [& forms]
   `(try

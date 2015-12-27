@@ -36,15 +36,15 @@
 
 (defmacro import
   "Imports all or a selection of vars from one namespace to the current one.
-
-  (import hara.common.checks [bytes? long?]) => nil
-  (eval '(long? 1))  => true
-  (eval '(bytes? 1)) => false
-
-  (import hara.common.checks :all) => nil
-  (eval '(bigint? 1)) => false
-
-  "
+ 
+   (import hara.common.checks [bytes? long?]) => nil
+   (eval '(long? 1))  => true
+   (eval '(bytes? 1)) => false
+ 
+   (import hara.common.checks :all) => nil
+   (eval '(bigint? 1)) => false
+ 
+   "
   {:added "2.0"}
   [nsp vars & more]
   `(do

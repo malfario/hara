@@ -550,9 +550,9 @@
 
 (defmacro <<
   "outputs the persistent value of an entire body after manipulation
-  (<< (def obj-a (ova [1 2 3 4 5]))
-      (append! obj-a 6 7 8 9))
-  => [1 2 3 4 5 6 7 8 9]"
+   (<< (def obj-a (ova [1 2 3 4 5]))
+       (append! obj-a 6 7 8 9))
+   => [1 2 3 4 5 6 7 8 9]"
   {:added "2.1"}
   [& forms]
   `(let [out# (dosync ~@forms)]
@@ -560,13 +560,13 @@
 
 (defmacro !>
   "applies a set of transformations to a selector on the ova
-  (let [ov (ova [{:id :1}])]
-
-    (dosync (!> ov 0
-                (assoc-in [:a :b] 1)
-                (update-in [:a :b] inc)
-                (assoc :c 3)))
-    (<< ov))
+   (let [ov (ova [{:id :1}])]
+ 
+     (dosync (!> ov 0
+                 (assoc-in [:a :b] 1)
+                 (update-in [:a :b] inc)
+                 (assoc :c 3)))
+     (<< ov))
   => [{:id :1 :c 3 :a {:b 2}}]"
   {:added "2.1"}
   [ova pchk & forms]

@@ -170,6 +170,7 @@
   (.write w (str v)))
 
 (defn procedure
+  "creates"
   {:added "2.2"}
   ([tk arglist]
    (cond (fn? tk)

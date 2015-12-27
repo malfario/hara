@@ -24,16 +24,16 @@
 
 (defmacro extend-all
   "Transforms a protocl template into multiple extend-type expresions
-
-  (macroexpand-1
-   '(extend-all Magma
-                [(op ([x y] (% x y)) )]
-
-                Number        [op-number]
-                [List Vector] [op-list]))
+ 
+   (macroexpand-1
+    '(extend-all Magma
+                 [(op ([x y] (% x y)) )]
+ 
+                 Number        [op-number]
+                 [List Vector] [op-list]))
   => '(do (clojure.core/extend-type Number Magma (op ([x y] (op-number x y))))
-          (clojure.core/extend-type List Magma (op ([x y] (op-list x y))))
-          (clojure.core/extend-type Vector Magma (op ([x y] (op-list x y)))))"
+           (clojure.core/extend-type List Magma (op ([x y] (op-list x y))))
+           (clojure.core/extend-type Vector Magma (op ([x y] (op-list x y)))))"
   {:added "2.1"}
   [proto ptmpls & args]
   (let [types (partition 2 args)]
