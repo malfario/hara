@@ -16,6 +16,7 @@ Individual namespaces can be added seperately:
 
     [im.chit/hara.concurrent.latch \"{{PROJECT.version}}\"]
     [im.chit/hara.concurrent.notification \"{{PROJECT.version}}\"]
+    [im.chit/hara.concurrent.pipe \"{{PROJECT.version}}\"]
     [im.chit/hara.concurrent.propagate \"{{PROJECT.version}}\"]
 "
 
@@ -30,6 +31,12 @@ Individual namespaces can be added seperately:
 "[hara.concurrent.notification](https://github.com/zcaudate/hara/blob/master/src/hara/concurrent/notification.clj) introduces a way to be notified of changes to a system, based on this [post](http://stackoverflow.com/questions/13717161/are-there-any-good-libraries-or-strategies-for-testing-multithreaded-application)"
 
 [[:api {:namespace "hara.concurrent.notification"}]]
+
+[[:chapter {:title "API - pipe"}]]
+
+"[hara.concurrent.pipe](https://github.com/zcaudate/hara/blob/master/src/hara/concurrent/pipe.clj) provides a simple implemention of a asynchronous pipe that can be sent tasks that are queued until previous tasks are complete"
+
+[[:api {:namespace "hara.concurrent.pipe"}]]
 
 [[:chapter {:title "API - propagate"}]]
 

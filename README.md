@@ -9,6 +9,7 @@ Code patterns and utilities. Please visit the [hara website](http://docs.caudate
 
 #### 2.2.14
 - `hara.sort.hierarchical`
+- `hara.concurrent.pipe`
 
 #### 2.2.13
 - `hara.concurrent.procedure`
