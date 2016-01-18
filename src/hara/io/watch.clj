@@ -92,7 +92,6 @@
                         :excludes excludes
                         :includes includes
                         :kinds kinds))
-        _        (println (:paths watcher))
         watcher  (reduce register-sub-directory watcher (:paths watcher))]
     (assoc watcher :running (future (run-watcher watcher)))))
 

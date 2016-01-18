@@ -3,7 +3,7 @@
 [[:chapter {:title "Introduction"}]]
 
 "
-[hara.concurrent](https://github.com/zcaudate/hara/blob/master/src/hara/concurrent.clj):"
+[hara.concurrent](https://github.com/zcaudate/hara/blob/master/src/hara/concurrent.clj) provides a set of concurrency primitives and components so that concurrent applications can be built and designed in a modular fashion."
 
 [[:section {:title "Installation"}]]
 

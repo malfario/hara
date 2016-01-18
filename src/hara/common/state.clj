@@ -107,7 +107,6 @@
     (send obj (fn [_] v)))
 
   (-update-state [obj _ f args]
-    (println obj f args)
     (apply send obj f args)))
 
 (extend-type clojure.lang.IPending
