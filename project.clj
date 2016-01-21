@@ -20,7 +20,7 @@
                             :email   "z@caudate.me"
                             :website "http://z.caudate.me"}]
                   :template {:path "template"
-                             :copy ["assets/css" "assets/js"]
+                             :copy ["assets"]
                              :defaults {:template "article-basic.html"
                                         :navbar  [:file "partials/navbar.html"]
                                         :sidebar [:file "partials/sidebar.html"]
@@ -33,9 +33,6 @@
                           {:template "home.html"
                            :title "hara"
                            :subtitle "patterns and utilities"}
-                          ;"api"
-                          ;{:input "test/documentation/hara_api.clj"
-                          ; :title "api examples"}
                           "hara-class"
                           {:input "test/documentation/hara_class.clj"
                            :title "class"
