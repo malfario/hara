@@ -1,4 +1,4 @@
-(ns hara.time.time_instant
+(ns hara.time.time-instant
   (:require [hara.protocol.time :as time]
             [hara.time.common :as common])
   (:import [java.time Instant]

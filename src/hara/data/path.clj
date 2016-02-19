@@ -134,7 +134,7 @@
   {:added "2.1"}
   [m]
   (reduce-kv (fn [m k v]
-               (assoc-in m (path/split k) v))
+               (assoc-in m #spy/p (path/split k) v))
              {}
              m))
 

@@ -1,26 +1,24 @@
 (ns hara.protocol.time)
 
-(defprotocol IRegion
-  (-timezone     [t]))
+(defprotocol IZone
+  (-timezone     [z]))
 
 (defprotocol IInstant
-  (-to-long      [t])
-  (-timezone?    [t])
-  (-milli        [t tz])
-  (-second       [t tz])
-  (-minute       [t tz])
-  (-hour         [t tz])
-  (-day          [t tz])
-  (-day-of-week  [t tz])
-  (-month        [t tz])
-  (-year         [t tz]))
+  (-to-value     [t]))
+  
+(defprotocol IInterval
+  (-start-value  [v])
+  (-end-value    [v]))
 
 (defprotocol IPeriod
-  (-duration     [t])
-  (-millis       [t])
-  (-seconds      [t])
-  (-minutes      [t])
-  (-hours        [t])
-  (-days         [t])
-  (-months       [t])
-  (-years        [t]))
+  (-duration     [p])
+  (-millis       [p])
+  (-seconds      [p])
+  (-minutes      [p])
+  (-hours        [p])
+  (-days         [p])
+  (-months       [p])
+  (-years        [p]))
+
+(defprotocol IPartial
+  (-missing      [r]))

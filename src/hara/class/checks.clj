@@ -40,3 +40,14 @@
        (every? #(contains? obj %) [:on :on-interface :var])
        (-> obj :on str Class/forName class?)
        (-> obj :on-interface class?)))
+
+(defn implements?
+  [protocol obj]
+  (let [cls (if (class? obj)
+              obj
+              (class obj))]
+    (some? #(= % cls) (keys (:impls protocol)))))
+
+(defn dispatches?
+  [^clojure.lang.MultiFn multi val]
+  (some? #(= % val) (keys (.getMethodTable multi))))

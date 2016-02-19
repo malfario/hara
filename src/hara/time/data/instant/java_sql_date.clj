@@ -1,4 +1,4 @@
-(ns hara.time.sql-date
+(ns hara.time.data.instant.sql-date
   (:require [hara.protocol.time :as time])
   (:require [hara.time.common :as common])
   (:import java.sql.Date))

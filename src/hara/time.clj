@@ -1,103 +1,41 @@
 (ns hara.time
-  (:require [hara.protocol.time :as time]
-            [hara.time
-             [common :as common]
-             lang-long
-             util-date
-             util-calendar])
-  (:import [java.util TimeZone])
-  (:refer-clojure :exclude [second]))
+  (:require [hara.time.common :as common]
+            [hara.protocol.time :as time]
+            [hara.class.checks :as class]
+            [hara.time.impl java-util
+             ;;java-sql
+             ]
+            [hara.io.environment :as env]))
 
-(def ^:dynamic *default-type* java.util.Date)
+(env/require {:java    {:major 1 :minor 8}}
+             '[hara.time.impl java-time])
 
-(defn to-long [t]
-  (time/-to-long t))
+(defn meta-info [obj]
+  (common/meta-info obj))
 
-(defn from-long
-  ([l]
-   (common/from-long *default-type* l nil))
-  ([type l]
-   (common/from-long type l nil))
-  ([type l tz]
-   (common/from-long type l tz)))
+(defn instant? [obj]
+  (class/implements? time/IInstant obj))
 
-(defn time? [t]
-  (->> (.getMethodTable ^clojure.lang.MultiFn common/from-long)
-       keys
-       (some #(instance? % t))))
+(defn interval? [obj]
+  (class/implements? time/IInterval obj))
 
-(defn equal? [t1 t2]
-  (= (time/-to-long t1) (time/-to-long t2)))
+(defn period? [obj]
+  (class/implements? time/IPeriod obj))
 
-(defn before? [t1 t2]
-  (< (time/-to-long t1) (time/-to-long t2)))
+(defn partial? [obj]
+  (class/implements? time/IPartial obj))
 
-(defn after? [t1 t2]
-  (> (time/-to-long t1) (time/-to-long t2)))
+(defn timezone? [obj]
+  (class/implements? time/IZone obj))
 
-(defn system-timezone []
-  (.getID (TimeZone/getDefault)))
+(defn to-value [t]
+  (time/-to-value t))
 
-(defn to-map
-  ([t] (to-map t (if (common/timezone? t)
-                   (time/-timezone t)
-                   (system-timezone))))
-  ([t tz]
-   (hash-map :value    (time/-to-long t)
-             :milli    (time/-milli t tz)
-             :second   (time/-second t tz)
-             :minute   (time/-minute t tz)
-             :hour     (time/-hour t tz)
-             :day      (time/-day t tz)
-             :month    (time/-month t tz)
-             :year     (time/-year t tz)
-             :timezone tz)))
+(defn start-value [p]
+  (time/-start-value p))
 
-(defn milli
-  ([t] (milli t (system-timezone)))
-  ([t tz] (time/-milli t tz)))
+(defn end-value [p]
+  (time/-start-value p))
 
-(defn second
-  ([t] (second t (system-timezone)))
-  ([t tz] (time/-second t tz)))
-
-(defn minute
-  ([t] (minute t (system-timezone)))
-  ([t tz] (time/-minute t tz)))
-
-(defn hour
-  ([t] (hour t (system-timezone)))
-  ([t tz] (time/-hour t tz)))
-
-(defn day
-  ([t] (day t (system-timezone)))
-  ([t tz] (time/-day t tz)))
-
-(defn day-of-week
-  ([t] (day-of-week t (system-timezone)))
-  ([t tz] (time/-day-of-week t tz)))
-
-(defn month
-  ([t] (month t (system-timezone)))
-  ([t tz] (time/-month t tz)))
-
-(defn year
-  ([t] (year t (system-timezone)))
-  ([t tz] (time/-year t tz)))
-
-(defn now
-  ([] (now *default-type* (system-timezone)))
-  ([type tz] (common/from-long type (System/currentTimeMillis) tz)))
-
-(defn truncate
-  ([t field] (common/truncate t field (system-timezone)))
-  ([t field tz] (common/truncate t field tz)))
-
-(comment
-
-
- 
-  (now)
-
-
-  )
+(defn to-timezone [obj]
+  (time/-timezone obj))
