@@ -45,6 +45,6 @@ Code patterns and utilities. Please visit the [hara website](http://docs.caudate
 
 ## License
 
-Copyright © 2015 Chris Zheng
+Copyright © 2016 Chris Zheng
 
 Distributed under the MIT License

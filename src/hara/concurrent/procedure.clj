@@ -17,7 +17,7 @@
   {:mode :async
    :interrupt false
    :time {:type java.util.Date
-          :zone (time/system-timezone)}
+          :timezone (time/local-timezone)}
    :registry registry/*default-registry*
    :cache    *default-cache*
    :id-fn    (fn [_] (str (java.util.UUID/randomUUID)))})
@@ -94,8 +94,7 @@
         instance   (nested/merge-nested procedure opts)
         instance   (update-in instance [:timestamp]
                               (fn [t] (or t
-                                          (time/now (:type time)
-                                                    (:zone time)))))
+                                          (time/now time))))
         instance   (update-in instance [:runtime]
                               (fn [rt] (or rt
                                            (atom {}))))

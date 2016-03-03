@@ -18,9 +18,9 @@
   [clock recur?]
   (if (not (:disabled @clock))
     (let [current-array  (:current-array @clock)
-          region         (-> clock :meta :region)
-          next-time      (time/now (-> clock :meta :type) region)
-          next-array     (tab/to-time-array next-time region)]
+          opts           (:meta clock)
+          next-time      (time/now opts)
+          next-array     (tab/to-time-array next-time (:timezone opts))]
       (cond
         (or (not= current-array next-array)
             (nil? current-array))
@@ -35,7 +35,7 @@
         :else
         (let [interval   (-> clock :meta :interval)
               sleep-time (- 1000
-                            (time/milli next-time)
+                            (time/millisecond next-time)
                             interval)]
           (if (< 0 sleep-time)
             (Thread/sleep sleep-time)
@@ -66,7 +66,7 @@
   [clock]
   (if (clock-stopped? clock)
     (swap! (:state clock) assoc
-           :start-time (time/now (-> clock :meta :type) (-> clock :region :meta))
+           :start-time (time/now (-> clock :meta))
            :thread     (future (clock-loop clock true)))
     (event/signal [:log {:msg "The clock is already running"}]))
   clock)

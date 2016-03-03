@@ -43,10 +43,8 @@
 
 (defn implements?
   [protocol obj]
-  (let [cls (if (class? obj)
-              obj
-              (class obj))]
-    (some? #(= % cls) (keys (:impls protocol)))))
+  (or (some #(instance? % obj) (keys (:impls protocol)))
+      false))
 
 (defn dispatches?
   [^clojure.lang.MultiFn multi val]

@@ -1,4 +1,4 @@
-(defproject im.chit/hara "2.2.15"
+(defproject im.chit/hara "2.2.16"
   :description "patterns and utilities"
   :url "https://github.com/zcaudate/hara"
   :license {:name "The MIT License"
@@ -8,7 +8,8 @@
                                   [compojure "1.4.0"]
                                   [ring "1.4.0"]
                                   [clj-http "1.1.2"]
-                                  [org.eclipse.jgit "4.0.1.201506240215-r"]]
+                                  [org.eclipse.jgit "4.0.1.201506240215-r"]
+                                  [helpshift/hydrox "0.1.15"]]
                    :plugins [[lein-midje "3.1.3"]
                              [lein-repack "0.2.10"]
                              [lein-hydrox "0.1.14"]]}}

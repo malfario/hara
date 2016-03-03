@@ -16,9 +16,9 @@
 
 (defonce ^:dynamic *defaults*
   {:clock    {:type     "java.util.Date"
-              :region   (time/system-timezone)
+              :timezone (time/local-timezone)
               :interval 1
-              :truncate :milli}
+              :truncate :second}
    :registry {}
    :cache    {}
    :ticker   {}})
@@ -87,7 +87,7 @@
   [scheduler {:keys [start end step pause mode]}]
   (swap! (-> scheduler :clock :state) assoc :disabled true)
   (let [scheduler (component/start scheduler)
-        tz   (-> scheduler :clock :meta :region)
+        tz   (-> scheduler :clock :meta :timezone)
         type (-> scheduler :clock :meta :type)
         start-val (time/to-long start)
         end-val   (time/to-long end)
@@ -98,7 +98,7 @@
         mode      (or mode :sync)
         timespan  (range start-val end-val (* 1000 step))]
     (doseq [t-val timespan]
-      (let [t (time/from-long type t-val tz)]
+      (let [t (time/from-long t-val {:type type :timezone tz})]
         (reset! (:ticker scheduler)
                 {:time t :array (tab/to-time-array t) :instance {:mode mode}})
         (if-not (zero? pause)
@@ -144,9 +144,8 @@
   "manually executes a task, bypassing the scheduler"
   {:added "2.2"}
   ([scheduler name]
-   (let [tz   (-> scheduler :clock :meta :region)
-         type (-> scheduler :clock :meta :type)]
-     (trigger! scheduler name (time/now type tz))))
+   (let [opts   (-> scheduler :clock :meta)]
+     (trigger! scheduler name (time/now opts))))
   ([scheduler name key]
    (if-let [{:keys [params] :as task} (get-task scheduler name)]
      ((-> task

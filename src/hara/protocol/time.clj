@@ -1,24 +1,30 @@
 (ns hara.protocol.time)
 
-(defprotocol IZone
-  (-timezone     [z]))
+(defmulti -time-meta (fn [cls] cls))
+
+(defmulti -timezone (fn [str opts] (:type opts)))
 
 (defprotocol IInstant
-  (-to-value     [t]))
-  
+  (-to-long      [t]))
+
+(defmulti -from-long (fn [long opts] (:type opts)))
+
+(defmulti -now (fn [opts] (:type opts)))
+
+(defprotocol IRepresentation
+  (-millisecond  [t opts])
+  (-second       [t opts])
+  (-minute       [t opts])
+  (-hour         [t opts])
+  (-day          [t opts])
+  (-day-of-week  [t opts])
+  (-month        [t opts])
+  (-year         [t opts]))
+
+(defprotocol IDuration
+  (-to-length  [d opts]))
+
+(defmulti -from-length (fn [long opts] (:type opts)))
+
 (defprotocol IInterval
-  (-start-value  [v])
-  (-end-value    [v]))
-
-(defprotocol IPeriod
-  (-duration     [p])
-  (-millis       [p])
-  (-seconds      [p])
-  (-minutes      [p])
-  (-hours        [p])
-  (-days         [p])
-  (-months       [p])
-  (-years        [p]))
-
-(defprotocol IPartial
-  (-missing      [r]))
+  (-duration  [in]))

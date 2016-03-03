@@ -4,7 +4,7 @@
             [hara.common.primitives :refer [F]]
             [hara.time :as t]))
 
-(def SCHEDULE-ELEMENTS [:second :minute :hour :day-of-week :day :month :year])
+(def +schedule-elements+ [:second :minute :hour :day-of-week :day :month :year])
 
  ;; There are 2 different representations of schedular tab data:
  ;;   string: (for humans)        "   *       2,4      2-9         /8      ...  "
@@ -76,7 +76,7 @@
   [s]
   (let [c-toks (re-seq #"[^\s]+" s)
         len-c (count c-toks)
-        sch-c  (count SCHEDULE-ELEMENTS)]
+        sch-c  (count +schedule-elements+)]
     (cond (= sch-c len-c) (map parse-tab-group c-toks)
           (= (dec sch-c) len-c) (map parse-tab-group (cons "0" c-toks))
           :else
@@ -96,10 +96,9 @@
    (to-time-array #inst \"1970-01-01T00:00:00.000-00:00\" \"GMT-10\")
    => [0 0 14 4 31 12 1969]"
   {:added "2.2"}
-  ([t] (to-time-array t (t/system-timezone)))
+  ([t] (to-time-array t (t/local-timezone)))
   ([t tz]
-   (map #(% t tz)
-        [t/second t/minute t/hour t/day-of-week t/day t/month t/year])))
+   (t/to-vector t {:timezone tz} +schedule-elements+)))
 
 (defn match-element?
   "takes an element of the array and compares with a single matcher

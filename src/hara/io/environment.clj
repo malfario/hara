@@ -1,6 +1,6 @@
 (ns hara.io.environment
   (:require [hara.string.path :as path])
-  (:refer-clojure :exclude [require]))
+  (:refer-clojure :exclude [require clojure-version]))
 
 (defrecord Properties [])
 
@@ -48,16 +48,6 @@
                  (assoc-in out (conj k :name) v)
                  (assoc-in out k v)))
              (Properties.))))
-
-(comment
-
-  
-  (require {:java    {:major 1 :minor 8}
-            :clojure {:major 1 :minor 7}}
-           '[hara.time.instant.java-instant-time])
-  
-  (:clojure (properties))
-  {:debug "false", :compile {:path "/Users/chris/Development/chit/hara/target/classes"}})
 
 
 
