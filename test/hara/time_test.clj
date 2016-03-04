@@ -7,6 +7,16 @@
              [map :as map]])
   (:import [java.util Date TimeZone Calendar]))
 
+^{:refer hara.time/default-type :added "2.2"}
+(fact "accessor to the default type for date creation"
+  (t/default-type)
+  => java.util.Date)
+
+^{:refer hara.time/default-timezone :added "2.2"}
+(fact "accessor to the default timezone"
+  (t/default-timezone)
+  => (.getID (TimeZone/getDefault)))
+
 ^{:refer hara.time/representation? :added "2.2"}
 (fact "checks if an object implements the representation protocol"
   (t/representation? 0) => false
@@ -28,10 +38,7 @@
   (t/instant? (Date.)) => true)
 
 ^{:refer hara.time/interval? :added "2.2"}
-(fact "checks if an object implements the interval protocol"
-  ;;(t/interval? (t/interval 0 1000))
-  ;;=> true
-  )
+(fact "checks if an object implements the interval protocol")
 
 (fact "retrieves the meta-data for the time object"
   (t/time-meta TimeZone)
@@ -180,3 +187,13 @@
   (t/truncate #inst "1989-12-28T12:34:00.000-00:00"
               :year {:timezone "GMT"})
   => #inst "1989-01-01T00:00:00.000-00:00")
+
+^{:refer hara.time/latest :added "2.2"}
+(fact "returns the latest date out of a range of inputs"
+  (t/latest (Date. 0) (Date. 1000) (Date. 20000))
+  => #inst "1970-01-01T00:00:20.000-00:00")
+
+^{:refer hara.time/earliest :added "2.2"}
+(fact "returns the earliest date out of a range of inputs"
+  (t/earliest (Date. 0) (Date. 1000) (Date. 20000))
+  => #inst "1970-01-01T00:00:00.000-00:00")

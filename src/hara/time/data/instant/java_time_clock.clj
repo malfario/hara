@@ -2,11 +2,14 @@
   (:require [hara.protocol.time :as time])
   (:require [hara.time.data.coerce :as coerce]
             [hara.time.data.instant.java-time-zoneddatetime])
-  (:import [java.time Clock Instant ZoneId ZonedDateTime]))
+  (:import [java.time Clock Instant ZoneId ZonedDateTime]
+           [java.time.format DateTimeFormatter]))
 
 (defmethod time/-time-meta Clock
   [_]
   {:type :instant
+   :formatter {:type DateTimeFormatter}
+   :parser    {:type DateTimeFormatter}
    :rep  {:from {:proxy ZonedDateTime
                  :via (fn [^ZonedDateTime t]
                         (Clock/fixed (.toInstant t)

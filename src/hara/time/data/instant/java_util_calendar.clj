@@ -3,7 +3,8 @@
   (:require [hara.time.data
              [common :as common]
              [coerce :as coerce]])
-  (:import [java.util Date Calendar TimeZone]))
+  (:import [java.util Date Calendar TimeZone]
+           java.text.SimpleDateFormat))
 
 (extend-type Calendar
   time/IInstant
@@ -41,6 +42,8 @@
 (defmethod time/-time-meta Calendar
   [_]
   {:base :instant
+   :formatter {:type SimpleDateFormat}
+   :parser    {:type SimpleDateFormat}
    :rep {:from  {:fn from-map}
          :to    {:fn {:millisecond time/-millisecond
                       :second      time/-second

@@ -4,11 +4,14 @@
              [common :as common]
              [coerce :as coerce]])
   (:import [java.sql Timestamp]
-           [java.util Calendar Date]))
+           [java.util Calendar Date]
+           java.text.SimpleDateFormat))
 
 (defmethod time/-time-meta Timestamp
   [_]
   {:type :instant
+   :formatter {:type SimpleDateFormat}
+   :parser    {:type SimpleDateFormat}
    :rep  {:from {:proxy Calendar
                  :via (fn [^Calendar cal]
                         (Timestamp. (.getTime (.getTime cal))))}

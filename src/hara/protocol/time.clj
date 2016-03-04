@@ -28,3 +28,13 @@
 
 (defprotocol IInterval
   (-duration  [in]))
+
+(defmulti -formatter (fn [pattern opts] (:type opts)))
+
+(defmulti -format (fn [formatter t opts]
+                    [(class formatter) (class t)]))
+
+(defmulti -parser (fn [pattern opts] (:type opts)))
+
+(defmulti -parse  (fn [parser s opts]
+                    [(class parser) (:type opts)]))

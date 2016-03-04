@@ -2,7 +2,9 @@
   (:require [hara.protocol
              [time :as time]
              [string :as string]]
-            [hara.time.data]
+            [hara.time
+             [data :as data]
+             [format :as format]]
             [hara.time.data
              [common :as common]
              [duration :as duration]
@@ -12,19 +14,28 @@
             [hara.class.checks :as class]
             [hara.namespace.import :as ns])
   (:import [java.util Calendar TimeZone])
-  (:refer-clojure :exclude [second]))
+  (:refer-clojure :exclude [second format]))
 
 (ns/import hara.time.data.common   [local-timezone]
            hara.time.data.map      [to-map from-map]
            hara.time.data.vector   [to-vector]
-           hara.time.data.interval [interval])
+           hara.time.data.interval [interval]
+           hara.time.format        [format])
 
 (defn default-type
+  "accessor to the default type for date creation
+   (t/default-type)
+   => java.util.Date"
+  {:added "2.2"}
   ([] common/*default-type*)
   ([type] (alter-var-root #'common/*default-type*
                           (constantly type))))
 
 (defn default-timezone
+  "accessor to the default timezone
+   (t/default-timezone)
+   => (.getID (TimeZone/getDefault))"
+  {:added "2.2"}
   ([] (or common/*default-timezone*
           (.getID (TimeZone/getDefault))))
   ([tz] (alter-var-root #'common/*default-timezone*
@@ -34,7 +45,7 @@
 (defn representation?
   "checks if an object implements the representation protocol
    (t/representation? 0) => false
-
+ 
    (t/representation? (common/calendar (Date. 0) (TimeZone/getTimeZone \"GMT\")))
    => true"
   {:added "2.2"}
@@ -44,7 +55,7 @@
 (defn duration?
   "checks if an object implements the duration protocol
    (t/duration? 0) => true
-
+ 
    (t/duration? {:weeks 1})
    => true"
   {:added "2.2"}
@@ -54,17 +65,14 @@
 (defn instant?
   "checks if an object implements the instant protocol
    (t/instant? 0) => true
-
+ 
    (t/instant? (Date.)) => true"
   {:added "2.2"}
   [obj]
   (satisfies? time/IInstant obj))
 
 (defn interval?
-  "checks if an object implements the interval protocol
-   ;;(t/interval? (t/interval 0 1000))
-   ;;=> true
-   "
+  "checks if an object implements the interval protocol"
   {:added "2.2"}
   [obj]
   (satisfies? time/IInterval obj))
@@ -126,7 +134,7 @@
 (defn year
   "accesses the year representated by the instant
    (t/year 0 {:timezone \"GMT\"}) => 1970
-
+ 
    (t/year (Date. 0) {:timezone \"EST\"}) => 1969"
   {:added "2.2"}
   ([t] (year t {}))
@@ -136,7 +144,7 @@
 (defn month
   "accesses the month representated by the instant
    (t/month 0 {:timezone \"GMT\"}) => 1
-
+ 
    (t/month (Date. 0) {:timezone \"EST\"}) => 12"
   {:added "2.2"}
   ([t] (month t {}))
@@ -146,7 +154,7 @@
 (defn day
   "accesses the day representated by the instant
    (t/day 0 {:timezone \"GMT\"}) => 1
-
+ 
    (t/day (Date. 0) {:timezone \"EST\"}) => 31"
   {:added "2.2"}
   ([t] (day t {}))
@@ -156,7 +164,7 @@
 (defn day-of-week
   "accesses the day of week representated by the instant
    (t/day-of-week 0 {:timezone \"GMT\"}) => 5
-
+ 
    (t/day-of-week (Date. 0) {:timezone \"EST\"}) => 4"
   {:added "2.2"}
   ([t] (day-of-week t {}))
@@ -166,7 +174,7 @@
 (defn hour
   "accesses the hour representated by the instant
    (t/hour 0 {:timezone \"GMT\"}) => 0
-
+ 
    (t/hour (Date. 0) {:timezone \"Asia/Kolkata\"}) => 5"
   {:added "2.2"}
   ([t] (hour t {}))
@@ -176,7 +184,7 @@
 (defn minute
   "accesses the minute representated by the instant
    (t/minute 0 {:timezone \"GMT\"}) => 0
-
+ 
    (t/minute (Date. 0) {:timezone \"Asia/Kolkata\"}) => 30"
   {:added "2.2"}
   ([t] (minute t {}))
@@ -203,7 +211,7 @@
   "returns the current datetime
    (t/now)
    => #(instance? Date %)
-
+ 
    (t/now {:type Calendar})
    => #(instance? Calendar %)"
   {:added "2.2"}
@@ -215,10 +223,10 @@
   "returns the beginning of unix epoch
    (t/epoch)
    => #inst \"1970-01-01T00:00:00.000-00:00\"
-
+ 
    (t/epoch {:type clojure.lang.PersistentArrayMap :timezone \"GMT\"})
-   => {:year 1970, :month 1 :day 1, :day-of-week 5,
-       :hour 0 :minute 0 :second 0 :millisecond 0,
+   => {:year 1970, :month 1 :day 1, :day-of-week 5, 
+       :hour 0 :minute 0 :second 0 :millisecond 0, 
        :timezone \"GMT\"}"
   {:added "2.2"}
   ([] (epoch {}))
@@ -259,7 +267,7 @@
   "adds a duration to the time
    (t/plus (Date. 0) {:weeks 2})
    => #inst \"1970-01-15T00:00:00.000-00:00\"
-
+ 
    (t/plus (Date. 0) 1000)
    => #inst \"1970-01-01T00:00:01.000-00:00\""
   {:added "2.2"}
@@ -289,14 +297,13 @@
   "adjust fields of a particular time
    (t/adjust (Date. 0) {:year 2000 :second 10} {:timezone \"GMT\"})
    => #inst \"2000-01-01T00:00:10.000-00:00\"
-
-   (t/adjust {:year 1970, :month 1 :day 1, :day-of-week 5,
-              :hour 0 :minute 0 :second 0 :millisecond 0,
+ 
+   (t/adjust {:year 1970, :month 1 :day 1, :day-of-week 5, 
+              :hour 0 :minute 0 :second 0 :millisecond 0, 
               :timezone \"GMT\"}
-             {:year 1999}
-             {:timezone \"GMT\"})
-   => {:year 1999, :month 1 :day 1, :day-of-week 6,
-       :hour 0 :minute 0 :second 0 :millisecond 0,
+             {:year 1999})
+   => {:year 1999, :month 1 :day 1, :day-of-week 6, 
+       :hour 0 :minute 0 :second 0 :millisecond 0, 
        :timezone \"GMT\"}"
   {:added "2.2"}
   ([t rep]
@@ -313,7 +320,7 @@
    (t/truncate #inst \"1989-12-28T12:34:00.000-00:00\"
                :hour {:timezone \"GMT\"})
    => #inst \"1989-12-28T12:00:00.000-00:00\"
-
+   
    (t/truncate #inst \"1989-12-28T12:34:00.000-00:00\"
                :year {:timezone \"GMT\"})
    => #inst \"1989-01-01T00:00:00.000-00:00\""
@@ -328,9 +335,17 @@
                common/+zero-values+))))
 
 (defn latest
+  "returns the latest date out of a range of inputs
+   (t/latest (Date. 0) (Date. 1000) (Date. 20000))
+   => #inst \"1970-01-01T00:00:20.000-00:00\""
+  {:added "2.2"}
   [t1 t2 & more]
   (last (sort-by time/-to-long (apply vector t1 t2 more))))
 
 (defn earliest
+  "returns the earliest date out of a range of inputs
+   (t/earliest (Date. 0) (Date. 1000) (Date. 20000))
+   => #inst \"1970-01-01T00:00:00.000-00:00\""
+  {:added "2.2"}
   [t1 t2 & more]
   (first (sort-by time/-to-long (apply vector t1 t2 more))))

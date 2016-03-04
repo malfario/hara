@@ -32,6 +32,8 @@
     (.setTime date)))
 
 (defn local-timezone
+  "returns the current timezone as a string"
+  {:added "2.2"}
   []
   (.getID (TimeZone/getDefault)))
 

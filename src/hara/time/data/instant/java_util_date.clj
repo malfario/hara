@@ -3,11 +3,14 @@
             [hara.time.data
              [common :as common]
              [coerce :as coerce]])
-  (:import [java.util Date Calendar TimeZone]))
+  (:import [java.util Date Calendar TimeZone]
+           java.text.SimpleDateFormat))
 
 (defmethod time/-time-meta Date
   [_]
   {:base :instant
+   :formatter {:type SimpleDateFormat}
+   :parser    {:type SimpleDateFormat}
    :rep  {:from {:proxy Calendar
                  :via (fn [^Calendar cal]
                         (.getTime cal))}

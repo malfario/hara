@@ -1,7 +1,8 @@
 (ns hara.time.data.instant.java-time-zoneddatetime
   (:require [hara.protocol.time :as time])
   (:require [hara.time.data.coerce :as coerce])
-  (:import [java.time Clock ZonedDateTime ZoneId]))
+  (:import [java.time Clock ZonedDateTime ZoneId]
+           [java.time.format DateTimeFormatter]))
 
 (extend-type ZonedDateTime
   time/IInstant
@@ -32,6 +33,7 @@
 (defmethod time/-time-meta ZonedDateTime
   [_]
   {:type :instant
+   
    :rep {:from  {:fn from-map}
          :to    {:fn {:millisecond time/-millisecond
                       :second      time/-second
