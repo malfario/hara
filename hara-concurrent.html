@@ -70,6 +70,7 @@
                 <li><a href="hara-extend.html">extend</a></li>
                 <li><a href="hara-function.html">function</a></li>
                 <li><a href="hara-group.html">group</a></li>
+                <li><a href="hara-io-environment.html">io.environment</a></li>
                 <li><a href="hara-io-scheduler.html">io.scheduler</a></li>
                 <li><a href="hara-io-watch.html">io.watch</a></li>
                 <li><a href="hara-namespace.html">namespace</a></li>
@@ -77,6 +78,7 @@
                 <li><a href="hara-reflect.html">reflect</a></li>
                 <li><a href="hara-sort.html">sort</a></li>
                 <li><a href="hara-string.html">string</a></li>
+                <li><a href="hara-time.html">time</a></li>
             </ul>
             </li>
             <li>
@@ -92,7 +94,7 @@
   <div class="container row">
     <div class="col-md-4 scrollspy pull-right">
       <ul id="nav" class="nav hidden-xs hidden-sm" data-spy="affix">
-        <li><a href="#introduction">1  &nbsp;&nbsp; Introduction</a><ul class="nav"><li><a href="#installation">1.1  &nbsp;&nbsp; Installation</a></li></ul></li><li><a href="#api---latch">2  &nbsp;&nbsp; API - latch</a></li><li><a href="#api---notification">3  &nbsp;&nbsp; API - notification</a></li><li><a href="#api---propagate">4  &nbsp;&nbsp; API - propagate</a></li>
+        <li><a href="#introduction">1  &nbsp;&nbsp; Introduction</a><ul class="nav"><li><a href="#installation">1.1  &nbsp;&nbsp; Installation</a></li></ul></li><li><a href="#api---latch">2  &nbsp;&nbsp; API - latch</a></li><li><a href="#api---notification">3  &nbsp;&nbsp; API - notification</a></li><li><a href="#api---pipe">4  &nbsp;&nbsp; API - pipe</a></li><li><a href="#api---propagate">5  &nbsp;&nbsp; API - propagate</a></li>
       </ul>
     </div>
     <div class="col-md-8" id="content">
@@ -102,10 +104,11 @@
           <h4>methods and datastructures for concurrency</h4>
         </div>
       </div>
-      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/concurrent.clj'>hara.concurrent</a>:</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.concurrent &quot;2.2.13&quot;&#93;
-</code></pre><p>Individual namespaces can be added seperately:</p><pre><code>&#91;im.chit/hara.concurrent.latch &quot;2.2.13&quot;&#93;
-&#91;im.chit/hara.concurrent.notification &quot;2.2.13&quot;&#93;
-&#91;im.chit/hara.concurrent.propagate &quot;2.2.13&quot;&#93;
+      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/concurrent.clj'>hara.concurrent</a> provides a set of concurrency primitives and components so that concurrent applications can be built and designed in a modular fashion.</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.concurrent &quot;2.2.16&quot;&#93;
+</code></pre><p>Individual namespaces can be added seperately:</p><pre><code>&#91;im.chit/hara.concurrent.latch &quot;2.2.16&quot;&#93;
+&#91;im.chit/hara.concurrent.notification &quot;2.2.16&quot;&#93;
+&#91;im.chit/hara.concurrent.pipe &quot;2.2.16&quot;&#93;
+&#91;im.chit/hara.concurrent.propagate &quot;2.2.16&quot;&#93;
 </code></pre></div></section></section><section class="chapter" id="api---latch"><h2 class="chapter">2  &nbsp;&nbsp; API - latch</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/concurrent/latch.clj'>hara.concurrent.latch</a> supplies a simple master/slave latch mechanism for atoms and ref such that if the master if updated, then the slave will as well</p></div><div class="api"><hr /><div><a name="api-hara-concurrent-latch"></a><h4><i>API</i></h4><a href="#api-hara-concurrent-latch--latch">latch</a>&nbsp;&nbsp;<a href="#api-hara-concurrent-latch--unlatch">unlatch</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-concurrent-latch--latch"></a><h4>latch <a href="#api-hara-concurrent-latch">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Followes two irefs together so that when `master`
 changes, the `slave` will also be updated.&quot;
 
@@ -154,7 +157,16 @@ ref. Used for testing purposes&quot;
       f (fn [obj] (dispatch obj #(do (Thread/sleep 300)
                                     (inc %))))]
   (wait-on f atm)
-  @atm =&gt; 1)</div></div></div></div></div></section><section class="chapter" id="api---propagate"><h2 class="chapter">4  &nbsp;&nbsp; API - propagate</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/concurrent/propagate.clj'>hara.concurrent.propagate</a> is another implemention around the concept of <a href='http://web.mit.edu/&#126;axch/www/art.pdf'>propagators</a>, introduced by <a href='https://vimeo.com/12184930'>Sussman</a></p></div><div class="api"><hr /><div><a name="api-hara-concurrent-propagate"></a><h4><i>API</i></h4><a href="#api-hara-concurrent-propagate--cell">cell</a>&nbsp;&nbsp;<a href="#api-hara-concurrent-propagate--link">link</a>&nbsp;&nbsp;<a href="#api-hara-concurrent-propagate--unlink">unlink</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-concurrent-propagate--cell"></a><h4>cell <a href="#api-hara-concurrent-propagate">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;creates a propogation cell&quot;
+  @atm =&gt; 1)</div></div></div></div></div></section><section class="chapter" id="api---pipe"><h2 class="chapter">4  &nbsp;&nbsp; API - pipe</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/concurrent/pipe.clj'>hara.concurrent.pipe</a> provides a simple implemention of a asynchronous pipe that can be sent tasks that are queued until previous tasks are complete</p></div><div class="api"><hr /><div><a name="api-hara-concurrent-pipe"></a><h4><i>API</i></h4><a href="#api-hara-concurrent-pipe--pipe">pipe</a>&nbsp;&nbsp;<a href="#api-hara-concurrent-pipe--send">send</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-concurrent-pipe--pipe"></a><h4>pipe <a href="#api-hara-concurrent-pipe">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;creates a pipe so that tasks can be acted upon asynchronously in order in which they were sent&quot;
+
+(def atm (atom []))
+(def p (pipe (fn [msg]
+               (swap! atm conj msg))))
+
+(pipe/send p 1)
+(pipe/send p 2)
+(pipe/send p 3)
+@atm =&gt; [1 2 3]</div></div><div><a name="api-hara-concurrent-pipe--send"></a><h4>send <a href="#api-hara-concurrent-pipe">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;sends a task to the pipe for it's handler to act upon&quot;</div></div></div></div></div></section><section class="chapter" id="api---propagate"><h2 class="chapter">5  &nbsp;&nbsp; API - propagate</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/concurrent/propagate.clj'>hara.concurrent.propagate</a> is another implemention around the concept of <a href='http://web.mit.edu/&#126;axch/www/art.pdf'>propagators</a>, introduced by <a href='https://vimeo.com/12184930'>Sussman</a></p></div><div class="api"><hr /><div><a name="api-hara-concurrent-propagate"></a><h4><i>API</i></h4><a href="#api-hara-concurrent-propagate--cell">cell</a>&nbsp;&nbsp;<a href="#api-hara-concurrent-propagate--link">link</a>&nbsp;&nbsp;<a href="#api-hara-concurrent-propagate--unlink">unlink</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-concurrent-propagate--cell"></a><h4>cell <a href="#api-hara-concurrent-propagate">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;creates a propogation cell&quot;
 
 (def cell-a (cell))
 @cell-a =&gt; :hara.concurrent.propagate/nothing

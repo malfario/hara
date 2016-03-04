@@ -7,7 +7,7 @@
     <meta name="google" value="notranslate">
 
 
-    <title>io.watch</title>
+    <title>io.environment</title>
 
     
   <link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>
@@ -94,17 +94,48 @@
   <div class="container row">
     <div class="col-md-4 scrollspy pull-right">
       <ul id="nav" class="nav hidden-xs hidden-sm" data-spy="affix">
-        <li><a href="#introduction">1  &nbsp;&nbsp; Introduction</a></li>
+        <li><a href="#introduction">1  &nbsp;&nbsp; Introduction</a><ul class="nav"><li><a href="#installation">1.1  &nbsp;&nbsp; Installation</a></li></ul></li><li><a href="#api">2  &nbsp;&nbsp; API</a></li>
       </ul>
     </div>
     <div class="col-md-8" id="content">
       <div class="jumbotron">
         <div class="container">
-          <h1>io.watch</h1>
-          <h4>watch for filesystem changes</h4>
+          <h1>io.environment</h1>
+          <h4>tools for versioning and environment</h4>
         </div>
       </div>
-      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"></div></section>
+      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/io/environment.clj'>hara.io.environment</a> provides an easier interface for working with jvm properties and versioning.</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.io.environment &quot;2.2.16&quot;&#93;
+</code></pre></div><div class="paragraph"><p>All functions are in the <code>hara.io.environment</code> namespace.</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(require '[hara.io.environment :as env])</div></div></section></section><section class="chapter" id="api"><h2 class="chapter">2  &nbsp;&nbsp; API</h2><div class="group"><div class="api"><hr /><div><a name="api-hara-io-environment"></a><h4><i>API</i></h4><a href="#api-hara-io-environment--clojure-version">clojure-version</a>&nbsp;&nbsp;<a href="#api-hara-io-environment--java-version">java-version</a>&nbsp;&nbsp;<a href="#api-hara-io-environment--properties">properties</a>&nbsp;&nbsp;<a href="#api-hara-io-environment--require">require</a>&nbsp;&nbsp;<a href="#api-hara-io-environment--version">version</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-io-environment--clojure-version"></a><h4>clojure-version <a href="#api-hara-io-environment">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;returns the current clojure version&quot;
+(env/clojure-version)
+=&gt; (contains
+    {:major anything,
+     :minor anything,
+     :incremental anything
+     :qualifier anything})</div></div><div><a name="api-hara-io-environment--java-version"></a><h4>java-version <a href="#api-hara-io-environment">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;returns the current java version&quot;
+(env/java-version)
+=&gt; (contains
+    {:major anything,
+     :minor anything,
+     :incremental anything
+     :qualifier anything})</div></div><div><a name="api-hara-io-environment--properties"></a><h4>properties <a href="#api-hara-io-environment">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;returns jvm properties in a nested map for easy access&quot;
+(-&gt;&gt; (env/properties)
+     :os)
+=&gt; (contains {:arch anything
+              :name anything
+              :version anything})</div></div><div><a name="api-hara-io-environment--require"></a><h4>require <a href="#api-hara-io-environment">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;only attempts to load the files when the minimum versions have been met&quot;
+(env/require {:java    {:major 1 :minor 8}
+              :clojure {:major 1 :minor 6}}
+             '[hara.time.data.zone
+               java-time-zoneid]
+             '[hara.time.data.instant
+               java-time-instant]
+             '[hara.time.format
+               java-time-format-datetimeformatter])</div></div><div><a name="api-hara-io-environment--version"></a><h4>version <a href="#api-hara-io-environment">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;alternate way of getting clojure and java version&quot;
+(env/version :clojure)
+=&gt; (env/clojure-version)
+
+(env/version :java)
+=&gt; (env/java-version)</div></div></div></div></div></section>
     </div>
 </div><!--end of .container-->
 
