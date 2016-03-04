@@ -67,15 +67,15 @@
 
 (defn parse
   "converts a string into a date
-   (f/parse \"00 00 01 01 01 1989 +0000\" \"ss mm HH dd MM YYYY Z\")
+   (f/parse \"00 00 01 01 01 1989 +0000\" \"ss mm HH dd MM yyyy Z\")
    => #inst \"1989-01-01T01:00:00.000-00:00\"
  
-   (-> (f/parse \"00 00 01 01 01 1989 +0000\" \"ss mm HH dd MM YYYY Z\"
+   (-> (f/parse \"00 00 01 01 01 1989 +0000\" \"ss mm HH dd MM yyyy Z\"
                 {:type Calendar})
        (.getTime))
    => #inst \"1989-01-01T01:00:00.000-00:00\"
  
-   (type (f/parse \"00 00 01 01 01 1989 +0000\" \"ss mm HH dd MM YYYY Z\"
+   (type (f/parse \"00 00 01 01 01 1989 +0000\" \"ss mm HH dd MM yyyy Z\"
                   {:type Timestamp}))
    => Timestamp"
   {:added "2.2"}

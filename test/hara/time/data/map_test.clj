@@ -8,7 +8,7 @@
 (fact "converts an instant to a map"
   (to-map 0 {:timezone "GMT"})
   => {:type java.lang.Long, :timezone "GMT", 
-      :year 1970, :month 1, :day 1,  :day-of-week 5,
+      :year 1970, :month 1, :day 1, :day-of-week 4,
       :hour 0, :minute 0 :second 0 :millisecond 0}
 
   (to-map (Date. 0) {:timezone "EST"

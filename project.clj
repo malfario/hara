@@ -1,4 +1,4 @@
-(defproject im.chit/hara "2.2.16"
+(defproject im.chit/hara "2.2.17"
   :description "patterns and utilities"
   :url "https://github.com/zcaudate/hara"
   :license {:name "The MIT License"
@@ -82,6 +82,10 @@
                           {:input "test/documentation/hara_group.clj"
                            :title "group"
                            :subtitle "generic typed collections"}
+                          "hara-io-environment"
+                          {:input "test/documentation/hara_io_environment.clj"
+                           :title "io.environment"
+                           :subtitle "tools for versioning and environment"}
                           "hara-io-scheduler"
                           {:input "test/documentation/hara_io_scheduler.clj"
                            :title "io.scheduler"
@@ -109,7 +113,11 @@
                           "hara-string"
                           {:input "test/documentation/hara_string.clj"
                            :title "string"
-                           :subtitle "methods for string manipulation"}}
+                           :subtitle "methods for string manipulation"}
+                          "hara-time"
+                          {:input "test/documentation/hara_time.clj"
+                           :title "time"
+                           :subtitle "unified time representation framework"}}
                 :html {:logo "hara.png"
                        :home  "index"}
                 :link {:auto-tag    true

@@ -40,6 +40,7 @@
 ^{:refer hara.time/interval? :added "2.2"}
 (fact "checks if an object implements the interval protocol")
 
+^{:refer hara.time/time-meta :added "2.2"}
 (fact "retrieves the meta-data for the time object"
   (t/time-meta TimeZone)
   => {:base :zone}
@@ -63,7 +64,7 @@
       (t/to-map))
   => {:type java.util.GregorianCalendar,
       :timezone "Asia/Kolkata",
-      :year 1970, :month 1, :day 1, :day-of-week 5,
+      :year 1970, :month 1, :day 1, :day-of-week 4,
       :hour 5, :minute 30 :second 0, :millisecond 0})
 
 ^{:refer hara.time/to-length :added "2.2"}
@@ -95,9 +96,9 @@
 
 ^{:refer hara.time/day-of-week :added "2.2"}
 (fact "accesses the day of week representated by the instant"
-  (t/day-of-week 0 {:timezone "GMT"}) => 5
+  (t/day-of-week 0 {:timezone "GMT"}) => 4
 
-  (t/day-of-week (Date. 0) {:timezone "EST"}) => 4)
+  (t/day-of-week (Date. 0) {:timezone "EST"}) => 3)
 
 ^{:refer hara.time/hour :added "2.2"}
 (fact "accesses the hour representated by the instant"
@@ -133,7 +134,7 @@
   => #inst "1970-01-01T00:00:00.000-00:00"
 
   (t/epoch {:type clojure.lang.PersistentArrayMap :timezone "GMT"})
-  => {:year 1970, :month 1 :day 1, :day-of-week 5, 
+  => {:year 1970, :month 1 :day 1, :day-of-week 4, 
       :hour 0 :minute 0 :second 0 :millisecond 0, 
       :timezone "GMT"})
 
@@ -170,11 +171,11 @@
   (t/adjust (Date. 0) {:year 2000 :second 10} {:timezone "GMT"})
   => #inst "2000-01-01T00:00:10.000-00:00"
 
-  (t/adjust {:year 1970, :month 1 :day 1, :day-of-week 5, 
+  (t/adjust {:year 1970, :month 1 :day 1, :day-of-week 4, 
              :hour 0 :minute 0 :second 0 :millisecond 0, 
              :timezone "GMT"}
             {:year 1999})
-  => {:year 1999, :month 1 :day 1, :day-of-week 6, 
+  => {:year 1999, :month 1 :day 1, :day-of-week 5, 
       :hour 0 :minute 0 :second 0 :millisecond 0, 
       :timezone "GMT"})
 

@@ -16,7 +16,7 @@
   (-minute       [t _] (.get t Calendar/MINUTE))
   (-hour         [t _] (.get t Calendar/HOUR_OF_DAY))
   (-day          [t _] (.get t Calendar/DAY_OF_MONTH))
-  (-day-of-week  [t _] (.get t Calendar/DAY_OF_WEEK))
+  (-day-of-week  [t _] (rem (dec (.get t Calendar/DAY_OF_WEEK)) 7))
   (-month        [t _] (inc (.get t Calendar/MONTH)))
   (-year         [t _] (.get t Calendar/YEAR)))
 

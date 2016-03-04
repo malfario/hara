@@ -3,7 +3,8 @@
              [time :as time]
              [string :as string]]
             [hara.time.data
-             [common :as common]]))
+             [common :as common]
+             [map :as map]]))
 
 (defn coerce-zone
   "coercion of one zone object to another
@@ -43,6 +44,9 @@
 
         (instance? Long value)
         (time/-from-long value opts)
+
+        (instance? clojure.lang.APersistentMap value)
+        (map/from-map value opts)
         
         :else
         (-> value

@@ -3,9 +3,8 @@
              [string :as string]
              [time :as time]]
             [hara.time.data
-             [coerce :as coerce]
              [common :as common]])
-  (:import [java.util Date TimeZone]
+  (:import [java.util Date TimeZone Calendar]
            [clojure.lang PersistentArrayMap PersistentHashMap]))
 
 (defn include-timezone [rep t tz-fn opts]
@@ -91,6 +90,12 @@
   (-to-long [m]
     (from-map {:type Long})))
 
+(defmethod time/-now PersistentArrayMap
+  [opts]
+  (dissoc (to-map (time/-now (assoc opts :type Calendar))
+                  opts)
+          :type))
+
 (defmethod time/-time-meta PersistentArrayMap
   [_]
   {:base :instant
@@ -106,7 +111,14 @@
   (-to-long [m]
     (from-map {:type Long})))
 
+(defmethod time/-now PersistentHashMap
+  [opts]
+  (dissoc (to-map (time/-now (assoc opts :type Calendar))
+                  opts)
+          :type))
+
 (defmethod time/-time-meta PersistentHashMap
   [_]
   {:base :instant
    :rep  {:from {:fn identity}}})
+

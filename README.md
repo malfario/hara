@@ -7,7 +7,11 @@ Code patterns and utilities. Please visit the [hara website](http://docs.caudate
 
 ## Versions
 
-#### 2.2.14
+#### 2.2.17
+- new: `hara.time`, `hara.io.environment`
+- updated: `hara.io.scheduler`, `hara.concurrent.procedure`
+
+#### 2.2.15
 - `hara.sort.hierarchical`
 - `hara.concurrent.pipe`
 

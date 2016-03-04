@@ -7,6 +7,7 @@
              [format :as format]]
             [hara.time.data
              [common :as common]
+             [coerce :as coerce]
              [duration :as duration]
              [interval :as interval]
              [map :as map]
@@ -17,10 +18,11 @@
   (:refer-clojure :exclude [second format]))
 
 (ns/import hara.time.data.common   [local-timezone]
+           hara.time.data.coerce   [coerce]
            hara.time.data.map      [to-map from-map]
            hara.time.data.vector   [to-vector]
            hara.time.data.interval [interval]
-           hara.time.format        [format])
+           hara.time.format        [format parse])
 
 (defn default-type
   "accessor to the default type for date creation
@@ -78,6 +80,17 @@
   (satisfies? time/IInterval obj))
 
 (defn time-meta
+  "retrieves the meta-data for the time object
+   (t/time-meta TimeZone)
+   => {:base :zone}
+ 
+   (t/time-meta Date)
+   => (contains {:base :instant,
+                 :rep (contains {:from (contains {:proxy java.util.Calendar,
+                                                  :via fn?}),
+                                 :to (contains {:proxy java.util.Calendar,
+                                                :via fn?})})})"
+  {:added "2.2"}
   [cls]
   (time/-time-meta cls))
 

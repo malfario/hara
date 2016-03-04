@@ -7,7 +7,7 @@
 
 (defmethod time/-time-meta Clock
   [_]
-  {:type :instant
+  {:base :instant
    :formatter {:type DateTimeFormatter}
    :parser    {:type DateTimeFormatter}
    :rep  {:from {:proxy ZonedDateTime

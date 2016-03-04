@@ -23,10 +23,10 @@
 (fact "takes a time element and returns an array representation"
   
   (to-time-array #inst "1970-01-01T00:00:00.000-00:00" "UTC")
-  => [0 0 0 5 1 1 1970]
+  => [0 0 0 4 1 1 1970]
 
   (to-time-array #inst "1970-01-01T00:00:00.000-00:00" "GMT-10")
-  => [0 0 14 4 31 12 1969])
+  => [0 0 14 3 31 12 1969])
 
 ^{:refer hara.io.scheduler.tab/parse-tab :added "2.2"}
 (fact "takes a string and creates matches"

@@ -1,6 +1,7 @@
 (ns hara.time.format-test
   (:use midje.sweet)
   (:require [hara.time.format :as f]
+            [hara.time.data :as data]
             [hara.time.data.common :as common])
   (:import [java.util Date Calendar TimeZone]
            java.sql.Timestamp))

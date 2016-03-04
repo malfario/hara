@@ -32,8 +32,9 @@
 
 (defmethod time/-time-meta ZonedDateTime
   [_]
-  {:type :instant
-   
+  {:base :instant
+   :formatter {:type DateTimeFormatter}
+   :parser    {:type DateTimeFormatter}
    :rep {:from  {:fn from-map}
          :to    {:fn {:millisecond time/-millisecond
                       :second      time/-second

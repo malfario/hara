@@ -6,7 +6,7 @@
 
 (defmethod time/-time-meta Instant
   [_]
-  {:type :instant
+  {:base :instant
    :formatter {:type DateTimeFormatter}
    :parser    {:type DateTimeFormatter}
    :rep  {:from {:proxy ZonedDateTime
