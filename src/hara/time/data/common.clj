@@ -2,7 +2,7 @@
   (:require [hara.protocol.time :as time])
   (:import [java.util Calendar Date TimeZone]))
 
-(def ^:dynamic *default-type* java.util.Date)
+(def ^:dynamic *default-type* clojure.lang.PersistentArrayMap)
 
 (def ^:dynamic *default-timezone* nil)
 

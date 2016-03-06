@@ -113,8 +113,6 @@ Because the `clock` module is been completely decoupled from the task array it w
    :schedule "/2 * * * * * *"
    :params {:output "Hello There"}})
 
-[[:section {:title "Running Tasks"}]]
-
 "We define the scheduler `sch` as having a single task:"
 
 (def sch1 (scheduler {:print-task print-task}))
@@ -123,12 +121,23 @@ Because the `clock` module is been completely decoupled from the task array it w
 
 (comment
   (def sch1 (scheduler {:print-task print-fn}
+                       {:print-task {:schedule "/2 * * * * * *"
+                                     :params  {:output "Hello There"}}})))
+
+"The seperation of function and data is suitable for writing code that looks like this:"
+
+(comment
+  (def sch1 (scheduler {:print-task print-fn}
                       (<load-config> "<filename>.edn"))))
+
+"Where <filename.edn> would contain the necessary information for `:schedule` and `:params`"
+
+[[:section {:title "Starting out"}]]
 
 "So now we can start playing around with starting and stopping the scheduler:"
 
 (comment
-  (start! sch)
+  (start! sch1)
   ;; > Hello There :  #inst "2015-07-17T06:26:44.000-00:00"
 
   ... wait 2 secs ...
@@ -143,7 +152,7 @@ Because the `clock` module is been completely decoupled from the task array it w
 
   ;; > Hello There :  #inst "2015-07-17T06:26:50.000-00:00"
 
-  (stop! sch) ;; OUTPUT STOPS
+  (stop! sch1) ;; OUTPUT STOPS
   )
 
 [[:section {:title "Components"}]]
@@ -204,7 +213,6 @@ Where `A`, `B` and `N` are numbers; `E1` and `E2` are expressions. All seven ele
   ;; to August between years 2012 to 2020.
 
   "/5  9,10  * 5 * 6-8 2012-2020")
-
 
 [[:chapter {:title "Simulation"}]]
 
@@ -299,7 +307,198 @@ It can be seen that we can simulate the actual speed of outputs by keeping the s
 
 [[:chapter {:title "Task Management"}]]
 
-"Task management capabilities are demonstrated by first creating two task entries labeled `l1` and `l2` doing nothing but sleeping for a long time:"
+"The scheduler is a device that deals with change, and so itself should be able to deal with change. It is possible to disable/enable, add/remove, reschedule/reparametise tasks both when the scheduler is stopped and while it is running. Lets start off with an empty scheduler:"
+
+(comment
+  (def sch2 (scheduler {}))
+  
+  (start! sch2)
+
+  ;; ... nothing should happen ...
+
+  )
+
+[[:section {:title "add-task"}]]
+
+"Because the scheduler has already started, we can use `add-task` to immediately get output:"
+
+(comment
+
+  (add-task sch2 :hello {:handler  (fn [t params] (println params))
+                         :schedule "/2 * * * * * *"
+                         :params {:data "foo"}})
+
+  ;;> {:data "foo"}
+
+  ;;  ... wait 2 seconds ...
+
+  ;;> {:data "foo"}
+  
+  ;;  ... continue outputting {:data "foo"} every 2 seconds
+  )
+
+[[:section {:title "reschedule-task"}]]
+
+"We can use `reschedule-task` to change the timing with which the task fires:"
+
+(comment
+
+  (reschedule-task sch2 :hello "/5 * * * * * *")
+  
+  ;;> {:data "foo"}
+
+  ;;  ... wait 5 seconds ...
+
+  ;;> {:data "foo"}
+  
+  ;;  ... continue outputting {:data "foo"} every 5 seconds
+  )
+
+[[:section {:title "reparametise-task"}]]
+
+"We can use `reparametise-task` to change the parameters that are associated with the task"
+
+(comment
+
+  (reparametise-task sch2 :hello {:data "bar"})
+  
+  ;;> {:data "bar"}
+
+  ;;  ... wait 5 seconds ...
+
+  ;;> {:data "bar"}
+  
+  ;;  ... continue outputting {:data "bar"} every 5 seconds
+  )
+
+[[:section {:title "disable-task"}]]
+
+"We can use `disable-task` to still keep the task in the array but to stop it from triggering:"
+
+(comment
+
+  (disable-task sch2 :hello)
+
+  ;; ... output stops ...
+)
+
+[[:section {:title "enable-task"}]]
+
+"We can use `enable-task` to rengage a disabled task:"
+
+(comment
+
+  (enable-task sch2 :hello)
+  
+  ;;> {:data "bar"}
+
+  ;;  ... wait 5 seconds ...
+
+  ;;> {:data "bar"}
+  
+  ;;  ... continue outputting {:data "bar"} every 5 seconds
+  )
+
+[[:section {:title "delete-task"}]]
+
+"Finally, we can use `delete-task` to remove the entry completely from the scheduler:"
+
+(comment
+  (delete-task sch2 :hello)
+  
+  ;; ... output stops ...
+  )
+
+[[:section {:title "empty-tasks"}]]
+
+"Finally, we can use `empty-tasks` will clear all tasks from the scheduler"
+
+(comment
+  (empty-tasks sch2))
+
+
+[[:chapter {:title "Globals"}]]
+
+"Global settings are used to define the overall behaviour of the scheduler:"
+
+[[:section {:title "Defaults"}]]
+
+"The global defaults are contained in `hara.io.scheduler/*defaults*`:"
+
+(comment
+  (println hara.io.scheduler/*defaults*)
+  => {:clock {:type "java.util.Date",
+              :timezone "Asia/Kolkata",
+              :interval 1,
+              :truncate :second},
+      :registry {},
+      :cache {},
+      :ticker {}})
+
+"For the purposes of the reader, only the `:clock` entry of `*defaults*` is important. To override the defaults, define the scheduler with the settings that needs to be customised. To set the time component used to be `java.time.Instant`, define the scheduler as follows:"
+
+(comment
+  (def sch2 (scheduler {:hello {:handler  (fn [t params] (println t))
+                                :schedule "/2 * * * * * *"
+                                :params {}}}
+                       {}
+                       {:clock {:type "java.time.Instant"}}
+                       ))
+
+  (start! sch2)
+  ;;> #<Instant 2016-03-05T03:24:06Z>
+
+  ;;  ... wait 2 seconds ...
+  
+  ;;> #<Instant 2016-03-05T03:24:08Z>
+
+  ;;  ... printing out instances of java.time.Instant  ...
+  
+  (stop! sch2))
+
+
+(comment
+  (def sch2 (scheduler {:hello {:handler  (fn [t params] (println t))
+                                :schedule "/2 * * * * * *"
+                                :params {}}}
+                       {}
+                       {:clock {:type "clojure.lang.PersistentArrayMap"
+                                :timezone "GMT"}}))
+
+  (start! sch2)
+  
+  (stop! sch2)
+
+  sch2
+  )
+
+[[:section {:title "Timezone"}]]
+
+
+
+(comment
+  (def sch2 (scheduler {:hello {:handler  (fn [t params] (println t))
+                                :schedule "/2 * * * * * *"
+                                :params {}}}
+                       {}
+                       {:clock {:type "java.util.Calendar"
+                                :timezone "EST"}}))
+  
+  (start! sch2)
+  
+
+  (stop! sch2)
+
+  sch2
+  
+  )
+
+
+
+
+[[:chapter {:title "Realtime Management"}]]
+
+"In previous sections, we only looked at tasks that finishes instantaneously. In most cases, this will not be the case. Triggered tasks may run for a long time, and sometimes triggered tasks may overlap (for example, the first task instance may still be running when the second task instance is triggered). Facilities for inspecting what tasks are running as well as to be able to stop running instances of the tasks are needed. Task management capabilities are demonstrated by first creating two task entries labeled `l1` and `l2` doing nothing but sleeping for a long time:"
 
 (def sch2
   (scheduler {:l1 {:handler  (fn [t params] (Thread/sleep 30000000000000))
@@ -356,7 +555,7 @@ It can be seen that we can simulate the actual speed of outputs by keeping the s
   (count (list-instances sch2 :l1))
   => 3)
 
-[[:section {:title "killing instances"}]]
+[[:section {:title "List and kill"}]]
 
 "We can kill them individually using `kill-instance`:"
 
@@ -406,7 +605,7 @@ It can be seen that we can simulate the actual speed of outputs by keeping the s
   (count (list-instances sch2 :l2))
   => 0)
 
-[[:section {:title "live action"}]]
+[[:section {:title "Realtime demo"}]]
 
 "To show some of these methods in action, we will call these methods on a running scheduler:"
 
@@ -450,15 +649,14 @@ It can be seen that we can simulate the actual speed of outputs by keeping the s
   (count (list-instances sch2))
   => 0)
 
-[[:section {:title "shutdown and restart"}]]
+[[:section {:title "Shutdown and Restart"}]]
 
-"To show the difference between `shutdown!` and `stop!`, lets start up the scheduler again:"
+"To show the difference between `shutdown!` and `stop!`, lets start up the scheduler again and call `shutdown!` first:"
 
 (comment
 
   (start! sch2)
-
-
+  
   ... and again we wait ...
 
   (count (list-instances sch2))
@@ -473,7 +671,31 @@ It can be seen that we can simulate the actual speed of outputs by keeping the s
   (count (list-instances sch2))
   => 0)
 
-"`restart!` does the same as `shutdown!` but just starts up the system again once it has been stopped."
+"Now, lets try the same thing with `stop!`:"
+
+(comment
+
+  (start! sch2)
+  
+  ... and again we wait ...
+
+  (count (list-instances sch2))
+  => 10
+
+  ... we now have instances running ...
+
+  (stop! sch2)
+
+  ... after the call, we notice that there are still running instances ...
+
+  (count (list-instances sch2))
+  => 10)
+
+"`restart!`, like `shutdown!` also kills all running instances but then calls `start!` again"
+
+[[:chapter {:title "API"}]]
+
+[[:api {:namespace "hara.io.scheduler"}]]
 
 [[:chapter {:title "Links and Resources"}]]
 

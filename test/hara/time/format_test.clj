@@ -24,7 +24,7 @@
 
 ^{:refer hara.time.format/parse :added "2.2"}
 (fact "converts a string into a date"
-  (f/parse "00 00 01 01 01 1989 +0000" "ss mm HH dd MM yyyy Z")
+  (f/parse "00 00 01 01 01 1989 +0000" "ss mm HH dd MM yyyy Z" {:type Date :timezone "GMT"})
   => #inst "1989-01-01T01:00:00.000-00:00"
 
   (-> (f/parse "00 00 01 01 01 1989 +0000" "ss mm HH dd MM yyyy Z"

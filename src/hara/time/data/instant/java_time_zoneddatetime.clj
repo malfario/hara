@@ -27,14 +27,21 @@
   (ZonedDateTime/now ^Clock (time/-now (assoc opts :type Clock))))
 
 (defn from-map [{:keys [millisecond second minute hour day month year timezone] :as rep}]
+  (println "FROM MAP:" (coerce/coerce-zone timezone {:type ZoneId}) timezone
+           (ZonedDateTime/of year month day hour minute second (* millisecond 1000000)
+                             (coerce/coerce-zone timezone {:type ZoneId})))
   (ZonedDateTime/of year month day hour minute second (* millisecond 1000000)
                     (coerce/coerce-zone timezone {:type ZoneId})))
 
-(defmethod time/-time-meta ZonedDateTime
-  [_]
+(def zoneddatetime-meta
   {:base :instant
    :formatter {:type DateTimeFormatter}
    :parser    {:type DateTimeFormatter}
+   :access    {:timezone {:get (fn [^ZonedDateTime t]
+                                 (.getZone t))
+                          :set (fn [^ZonedDateTime t tz]
+                                 (.withZoneSameInstant t
+                                                       ^ZoneId (coerce/coerce-zone tz {:type ZoneId})))}}
    :rep {:from  {:fn from-map}
          :to    {:fn {:millisecond time/-millisecond
                       :second      time/-second
@@ -45,3 +52,7 @@
                       :month       time/-month
                       :year        time/-year
                       :timezone    (fn [^ZonedDateTime t opts] (.getZone t))}}}})
+
+(defmethod time/-time-meta ZonedDateTime
+  [_]
+  zoneddatetime-meta)

@@ -79,9 +79,11 @@
                   {:type Timestamp}))
    => Timestamp"
   {:added "2.2"}
-  ([s pattern] (parse s pattern {:type common/*default-type*}))
-  ([s pattern {:keys [type cached] :as opts}]
-   (let [tmeta  (time/-time-meta type)
+  ([s pattern] (parse s pattern {}))
+  ([s pattern {:keys [cached] :as opts}]
+   (let [opts   (merge {:type common/*default-type*} opts)
+         type   (:type opts) 
+         tmeta  (time/-time-meta type)
          ptype  (-> tmeta :parser :type)
          parser (cache +parse-cache+
                       (fn [] (time/-parser pattern (assoc opts :type ptype)))

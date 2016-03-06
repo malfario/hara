@@ -46,8 +46,7 @@
 
 (defn representation?
   "checks if an object implements the representation protocol
-   (t/representation? 0) => false
- 
+   (t/representation? 0) => false 
    (t/representation? (common/calendar (Date. 0) (TimeZone/getTimeZone \"GMT\")))
    => true"
   {:added "2.2"}
@@ -109,7 +108,7 @@
        (t/to-map))
    => {:type java.util.GregorianCalendar,
        :timezone \"Asia/Kolkata\",
-       :year 1970, :month 1, :day 1, :day-of-week 5,
+       :year 1970, :month 1, :day 1, :day-of-week 4,
        :hour 5, :minute 30 :second 0, :millisecond 0}"
   {:added "2.2"}
   ([t]
@@ -176,9 +175,9 @@
 
 (defn day-of-week
   "accesses the day of week representated by the instant
-   (t/day-of-week 0 {:timezone \"GMT\"}) => 5
+   (t/day-of-week 0 {:timezone \"GMT\"}) => 4
  
-   (t/day-of-week (Date. 0) {:timezone \"EST\"}) => 4"
+   (t/day-of-week (Date. 0) {:timezone \"EST\"}) => 3"
   {:added "2.2"}
   ([t] (day-of-week t {}))
   ([t opts]
@@ -238,7 +237,7 @@
    => #inst \"1970-01-01T00:00:00.000-00:00\"
  
    (t/epoch {:type clojure.lang.PersistentArrayMap :timezone \"GMT\"})
-   => {:year 1970, :month 1 :day 1, :day-of-week 5, 
+   => {:year 1970, :month 1 :day 1, :day-of-week 4, 
        :hour 0 :minute 0 :second 0 :millisecond 0, 
        :timezone \"GMT\"}"
   {:added "2.2"}
@@ -311,11 +310,11 @@
    (t/adjust (Date. 0) {:year 2000 :second 10} {:timezone \"GMT\"})
    => #inst \"2000-01-01T00:00:10.000-00:00\"
  
-   (t/adjust {:year 1970, :month 1 :day 1, :day-of-week 5, 
+   (t/adjust {:year 1970, :month 1 :day 1, :day-of-week 4, 
               :hour 0 :minute 0 :second 0 :millisecond 0, 
               :timezone \"GMT\"}
              {:year 1999})
-   => {:year 1999, :month 1 :day 1, :day-of-week 6, 
+   => {:year 1999, :month 1 :day 1, :day-of-week 5, 
        :hour 0 :minute 0 :second 0 :millisecond 0, 
        :timezone \"GMT\"}"
   {:added "2.2"}
@@ -324,8 +323,8 @@
   ([t rep opts]
    (let [m (-> (to-map t opts)
                (merge rep)
-               (assoc :type Long))]
-     (from-long (from-map m)
+               (dissoc :long))]
+     (from-long (from-map m {:type Long})
                 (assoc m :type (class t))))))
 
 (defn truncate
@@ -343,7 +342,7 @@
   ([t col opts]
    (let [rep (to-map t opts)
          trep (select-keys rep (drop-while #(not= col %) common/+default-keys+))]
-     (from-map trep
+     (from-map (dissoc trep :long)
                (assoc opts :type (class t))
                common/+zero-values+))))
 

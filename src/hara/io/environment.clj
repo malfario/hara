@@ -42,7 +42,7 @@
   "alternate way of getting clojure and java version
    (env/version :clojure)
    => (env/clojure-version)
-
+ 
    (env/version :java)
    => (env/java-version)"
   {:added "2.2"}

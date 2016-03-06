@@ -50,6 +50,34 @@
 ^{:refer hara.io.scheduler/disable-task :added "2.2"}
 (fact "disables a specific task in the scheduler")
 
+^{:refer hara.io.scheduler/delete-task :added "2.2"}
+(fact "deletes a specific task in the scheduler")
+
+^{:refer hara.io.scheduler/empty-tasks :added "2.2"}
+(fact "clears all tasks in the scheduler")
+
+^{:refer hara.io.scheduler/add-task :added "2.2"}
+(fact "add a task to the scheduler"
+  (add-task (scheduler {})
+            :hello {:handler (fn [t params] (println params))
+                    :schedule "* * * * * * *"
+                    :params {:data "foo"}}))
+
+^{:refer hara.io.scheduler/reschedule-task :added "2.2"}
+(fact "changes the schedule for an already existing task"
+  (-> (scheduler {:hello {:handler (fn [t params] (println params))
+                                       :schedule "* * * * * * *"
+                          :params {:data "foo"}}})
+      (reschedule-task :hello "/5 * * * * * *")))
+
+^{:refer hara.io.scheduler/reparametise-task :added "2.2"}
+(fact "changes the schedule for an already existing task"
+  (-> (scheduler {:hello {:handler (fn [t params] (println params))
+                                         :schedule "* * * * * * *"
+                          :params {:data "foo"}}})
+      (reparametise-task :hello {:data "bar"})))
+
+
 ^{:refer hara.io.scheduler/trigger! :added "2.2"}
 (fact "manually executes a task, bypassing the scheduler")
 

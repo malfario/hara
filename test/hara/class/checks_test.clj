@@ -27,3 +27,8 @@
   (protocol? ISomeProtocol) => true
 
   (protocol? clojure.lang.ILookup) => false)
+
+^{:refer hara.class.checks/dispatches? :added "2.1"}
+(fact "Returns `true` if the multimethod contains a value for dispatch"
+  (dispatches? print-method Class)
+  => true)

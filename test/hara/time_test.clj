@@ -10,7 +10,7 @@
 ^{:refer hara.time/default-type :added "2.2"}
 (fact "accessor to the default type for date creation"
   (t/default-type)
-  => java.util.Date)
+  => clojure.lang.PersistentArrayMap)
 
 ^{:refer hara.time/default-timezone :added "2.2"}
 (fact "accessor to the default timezone"
@@ -122,7 +122,7 @@
 
 ^{:refer hara.time/now :added "2.2"}
 (fact "returns the current datetime"
-  (t/now)
+  (t/now {:type Date})
   => #(instance? Date %)
 
   (t/now {:type Calendar})
@@ -130,13 +130,14 @@
 
 ^{:refer hara.time/epoch :added "2.2"}
 (fact "returns the beginning of unix epoch"
-  (t/epoch)
+  (t/epoch {:type Date})
   => #inst "1970-01-01T00:00:00.000-00:00"
 
   (t/epoch {:type clojure.lang.PersistentArrayMap :timezone "GMT"})
-  => {:year 1970, :month 1 :day 1, :day-of-week 4, 
+  => {:timezone "GMT",
+      :year 1970, :month 1 :day 1, :day-of-week 4, 
       :hour 0 :minute 0 :second 0 :millisecond 0, 
-      :timezone "GMT"})
+      })
 
 ^{:refer hara.time/equal :added "2.2"}
 (fact "compares dates, retruns true if all inputs are the same"

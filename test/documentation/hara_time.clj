@@ -67,7 +67,7 @@ An example of extensiblity can be seen with [hara.time.joda](https://github.com/
 "The default type can be accessed through `default-type`:"
 
 (t/default-type)
-;;=> java.util.Date
+;;=> clojure.lang.PersistentArrayMap
 
 "The default timezone can also be accessed and modified through `default-timezone`"
 
@@ -136,10 +136,6 @@ An example of extensiblity can be seen with [hara.time.joda](https://github.com/
 ;;=> {:day 4, :hour 9, :timezone "GMT",
 ;;    :second 13, :day-of-week 6, :month 3,
 ;;    :year 2016, :millisecond 585, :minute 4}
-
-"Lets change it back to the default:"
-
-(t/default-type java.util.Date)
 
 [[:section {:title "Coercion"}]]
 

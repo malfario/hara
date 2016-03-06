@@ -87,8 +87,7 @@
   [scheduler {:keys [start end step pause mode]}]
   (swap! (-> scheduler :clock :state) assoc :disabled true)
   (let [scheduler (component/start scheduler)
-        tz   (-> scheduler :clock :meta :timezone)
-        type (-> scheduler :clock :meta :type)
+        clk  (-> scheduler :clock :meta)
         start-val (time/to-long start)
         end-val   (time/to-long end)
         step      (cond (nil? step) 1
@@ -98,7 +97,7 @@
         mode      (or mode :sync)
         timespan  (range start-val end-val (* 1000 step))]
     (doseq [t-val timespan]
-      (let [t (time/from-long t-val {:type type :timezone tz})]
+      (let [t (time/from-long t-val clk)]
         (reset! (:ticker scheduler)
                 {:time t :array (tab/to-time-array t) :instance {:mode mode}})
         (if-not (zero? pause)
@@ -139,6 +138,53 @@
   [scheduler name]
   (dosync (ova/smap! (-> scheduler :array :handlers) [:name name]
                      assoc :disabled true)))
+
+(defn delete-task
+  "deletes a specific task in the scheduler"
+  {:added "2.2"}
+  [scheduler name]
+  (dosync (ova/remove! (-> scheduler :array :handlers) [:name name])))
+
+(defn empty-tasks
+  "clears all tasks in the scheduler"
+  {:added "2.2"}
+  [scheduler]
+  (dosync (ova/empty! (-> scheduler :array :handlers))))
+
+(defn add-task
+  "add a task to the scheduler
+   (add-task (scheduler {})
+             :hello {:handler (fn [t params] (println params))
+                    :schedule \"* * * * * * *\"
+                     :params {:data \"foo\"}})"
+  {:added "2.2"}
+  [scheduler name props]
+  (dosync (ova/append! (-> scheduler :array :handlers)
+                       (array/build-handler name props {}))))
+
+(defn reschedule-task
+  "changes the schedule for an already existing task
+   (-> (scheduler {:hello {:handler (fn [t params] (println params))
+                                        :schedule \"* * * * * * *\"
+                          :params {:data \"foo\"}}})
+       (reschedule-task :hello \"/5 * * * * * *\"))"
+  {:added "2.2"}
+  [scheduler name schedule]
+  (dosync (ova/smap! (-> scheduler :array :handlers) [:name name]
+                     assoc
+                     :schedule schedule
+                     :schedule-array (tab/parse-tab schedule))))
+
+(defn reparametise-task
+  "changes the schedule for an already existing task
+   (-> (scheduler {:hello {:handler (fn [t params] (println params))
+                                          :schedule \"* * * * * * *\"
+                          :params {:data \"foo\"}}})
+       (reparametise-task :hello {:data \"bar\"}))"
+  {:added "2.2"}
+  [scheduler name opts]
+  (dosync (ova/smap! (-> scheduler :array :handlers) [:name name]
+                     update-in [:params] merge opts)))
 
 (defn trigger!
   "manually executes a task, bypassing the scheduler"

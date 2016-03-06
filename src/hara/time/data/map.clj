@@ -5,7 +5,8 @@
             [hara.time.data
              [common :as common]])
   (:import [java.util Date TimeZone Calendar]
-           [clojure.lang PersistentArrayMap PersistentHashMap]))
+           [clojure.lang PersistentArrayMap PersistentHashMap]
+           [java.text SimpleDateFormat]))
 
 (defn include-timezone [rep t tz-fn opts]
   (let [timezone (or (:timezone opts)
@@ -21,7 +22,7 @@
   "converts an instant to a map
    (to-map 0 {:timezone \"GMT\"})
    => {:type java.lang.Long, :timezone \"GMT\", 
-       :year 1970, :month 1, :day 1,  :day-of-week 5,
+       :year 1970, :month 1, :day 1, :day-of-week 4,
        :hour 0, :minute 0 :second 0 :millisecond 0}
  
    (to-map (Date. 0) {:timezone \"EST\"
@@ -34,17 +35,19 @@
    (to-map t nil))
   ([t opts]
    (to-map t opts :all))
-  ([t opts ks]
+  ([t {:keys [timezone] :as opts} ks]
    (cond (map? t)
          (-> (merge t opts)
              (assoc :type PersistentArrayMap))
-
+         
          :else
-         (let [tmeta (-> (class t)
-                         (time/-time-meta)
-                         :rep
-                         :to)
-               [p pmeta] (common/to-proxy t opts tmeta) 
+         (let [meta (-> (class t)
+                        (time/-time-meta))
+               [p pmeta] (common/to-proxy t opts (-> meta :rep :to))
+               t    (let [set-fn (-> meta :access :timezone :set)]
+                      (if (and timezone set-fn)
+                        (set-fn t timezone)
+                        t))
                fns  (if (= ks :all)
                       (dissoc (:fn pmeta) :timezone)
                       (select-keys (:fn pmeta) ks))
@@ -54,10 +57,13 @@
                                fns)
                rep (if (false? (:include-timezone? opts))
                      rep
-                     (include-timezone rep p (-> tmeta :fn :timezone) opts))
+                     (include-timezone rep p (-> pmeta :fn :timezone) opts))
                rep (if (false? (:include-type? opts))
                      rep
-                     (assoc rep :type (class t)))]
+                     (assoc rep :type (class t)))
+               rep (if (:include-long? opts)
+                     (assoc rep :long (time/-to-long t))
+                     rep)]
            rep))))
 
 (defn from-map
@@ -73,12 +79,21 @@
   ([m opts]
    (from-map m opts nil))
   ([m opts fill]
-   (let [{:keys [type] :as m} (merge fill m opts)
+   (let [{:keys [type long] :as m} (merge fill m opts)
          {:keys [proxy via] :as fmeta} (get-in (time/-time-meta type)
                                                [:rep :from])]
-     (if proxy
-       (via (from-map (assoc m :type proxy) nil))
-       ((:fn fmeta) m)))))
+     (cond (or (nil? type)  
+               (#{PersistentArrayMap PersistentHashMap} type))
+           m
+       
+           long
+           (time/-from-long long opts)
+
+           proxy
+           (via (from-map (assoc m :type proxy) nil))
+
+           :else
+           ((:fn fmeta) m)))))
 
 (defmethod time/-from-long PersistentArrayMap 
   [long opts]
@@ -87,8 +102,20 @@
 
 (extend-type PersistentArrayMap
   time/IInstant
-  (-to-long [m]
-    (from-map {:type Long})))
+  (-to-long [{:keys [long] :as m}]
+    (if long
+      long
+      (from-map m {:type Long})))
+
+  time/IRepresentation
+  (-millisecond  [t _] (:millisecond t))
+  (-second       [t _] (:second t))
+  (-minute       [t _] (:minute t))
+  (-hour         [t _] (:hour t))
+  (-day          [t _] (:day t))
+  (-day-of-week  [t _] (:day-of-week t))
+  (-month        [t _] (:month t))
+  (-year         [t _] (:year t)))
 
 (defmethod time/-now PersistentArrayMap
   [opts]
@@ -96,10 +123,24 @@
                   opts)
           :type))
 
+(def map-meta
+  {:base :instant
+   :formatter {:type SimpleDateFormat}
+   :parser    {:type SimpleDateFormat}
+   :rep  {:from {:fn identity}
+          :to   {:fn {:millisecond  :millisecond
+                      :second       :second      
+                      :minute       :minute
+                      :hour         :hour
+                      :day          :day
+                      :day-of-week  :day-of-week
+                      :month        :month
+                      :year         :year
+                      :timezone     :timezone}}}})
+
 (defmethod time/-time-meta PersistentArrayMap
   [_]
-  {:base :instant
-   :rep  {:from {:fn identity}}})
+  map-meta)
 
 (defmethod time/-from-long PersistentHashMap 
   [long opts]
@@ -108,8 +149,20 @@
 
 (extend-type PersistentHashMap
   time/IInstant
-  (-to-long [m]
-    (from-map {:type Long})))
+  (-to-long [{:keys [long] :as m}]
+    (if long
+      long
+      (from-map m {:type Long})))
+  
+  time/IRepresentation
+  (-millisecond  [t _] (:millisecond t))
+  (-second       [t _] (:second t))
+  (-minute       [t _] (:minute t))
+  (-hour         [t _] (:hour t))
+  (-day          [t _] (:day t))
+  (-day-of-week  [t _] (:day-of-week t))
+  (-month        [t _] (:month t))
+  (-year         [t _] (:year t)))
 
 (defmethod time/-now PersistentHashMap
   [opts]
@@ -119,6 +172,4 @@
 
 (defmethod time/-time-meta PersistentHashMap
   [_]
-  {:base :instant
-   :rep  {:from {:fn identity}}})
-
+  map-meta)

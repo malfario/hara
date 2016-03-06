@@ -41,11 +41,10 @@
        (-> obj :on str Class/forName class?)
        (-> obj :on-interface class?)))
 
-(defn implements?
-  [protocol obj]
-  (or (some #(instance? % obj) (keys (:impls protocol)))
-      false))
-
 (defn dispatches?
+  "Returns `true` if the multimethod contains a value for dispatch
+   (dispatches? print-method Class)
+   => true"
+  {:added "2.1"}
   [^clojure.lang.MultiFn multi val]
-  (some? #(= % val) (keys (.getMethodTable multi))))
+  (some #(= % val) (keys (.getMethodTable multi))))

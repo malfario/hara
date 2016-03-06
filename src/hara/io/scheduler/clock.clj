@@ -29,9 +29,9 @@
                    :current-time  next-time
                    :current-array next-array)
             (if-let [ticker (:ticker clock)]
-              (reset! ticker {:time (time/truncate next-time (-> clock :meta :truncate))
+              (reset! ticker {:time (time/truncate next-time (:truncate opts) opts)
                               :array next-array})))
-
+        
         :else
         (let [interval   (-> clock :meta :interval)
               sleep-time (- 1000

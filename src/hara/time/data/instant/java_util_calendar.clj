@@ -28,7 +28,7 @@
 (defmethod time/-now Calendar
   [{:keys [timezone]}]
   (common/calendar (Date.)
-                 (coerce/coerce-zone timezone {:type TimeZone})))
+                   (coerce/coerce-zone timezone {:type TimeZone})))
 
 (defn from-map [{:keys [millisecond second minute hour day month year timezone]}]
   (let [cal (doto (Calendar/getInstance ^TimeZone
@@ -39,11 +39,15 @@
               (.set cal Calendar/MILLISECOND millisecond))]
     cal))
 
-(defmethod time/-time-meta Calendar
-  [_]
+(def calendar-meta
   {:base :instant
    :formatter {:type SimpleDateFormat}
    :parser    {:type SimpleDateFormat}
+   :access    {:timezone {:get (fn [^Calendar cal]
+                                 (.getTimeZone cal))
+                          :set (fn [^Calendar cal tz]
+                                 (.setTimeZone cal (coerce/coerce-zone tz {:type TimeZone}))
+                                 cal)}}
    :rep {:from  {:fn from-map}
          :to    {:fn {:millisecond time/-millisecond
                       :second      time/-second
@@ -54,3 +58,7 @@
                       :month       time/-month
                       :year        time/-year
                       :timezone    (fn [^Calendar t opts] (.getTimeZone t))}}}})
+
+(defmethod time/-time-meta Calendar
+  [_]
+  calendar-meta)

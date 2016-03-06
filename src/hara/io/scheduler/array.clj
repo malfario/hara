@@ -15,21 +15,24 @@
   [v ^java.io.Writer w]
   (.write w (str v)))
 
-(defn build-handlers [handlers config]
-  (reduce-kv (fn [out k v]
-               (let [procmap (cond (fn? v)
-                                   {:name   k
-                                    :handler v}
+(defn build-handler [name props config]
+  (let [procmap (cond (fn? props)
+                      {:name   name
+                       :handler props}
+                      
+                      (map? props)
+                      (assoc props :name name))
+        procmap (merge procmap (get config name))
+        _       (if-not (:schedule procmap)
+                  (throw (Exception. (str "The schedule for task " name " does not exist"))))
+        procmap (assoc procmap
+                       :schedule-array (tab/parse-tab (:schedule procmap))
+                       :id-fn :timestamp)]
+    (procedure/procedure procmap [:timestamp :params :instance])))
 
-                                   (map? v)
-                                   (assoc v :name k))
-                     procmap (merge procmap (get config k))
-                     _       (if-not (:schedule procmap)
-                               (throw (Exception. (str "The schedule for task " k " does not exist"))))
-                     procmap (assoc procmap
-                                    :schedule-array (tab/parse-tab (:schedule procmap))
-                                    :id-fn :timestamp)]
-                 (conj out (procedure/procedure procmap [:timestamp :params :instance]))))
+(defn build-handlers [handlers config]
+  (reduce-kv (fn [out name props]
+               (conj out (build-handler name props config)))
              []
              handlers))
 
