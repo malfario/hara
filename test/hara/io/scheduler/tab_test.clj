@@ -18,7 +18,6 @@
   (map (*- 0 10) (range 60))
   => (map (fn [x] (and (>= x 0) (<= x 10))) (range 60)))
 
-
 ^{:refer hara.io.scheduler.tab/to-time-array :added "2.2"}
 (fact "takes a time element and returns an array representation"
   

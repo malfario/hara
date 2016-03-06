@@ -28,16 +28,30 @@
   (env/version :java)
   => (env/java-version))
 
-^{:refer hara.io.environment/require :added "2.2"}
+^{:refer hara.io.environment/satisfied :added "2.2"}
 (fact "only attempts to load the files when the minimum versions have been met"
-  (env/require {:java    {:major 1 :minor 8}
-                :clojure {:major 1 :minor 6}}
-               '[hara.time.data.zone
-                 java-time-zoneid]
-               '[hara.time.data.instant
-                 java-time-instant]
-               '[hara.time.format
-                 java-time-format-datetimeformatter]))
+  (env/satisfied {:java    {:major 1 :minor 7}
+                  :clojure {:major 1 :minor 6}})
+  => true)
+
+
+^{:refer hara.io.environment/init :added "2.2"}
+(fact "only attempts to load the files when the minimum versions have been met"
+  (env/init {:java    {:major 1 :minor 8}
+             :clojure {:major 1 :minor 6}}
+            (:require [hara.time.data.zone
+                       java-time-zoneid]
+                      [hara.time.data.instant
+                       java-time-instant]
+                      [hara.time.data.format
+                       java-time-format-datetimeformatter])
+            (:import java.time.Instant)))
+
+^{:refer hara.io.environment/run :added "2.2"}
+(fact "only runs the following code is the minimum versions have been met"
+  (env/run {:java    {:major 1 :minor 8}
+            :clojure {:major 1 :minor 6}}
+    (Instant/ofEpochMilli 0)))
 
 ^{:refer hara.io.environment/properties :added "2.2"}
 (fact "returns jvm properties in a nested map for easy access"

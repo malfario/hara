@@ -117,7 +117,7 @@
                           "hara-time"
                           {:input "test/documentation/hara_time.clj"
                            :title "time"
-                           :subtitle "unified time representation framework"}}
+                           :subtitle "time as a clojure map"}}
                 :html {:logo "hara.png"
                        :home  "index"}
                 :link {:auto-tag    true

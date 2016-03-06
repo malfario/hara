@@ -51,18 +51,13 @@
     :clojure (clojure-version)
     :java    (java-version)))
 
-(defn require
+(defn satisfied
   "only attempts to load the files when the minimum versions have been met
-   (env/require {:java    {:major 1 :minor 8}
-                 :clojure {:major 1 :minor 6}}
-               '[hara.time.data.zone
-                  java-time-zoneid]
-                '[hara.time.data.instant
-                  java-time-instant]
-                '[hara.time.format
-                  java-time-format-datetimeformatter])"
+   (env/satisfied {:java    {:major 1 :minor 7}
+                   :clojure {:major 1 :minor 6}})
+   => true"
   {:added "2.2"}
-  [constraints & libs]
+  [constraints]
   (let [satisfy (fn [current constraint]
                   (every? (fn [[label val]]
                             (>= (get current label) val))
@@ -71,7 +66,40 @@
                     (let [current (version tag)]
                       (satisfy current constraint)))
                   (seq constraints))
-        (apply clojure.core/require libs))))
+      true)))
+
+(defmacro init
+  "only attempts to load the files when the minimum versions have been met
+   (env/init {:java    {:major 1 :minor 8}
+              :clojure {:major 1 :minor 6}}
+            (:require [hara.time.data.zone
+                        java-time-zoneid]
+                       [hara.time.data.instant
+                        java-time-instant]
+                       [hara.time.data.format
+                        java-time-format-datetimeformatter])
+             (:import java.time.Instant))"
+  {:added "2.2"}
+  [constraints & statements]
+  (if (satisfied constraints)
+    (let [trans-fn (fn [[k & rest]]
+                     (let [sym (symbol (str "clojure.core/" (name k)))]
+                       (cons sym (map (fn [w]
+                                              (if (keyword? w)
+                                                w
+                                                (list 'quote w)))
+                                      rest))))]
+      (cons 'do (map trans-fn statements)))))
+
+(defmacro run
+  "only runs the following code is the minimum versions have been met
+   (env/run {:java    {:major 1 :minor 8}
+             :clojure {:major 1 :minor 6}}
+    (Instant/ofEpochMilli 0))"
+  {:added "2.2"}
+  [constraints & body]
+  (if (satisfied constraints)
+    (cons 'do body)))
 
 (defn properties
   "returns jvm properties in a nested map for easy access

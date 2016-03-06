@@ -2,10 +2,11 @@
 
 (defmulti -time-meta (fn [cls] cls))
 
-(defmulti -timezone (fn [str opts] (:type opts)))
-
 (defprotocol IInstant
-  (-to-long      [t]))
+  (-to-long       [t])
+  (-has-timezone? [t])
+  (-get-timezone  [t])
+  (-with-timezone [t tz]))
 
 (defmulti -from-long (fn [long opts] (:type opts)))
 
@@ -25,9 +26,6 @@
   (-to-length  [d opts]))
 
 (defmulti -from-length (fn [long opts] (:type opts)))
-
-(defprotocol IInterval
-  (-duration  [in]))
 
 (defmulti -formatter (fn [pattern opts] (:type opts)))
 

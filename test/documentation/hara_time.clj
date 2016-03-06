@@ -144,8 +144,8 @@ An example of extensiblity can be seen with [hara.time.joda](https://github.com/
 (fact
   (t/to-map 0 {:timezone "GMT"})
   => {:type java.lang.Long,
-      :timezone "GMT", 
-      :year 1970, :month 1, :day 1, :day-of-week 4,
+      :timezone "GMT", :long 0
+      :year 1970, :month 1, :day 1, 
       :hour 0, :minute 0, :second 0, :millisecond 0})
 
 "`from-map`, `to-map`, `from-long` and `to-long` can be used to convert datetime to the representation of data and back"
@@ -154,8 +154,8 @@ An example of extensiblity can be seen with [hara.time.joda](https://github.com/
   (-> (t/from-long 0 {:type java.util.Calendar})
       (t/to-map {:timezone "GMT"}))
   => {:type java.util.GregorianCalendar
-      :timezone "GMT", 
-      :year 1970, :month 1, :day 1, :day-of-week 4,
+      :timezone "GMT", :long 0
+      :year 1970, :month 1, :day 1,
       :hour 0, :minute 0, :second 0, :millisecond 0})
 
 "Here are a couple more examples of the flexibilty of these methods:"
@@ -208,8 +208,8 @@ An example of extensiblity can be seen with [hara.time.joda](https://github.com/
                {:type java.time.ZonedDateTime})
       (t/to-map {}))
   => {:type java.time.ZonedDateTime
-      :timezone "Z", 
-      :year 1970, :month 1, :day 1, :day-of-week 4,
+      :timezone "Etc/GMT", :long 0
+      :year 1970, :month 1, :day 1,
       :hour 0, :minute 0, :second 0, :millisecond 0})
 
 [[:section {:title "Addition and Subtraction"}]]
@@ -237,14 +237,14 @@ An example of extensiblity can be seen with [hara.time.joda](https://github.com/
 (fact
   (-> (t/from-map {:type java.time.ZonedDateTime
                    :timezone "GMT", 
-                   :year 1970, :month 1, :day 1, :day-of-week 4,
+                   :year 1970, :month 1, :day 1, 
                    :hour 0, :minute 0, :second 0, :millisecond 0})
       (t/minus    {:years 10 :months 1 :weeks 4 :days 2})
       (t/to-map {:timezone "GMT"}))
   => {:type java.time.ZonedDateTime, :timezone "GMT",
-      :year 1959, :month 11, :day 2, :day-of-week 1, 
+      :long -320803200000
+      :year 1959, :month 11, :day 2, 
       :hour 0, :minute 0, :second 0, :millisecond 0})
-
 
 [[:chapter {:title "API"}]]
 

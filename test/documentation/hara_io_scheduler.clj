@@ -1,6 +1,7 @@
 (ns documentation.hara-io-scheduler
   (:use midje.sweet)
   (:require [hara.io.scheduler :refer :all]
+            [hara.time :as time]
             [hara.concurrent.procedure.registry :as registry]))
 
 [[:chapter {:title "Introduction"}]]
