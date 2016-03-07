@@ -49,6 +49,43 @@
   [obj]
   (satisfies? time/IInstant obj))
 
+(defn has-timezone?
+  "checks if the instance contains a timezone
+   (t/has-timezone? 0) => false
+ 
+   (t/has-timezone? (common/calendar (Date. 0)
+                                     (TimeZone/getDefault)))
+   => true"
+  {:added "2.2"}
+  [t]
+  (time/-has-timezone? t))
+
+(defn get-timezone
+  "returns the contained timezone if exists
+   (t/get-timezone 0) => nil
+ 
+   (t/get-timezone (common/calendar (Date. 0)
+                                    (TimeZone/getTimeZone \"EST\")))
+   => \"EST\""
+  {:added "2.2"}
+  [t]
+  (time/-get-timezone t))
+
+(defn with-timezone
+  "returns the same instance in a different timezone
+   (t/with-timezone 0 \"EST\") => 0
+ 
+   (t/to-map (t/with-timezone (common/calendar (Date. 0)
+                                               (TimeZone/getTimeZone \"GMT\"))
+               \"EST\"))
+   => {:type java.util.GregorianCalendar,
+       :timezone \"EST\", :long 0,
+       :year 1969, :month 12, :day 31, :hour 19,
+       :minute 0, :second 0, :millisecond 0}"
+  {:added "2.2"}
+  [t tz]
+  (time/-with-timezone t tz))
+
 (defn time-meta
   "retrieves the meta-data for the time object
    (t/time-meta TimeZone)
@@ -100,7 +137,9 @@
   ([t opts] (to-map t opts common/+default-keys+))
   ([t {:keys [timezone] :as opts} ks]
    (cond (map? t)
-         (time/-with-timezone t timezone)
+         (if timezone
+           (time/-with-timezone t timezone)
+           t)
          
          :else
          (map/to-map t opts ks))))
@@ -356,16 +395,42 @@
    
    (t/truncate #inst \"1989-12-28T12:34:00.000-00:00\"
                :year {:timezone \"GMT\"})
-   => #inst \"1989-01-01T00:00:00.000-00:00\""
+   => #inst \"1989-01-01T00:00:00.000-00:00\"
+ 
+   (t/truncate (t/to-map #inst \"1989-12-28T12:34:00.000-00:00\" {:timezone \"GMT\"})
+               :hour)
+   => {:type clojure.lang.PersistentHashMap, :timezone \"GMT\", :long 630849600000,
+       :year 1989, :month 12, :day 28,
+       :hour 12, :minute 0, :second 0, :millisecond 0}"
   {:added "2.2"}
   ([t col]
    (truncate t col {}))
   ([t col opts]
    (let [rep  (to-map t opts)
-         trep (select-keys rep (cons :timezone (drop-while #(not= col %) common/+default-keys+)))]
-     (from-map (dissoc trep :long)
-               (assoc opts :type (class t))
-               common/+zero-values+))))
+         trep (->> common/+default-keys+
+                   (drop-while #(not= col %))
+                   (concat [:type :timezone])
+                   (select-keys rep))]
+     (from-map (merge common/+zero-values+ (dissoc trep :long))
+               (assoc opts :type (class t))))))
+
+(defn coerce
+  "adjust fields of a particular time
+   (t/coerce 0 {:type Date})
+   => #inst \"1970-01-01T00:00:00.000-00:00\"
+   
+   (t/coerce {:type clojure.lang.PersistentHashMap,
+              :timezone \"PST\", :long 915148800000,
+              :year 1999, :month 1, :day 1, :hour 0, :minute 0 :second 0, :millisecond 0}
+             {:type Date})
+   => #inst \"1999-01-01T08:00:00.000-00:00\""
+  {:added "2.2"}
+  [t {:keys [type timezone] :as opts}]
+  (let [type (or type common/*default-type*)
+        timezone (or timezone
+                     (get-timezone t))]
+    (-> (to-long t)
+        (from-long {:type type :timezone timezone}))))
 
 (defn latest
   "returns the latest date out of a range of inputs

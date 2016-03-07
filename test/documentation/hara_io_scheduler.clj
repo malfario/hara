@@ -453,10 +453,13 @@ It can be seen that we can simulate the actual speed of outputs by keeping the s
   
   ;;> #<Instant 2016-03-05T03:24:08Z>
 
-  ;;  ... printing out instances of java.time.Instant  ...
+  ;;  ... printing out instances of java.time.Instant every 2 seconds ...
   
   (stop! sch2))
 
+[[:section {:title "Date as data"}]]
+
+"It is also possible to use the clojure map representation (the default in hara.time)"
 
 (comment
   (def sch2 (scheduler {:hello {:handler  (fn [t params] (println t))
@@ -465,17 +468,24 @@ It can be seen that we can simulate the actual speed of outputs by keeping the s
                        {}
                        {:clock {:type "clojure.lang.PersistentArrayMap"
                                 :timezone "GMT"}}))
-
-  (start! sch2)
   
-  (stop! sch2)
+  (start! sch2)
 
-  sch2
-  )
+  ;;> {:day 6, :hour 20, :timezone GMT, :second 38, :month 3,
+  ;;   :type clojure.lang.PersistentHashMap, :year 2016, :millisecond 0, :minute 30}
+
+  ;;  ... wait 2 seconds ...
+  
+  ;;> {:day 6, :hour 20, :timezone GMT, :second 40, :month 3,
+  ;;   :type clojure.lang.PersistentHashMap, :year 2016, :millisecond 0, :minute 30}
+  
+  ;;  ... printing out instances of java.time.Instant every 2 seconds ...
+  
+  (stop! sch2))
 
 [[:section {:title "Timezone"}]]
 
-
+"Having a `:timezone` value in the clock will ensure that the right timezone is set. The default will always be the system local time, but it can be set to any timezone. To see this in effect, the `Calendar` object is used and EST is applied."
 
 (comment
   (def sch2 (scheduler {:hello {:handler  (fn [t params] (println t))
@@ -486,15 +496,18 @@ It can be seen that we can simulate the actual speed of outputs by keeping the s
                                 :timezone "EST"}}))
   
   (start! sch2)
+
+  ;;> #inst "2016-03-06T15:37:38.000-05:00"
   
+  ;;  ... wait 2 seconds ...
 
-  (stop! sch2)
+  ;;> #inst "2016-03-06T15:37:40.000-05:00"
 
-  sch2
-  
-  )
+  ;;  ... wait 2 seconds ...
 
+  ;;> #inst "2016-03-06T15:37:42.000-05:00"
 
+  (stop! sch2))
 
 
 [[:chapter {:title "Realtime Management"}]]
@@ -697,6 +710,91 @@ It can be seen that we can simulate the actual speed of outputs by keeping the s
 [[:chapter {:title "API"}]]
 
 [[:api {:namespace "hara.io.scheduler"}]]
+
+[[:chapter {:title "Cronj"}]]
+
+[[:section {:title "Upgrade"}]]
+
+"[cronj](https://github.com/zcaudate/cronj) was the original scheduling library before the concept became absorbed into the larger [hara](https://docs.caudate.me/hara) ecosystem and the `hara.ion.scheduler` library was born. Although there was a significant cleanup of the internal components within the scheduler, the architecture has not really changed at all. Most of the original cronj methods have been kept pretty much the same so it should be very quick to move from one to the other.
+
+[cronj](https://github.com/zcaudate/cronj) uses [clj-time](https://github.com/clj-time/clj-time), a wrapper around [joda-time](http://www.joda.org/joda-time/) to provide for time manipulation. The library has been swapped out in favor of `hara.time` because it provides a more flexible option.
+
+`hara.io.scheduler` allows the user to select from a few different time implementations and so while new projects can start with the new `java.time.Instant` entry, or even the clojure map representation of time. However, many projects will still be working with [joda-time](http://www.joda.org/joda-time/) and this has been supported through another project - [hara.time.joda](https://github.com/zcaudate/hara.time.joda), which provides joda-time extensions to `hara.time`."
+
+"To upgrade to `cronj` to `hara.io.scheduler`, all that needs to be done is to add to `project.clj` dependencies:
+ 
+    [im.chit/hara.io.scheduler \"{{PROJECT.version}}\"]
+    [im.chit/hara.time.joda    \"{{PROJECT.version}}\"]
+
+Apart from the initial call to include the scheduler, require the `hara.time.joda` namespace to load in all the protocol and multimethod hooks."
+
+(comment
+  (require '[hara.io.scheduler :refer :all])
+  (require '[hara.time.joda]))
+
+[[:section {:title "Constructor"}]]
+
+"Most of the methods have been kept pretty much the same, except the constructor. The previous way of constructing the scheduler looks like this:"
+
+(comment
+  (require '[cronj.core :as cj])
+  (def cnj (cj/cronj
+            :interval 2
+            :entries [{:id       :t1
+                       :handler  (fn [dt opts] (println dt) (Thread/sleep 1000))
+                       :schedule "* * * * * * *"
+                       :enabled  true
+                       :opts     {:home "/home/cronj"}}
+                      
+                      {:id       :t2
+                       :handler  (fn [dt opts] (println dt) (Thread/sleep 5000))
+                       :schedule "* * * * * * *"
+                       :enabled  true
+                       :opts     {:ex "example"}}])))
+
+"Now it looks like this:"
+
+(comment
+  (require '[hara.io.scheduler :as sch])
+  (def sch (sch/scheduler
+            {:t1 {:handler (fn [t params] (println dt) (Thread/sleep 1000))
+                  :schedule "* * * * * * *"
+                  :params   {:home "/home/cronj"}}
+             :t2 {:handler (fn [t params] (println dt) (Thread/sleep 5000))
+                  :schedule "* * * * * * *"
+                  :params   {:ex "example"}}}
+            {}
+            {:clock {:type "org.joda.time.DateTime"
+                     :interval 2}})))
+
+"Or for the seperation of config and function, as well as simplification of the interface, it can also look like this:"
+
+(comment
+  (def sch (sch/scheduler
+            {:t1 (fn [t] (println t) (Thread/sleep 1000))
+             :t2 (fn [t] (println t) (Thread/sleep 5000))}
+            {:t1 {:schedule "* * * * * * *"
+                  :params   {:home "/home/cronj"}}
+             :t2 {:schedule "* * * * * * *"
+                  :params   {:ex "example"}}}
+            {:clock {:type "org.joda.time.DateTime"
+                     :interval 2}}))
+  (sch/start! sch)
+
+  
+  ;;>#<DateTime 2016-03-07T07:47:04.000+05:30>
+  ;;>#<DateTime 2016-03-07T07:47:04.000+05:30>
+
+
+  ;;>#<DateTime 2016-03-07T07:47:05.000+05:30>
+  ;;>#<DateTime 2016-03-07T07:47:05.000+05:30>
+
+  ;;>#<DateTime 2016-03-07T07:47:06.000+05:30>
+  ;;>#<DateTime 2016-03-07T07:47:06.000+05:30>
+  
+  (sch/stop! sch))
+
+"The upgrade is complete."
 
 [[:chapter {:title "Links and Resources"}]]
 

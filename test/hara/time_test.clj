@@ -26,11 +26,39 @@
 
   (t/instant? (Date.)) => true)
 
+^{:refer hara.time/has-timezone? :added "2.2"}
+(fact "checks if the instance contains a timezone"
+  (t/has-timezone? 0) => false
+
+  (t/has-timezone? (common/calendar (Date. 0)
+                                    (TimeZone/getDefault)))
+  => true)
+
+^{:refer hara.time/get-timezone :added "2.2"}
+(fact "returns the contained timezone if exists"
+  (t/get-timezone 0) => nil
+
+  (t/get-timezone (common/calendar (Date. 0)
+                                   (TimeZone/getTimeZone "EST")))
+  => "EST")
+
+^{:refer hara.time/with-timezone :added "2.2"}
+(fact "returns the same instance in a different timezone"
+  (t/with-timezone 0 "EST") => 0
+  ^:hidden
+  (t/to-map (t/with-timezone (common/calendar (Date. 0)
+                                              (TimeZone/getTimeZone "GMT"))
+              "EST"))
+  => {:type java.util.GregorianCalendar,
+      :timezone "EST", :long 0,
+      :year 1969, :month 12, :day 31, :hour 19,
+      :minute 0, :second 0, :millisecond 0})
+
 ^{:refer hara.time/time-meta :added "2.2"}
 (fact "retrieves the meta-data for the time object"
   (t/time-meta TimeZone)
   => {:base :zone}
-
+  ^:hidden
   (t/time-meta Date)
   => (contains {:base :instant,
                 :map (contains {:from (contains {:proxy java.util.Calendar,
@@ -72,13 +100,13 @@
               {:timezone "Asia/Kolkata"
                :type Date})
   => #inst "1970-01-01T00:00:00.000-00:00"
-   
+  ^:hidden
   (t/from-map {:type Long,
                :timezone "Asia/Kolkata", :long 0
                :year 1970, :month 1, :day 1,
                :hour 5, :minute 30 :second 0, :millisecond 0})
   => 0
-
+  ^:hidden
   (t/from-map {:type Long
                :timezone "Asia/Kolkata",
                :year 1970, :month 1, :day 1,
@@ -108,7 +136,7 @@
 ^{:refer hara.time/month :added "2.2"}
 (fact "accesses the month representated by the instant"
   (t/month 0 {:timezone "GMT"}) => 1
-
+  ^:hidden
   (t/month (Date. 0) {:timezone "EST"}) => 12)
 
 ^{:refer hara.time/day :added "2.2"}
@@ -147,7 +175,7 @@
 (fact "returns the current datetime"
   (t/now {:type Date})
   => #(instance? Date %)
-
+  ^:hidden
   (t/now {:type Calendar})
   => #(instance? Calendar %))
 
@@ -155,7 +183,7 @@
 (fact "returns the beginning of unix epoch"
   (t/epoch {:type Date})
   => #inst "1970-01-01T00:00:00.000-00:00"
-
+  ^:hidden
   (t/epoch {:type clojure.lang.PersistentArrayMap :timezone "GMT"})
   {:type clojure.lang.PersistentArrayMap,
    :timezone "GMT", :long 0, 
@@ -193,7 +221,7 @@
 (fact "adjust fields of a particular time"
   (t/adjust (Date. 0) {:year 2000 :second 10} {:timezone "GMT"})
   => #inst "2000-01-01T00:00:10.000-00:00"
-
+  ^:hidden
   (t/adjust {:year 1970, :month 1 :day 1, :day-of-week 4, 
              :hour 0 :minute 0 :second 0 :millisecond 0, 
              :timezone "GMT"}
@@ -201,6 +229,17 @@
   => {:type clojure.lang.PersistentHashMap,
       :timezone "GMT", :long 915148800000,
       :year 1999, :month 1, :day 1, :hour 0, :minute 0 :second 0, :millisecond 0})
+
+^{:refer hara.time/coerce :added "2.2"}
+(fact "adjust fields of a particular time"
+  (t/coerce 0 {:type Date})
+  => #inst "1970-01-01T00:00:00.000-00:00"
+  
+  (t/coerce {:type clojure.lang.PersistentHashMap,
+             :timezone "PST", :long 915148800000,
+             :year 1999, :month 1, :day 1, :hour 0, :minute 0 :second 0, :millisecond 0}
+            {:type Date})
+  => #inst "1999-01-01T08:00:00.000-00:00")
 
 ^{:refer hara.time/truncate :added "2.2"}
 (fact "truncates the time to a particular field"
@@ -210,7 +249,13 @@
   
   (t/truncate #inst "1989-12-28T12:34:00.000-00:00"
               :year {:timezone "GMT"})
-  => #inst "1989-01-01T00:00:00.000-00:00")
+  => #inst "1989-01-01T00:00:00.000-00:00"
+  ^:hidden
+  (t/truncate (t/to-map #inst "1989-12-28T12:34:00.000-00:00" {:timezone "GMT"})
+              :hour)
+  => {:type clojure.lang.PersistentHashMap, :timezone "GMT", :long 630849600000,
+      :year 1989, :month 12, :day 28,
+      :hour 12, :minute 0, :second 0, :millisecond 0})
 
 ^{:refer hara.time/latest :added "2.2"}
 (fact "returns the latest date out of a range of inputs"

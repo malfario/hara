@@ -122,7 +122,7 @@
                        :home  "index"}
                 :link {:auto-tag    true
                        :auto-number true}}
-
+  :jvm-opts []
   :global-vars {*warn-on-reflection* true}
   :repack [{:type :clojure
             :levels 2

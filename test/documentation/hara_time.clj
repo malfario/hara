@@ -1,6 +1,10 @@
 (ns documentation.hara-time
   (:use midje.sweet)
-  (:require [hara.time :as t]))
+  (:require [hara.time :as t]
+            [hara.time.data
+             [common :as common]
+             [map :as map]])
+  (:import [java.util Date TimeZone Calendar]))
 
 [[:chapter {:title "Introduction"}]]
 
@@ -57,9 +61,16 @@ An example of extensiblity can be seen with [hara.time.joda](https://github.com/
 "We can start off with the easiest call:"
 
 (t/now)
+;;=> {:day 4, :hour 14, :timezone "Asia/Kolkata",
+;;    :long 1457081866919, :second 46, :month 3,
+;;    :type java.util.Date, :year 2016, :millisecond 919, :minute 27}
+
+"Note that `now` returns a clojure map representing the current time. This is the default type, but we can also specify that we want a `java.util.Date` object"
+
+(t/now {:type java.util.Date})
 ;;=> #inst "2016-03-04T08:57:46.919-00:00"
 
-"Note that `now` returns a `java.util.Date` object which represents the current time. If the jvm is Java 1.8, the use of `:type` can set the returned object to be of type `java.time.Instant`."
+"If the jvm is Java 1.8, the use of `:type` can set the returned object to be of type `java.time.Instant`."
 
 (t/now {:type java.time.Instant})
 ;;=> #<Instant 2016-03-04T08:58:11.678Z>
@@ -136,6 +147,77 @@ An example of extensiblity can be seen with [hara.time.joda](https://github.com/
 ;;=> {:day 4, :hour 9, :timezone "GMT",
 ;;    :second 13, :day-of-week 6, :month 3,
 ;;    :year 2016, :millisecond 585, :minute 4}
+
+[[:section {:title "Accessors"}]]
+
+[[:subsection {:title "year"}]]
+
+"accesses the year representated by the instant"
+
+(fact 
+  (t/year 0 {:timezone "GMT"}) => 1970
+
+  (t/year (Date. 0) {:timezone "EST"}) => 1969)
+
+[[:subsection {:title "month"}]]
+
+"accesses the month representated by the instant"
+
+(fact 
+  (t/month 0 {:timezone "GMT"}) => 1
+  ^:hidden
+  (t/month (Date. 0) {:timezone "EST"}) => 12)
+
+[[:subsection {:title "month"}]]
+
+"accesses the day representated by the instant"
+
+(fact 
+  (t/day 0 {:timezone "GMT"}) => 1
+
+  (t/day (Date. 0) {:timezone "EST"}) => 31)
+
+[[:subsection {:title "day"}]]
+
+"accesses the day of week representated by the instant"
+
+(fact 
+  (t/day-of-week 0 {:timezone "GMT"}) => 4
+
+  (t/day-of-week (Date. 0) {:timezone "EST"}) => 3)
+
+[[:subsection {:title "hour"}]]
+
+"accesses the hour representated by the instant"
+
+(fact 
+  (t/hour 0 {:timezone "GMT"}) => 0
+
+  (t/hour (Date. 0) {:timezone "Asia/Kolkata"}) => 5)
+
+[[:subsection {:title "minute"}]]
+
+"accesses the minute representated by the instant"
+
+(fact 
+  (t/minute 0 {:timezone "GMT"}) => 0
+
+  (t/minute (Date. 0) {:timezone "Asia/Kolkata"}) => 30)
+
+[[:subsection {:title "second"}]]
+
+"accesses the second representated by the instant"
+
+(fact 
+  (t/second 1000 {:timezone "GMT"}) => 1)
+
+[[:subsection {:title "millisecond"}]]
+
+"accesses the millisecond representated by the instant"
+
+(fact 
+  (t/millisecond 1010 {:timezone "GMT"}) => 10)
+
 
 [[:section {:title "Coercion"}]]
 
@@ -246,8 +328,146 @@ An example of extensiblity can be seen with [hara.time.joda](https://github.com/
       :year 1959, :month 11, :day 2, 
       :hour 0, :minute 0, :second 0, :millisecond 0})
 
-[[:chapter {:title "API"}]]
 
-"The entire API for `hara.time` can be seen below:"
+[[:section {:title "Timezone"}]]
 
-[[:api {:namespace "hara.time"}]]
+"There are additional methods for dealing with timezone:"
+
+[[:subsection {:title "has-timezone?"}]]
+
+"checks if the instance contains a timezone"
+
+(fact 
+  (t/has-timezone? 0) => false
+
+  (t/has-timezone? (common/calendar (Date. 0)
+                                    (TimeZone/getDefault)))
+  => true)
+
+[[:subsection {:title "get-timezone?"}]]
+
+"returns the contained timezone if exists"
+
+(fact 
+  (t/get-timezone 0) => nil
+
+  (t/get-timezone (common/calendar (Date. 0)
+                                   (TimeZone/getTimeZone "EST")))
+  => "EST")
+
+[[:subsection {:title "with-timezone?"}]]
+
+"returns the same instance in a different timezone"
+
+(fact 
+  (t/with-timezone 0 "EST") => 0
+  
+  (t/to-map (t/with-timezone (common/calendar (Date. 0)
+                                              (TimeZone/getTimeZone "GMT"))
+              "EST"))
+  => {:type java.util.GregorianCalendar,
+      :timezone "EST", :long 0,
+      :year 1969, :month 12, :day 31, :hour 19,
+      :minute 0, :second 0, :millisecond 0})
+
+[[:section {:title "Comparison"}]]
+
+
+[[:subsection {:title "equal"}]]
+
+"compares dates, retruns true if all inputs are the same"
+
+(fact 
+  (t/equal 1 (Date. 1) (common/calendar (Date. 1) (TimeZone/getTimeZone "GMT")))
+  => true)
+
+[[:subsection {:title "before"}]]
+
+"compare dates, returns true if t1 is before t2, etc"
+
+(fact 
+  (t/before 0 (Date. 1) (common/calendar (Date. 2) (TimeZone/getTimeZone "GMT")))
+  => true)
+
+[[:subsection {:title "after"}]]
+
+"compare dates, returns true if t1 is after t2, etc"
+
+(fact 
+  (t/after 2 (Date. 1) (common/calendar (Date. 0) (TimeZone/getTimeZone "GMT")))
+  => true)
+
+
+[[:subsection {:title "lastest"}]]
+
+"returns the latest date out of a range of inputs"
+
+(fact 
+  (t/latest (Date. 0) (Date. 1000) (Date. 20000))
+  => #inst "1970-01-01T00:00:20.000-00:00")
+
+[[:subsection {:title "earliest"}]]
+
+"returns the earliest date out of a range of inputs"
+
+(fact 
+  (t/earliest (Date. 0) (Date. 1000) (Date. 20000))
+  => #inst "1970-01-01T00:00:00.000-00:00")
+
+
+[[:section {:title "Coercion"}]]
+
+"Any of the dates can be coerced to and from each other:"
+
+(fact 
+  (t/coerce 0 {:type Date})
+  => #inst "1970-01-01T00:00:00.000-00:00"
+  
+  (t/coerce {:type clojure.lang.PersistentHashMap,
+             :timezone "PST", :long 915148800000,
+             :year 1999, :month 1, :day 1, :hour 0, :minute 0 :second 0, :millisecond 0}
+            {:type Date})
+  => #inst "1999-01-01T08:00:00.000-00:00")
+
+
+[[:section {:title "Adjust and Truncate"}]]
+
+[[:subsection {:title "truncate"}]]
+
+"truncates the time to a particular field"
+
+(fact 
+  (t/truncate #inst "1989-12-28T12:34:00.000-00:00"
+              :hour {:timezone "GMT"})
+  => #inst "1989-12-28T12:00:00.000-00:00"
+  
+  (t/truncate #inst "1989-12-28T12:34:00.000-00:00"
+              :year {:timezone "GMT"})
+  => #inst "1989-01-01T00:00:00.000-00:00"
+
+  (t/truncate (t/to-map #inst "1989-12-28T12:34:00.000-00:00" {:timezone "GMT"})
+              :hour)
+  => {:type clojure.lang.PersistentHashMap, :timezone "GMT", :long 630849600000,
+      :year 1989, :month 12, :day 28,
+      :hour 12, :minute 0, :second 0, :millisecond 0})
+
+[[:subsection {:title "adjust"}]]
+
+"adjust fields of a particular time"
+
+(fact 
+  (t/adjust (Date. 0) {:year 2000 :second 10} {:timezone "GMT"})
+  => #inst "2000-01-01T00:00:10.000-00:00"
+  ^:hidden
+  (t/adjust {:year 1970, :month 1 :day 1, :day-of-week 4, 
+             :hour 0 :minute 0 :second 0 :millisecond 0, 
+             :timezone "GMT"}
+            {:year 1999})
+  => {:type clojure.lang.PersistentHashMap,
+      :timezone "GMT", :long 915148800000,
+      :year 1999, :month 1, :day 1, :hour 0, :minute 0 :second 0, :millisecond 0})
+
+[[:chapter {:title "Extensiblity"}]]
+
+"Because the API is based on protocols, it is very easy to extend. For an example of how other date libraries can be added to the framework, please see [hara.time.joda](https://github.com/zcaudate/hara.time.joda) for how [joda-time](http://www.joda.org/joda-time/) was added."
+
