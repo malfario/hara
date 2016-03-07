@@ -70,6 +70,7 @@
                 <li><a href="hara-extend.html">extend</a></li>
                 <li><a href="hara-function.html">function</a></li>
                 <li><a href="hara-group.html">group</a></li>
+                <li><a href="hara-io-environment.html">io.environment</a></li>
                 <li><a href="hara-io-scheduler.html">io.scheduler</a></li>
                 <li><a href="hara-io-watch.html">io.watch</a></li>
                 <li><a href="hara-namespace.html">namespace</a></li>
@@ -77,6 +78,7 @@
                 <li><a href="hara-reflect.html">reflect</a></li>
                 <li><a href="hara-sort.html">sort</a></li>
                 <li><a href="hara-string.html">string</a></li>
+                <li><a href="hara-time.html">time</a></li>
             </ul>
             </li>
             <li>
@@ -92,7 +94,7 @@
   <div class="container row">
     <div class="col-md-4 scrollspy pull-right">
       <ul id="nav" class="nav hidden-xs hidden-sm" data-spy="affix">
-        <li><a href="#introduction">1  &nbsp;&nbsp; Introduction</a></li>
+        <li><a href="#introduction">1  &nbsp;&nbsp; Introduction</a><ul class="nav"><li><a href="#installation">1.1  &nbsp;&nbsp; Installation</a></li><li><a href="#motivation">1.2  &nbsp;&nbsp; Motivation</a></li></ul></li><li><a href="#walkthrough">2  &nbsp;&nbsp; Walkthrough</a><ul class="nav"><li><a href="#watching-atoms">2.1  &nbsp;&nbsp; Watching Atoms</a></li><li><a href="#watching-files">2.2  &nbsp;&nbsp; Watching Files</a></li><li><a href="#watch-options">2.3  &nbsp;&nbsp; Watch Options</a></li><li><a href="#components">2.4  &nbsp;&nbsp; Components</a></li></ul></li>
       </ul>
     </div>
     <div class="col-md-8" id="content">
@@ -102,7 +104,76 @@
           <h4>watch for filesystem changes</h4>
         </div>
       </div>
-      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"></div></section>
+      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.io.watch &quot;2.2.17&quot;&#93;
+</code></pre></div><div class="paragraph"><p>All functions are in the <code>hara.common.watch</code> namespace, with <code>hara.io.watch</code> providing filewatch extensions:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(require '[hara.io.watch]
+                '[hara.common.watch :as watch])</div></div></section><section class="section" id="motivation"><h3 class="section">1.2  &nbsp;&nbsp; Motivation</h3><div class="paragraph"><p><code>hara.io.watch</code> wraps the <code>java.nio.file.WatchService</code> api for an add-watch compatible interface for. There are many file watches implementations around:</p><ul><li><a href='https://github.com/derekchiang/Clojure-Watch'>clojure-watch</a></li><li><a href='https://github.com/juxt/dirwatch'>dirwatch</a></li><li><a href='https://github.com/wkf/hawk'>hawk</a></li><li><a href='https://github.com/ibdknox/watchtower'>watchtower</a></li><li><a href='https://github.com/klauern/java-watcher.clj'>java-watcher</a></li><li><a href='https://github.com/xsc/panoptic'>panoptic</a></li><li><a href='https://github.com/rplevy/ojo'>ojo</a></li><li><a href='https://github.com/Raynes/filevents'>filevents</a></li></ul><p>As well as seperate filewatch implementations as part of larger application libraries. </p><ul><li><a href='https://github.com/marick/lein-midje'>lein-midje</a></li><li><a href='https://github.com/weavejester/ns-tracker'>ns-tracker</a></li><li><a href='https://github.com/stuartsierra/lazytest'>lazytest</a></li></ul><p>The novelty of <code>hara.io.watch</code> lies in the concept that it extends <code>hara.common.watch</code> (which is an abstraction around clojure<code>s </code>add-watch` semantics).</p></div></section></section><section class="chapter" id="walkthrough"><h2 class="chapter">2  &nbsp;&nbsp; Walkthrough</h2><section class="section" id="watching-atoms"><h3 class="section">2.1  &nbsp;&nbsp; Watching Atoms</h3><div class="paragraph"><p>There's a pattern for watching things that already exists in clojure:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(add-watch object :key (fn [object key previous next]))</div></div><div class="paragraph"><p>However, <code>add-watch</code> is a generic concept that exists beyond atoms. It can be applied to all sorts of objects. Furthermore, watching something usually comes with a condition. We usually don't react on every change that comes to us in our lives. We only react when a certain condition comes about. For example, we can see the condition that is placed on this statement: </p><blockquote><p>  Watch the noodles on the stove and IF it starts >  boiling over, add some cold water to the pot </p></blockquote><p>The <code>hara.common.watch</code> package provides for additional options to be specified when watching the object in question. Is the following example, <code>:select :b</code> is used to focus on <code>:b</code> and <code>:diff true</code> is a setting that configures the watcher so that it will only take action when <code>:b</code> has been changed:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(let [subject  (atom {:a 1 :b 2})
+      observer (atom nil)]
+  (watch/add subject :clone
+             (fn [_ _ p n] (reset! observer n))
+             
+             ;; Options
+             {:select :b   ;; we will only look at :b
+              :diff true   ;; we will only trigger if :b changes
+              })
+
+  (swap! subject assoc :a 0) ;; change in :a does not
+  @observer =&gt; nil           ;; affect watch
+
+  (swap! subject assoc :b 1) ;; change in :b does
+  @observer =&gt; 1)</div></div></section><section class="section" id="watching-files"><h3 class="section">2.2  &nbsp;&nbsp; Watching Files</h3><div class="paragraph"><p>The same concept of <code>watch</code> is used for filesystems. So instead of an atom, a directory is specified using very similar semantics:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(def ^:dynamic *happy* (promise))
+  
+;; We add a watch  
+(watch/add (io/file &quot;.&quot;) :save
+           (fn [f k _ [cmd ^java.io.File file]]
+             
+             ;; One-shot strategy where we remove the 
+             ;; watch after a single event
+             (watch/remove f k)
+             (.delete file)
+             (deliver *happy* [cmd (.getName file)]))
+           
+           ;; Options
+           {:types #{:create :modify} 
+            :recursive false
+            :filter  [&quot;.hara&quot;]
+            :exclude [&quot;.git&quot; &quot;target&quot;]
+            :mode :async})
+  
+;; We can look at the watches on the current directory
+(watch/list (io/file &quot;.&quot;))
+=&gt; (contains {:save fn?})
+  
+;; Create a file to see if the watch triggers
+(spit &quot;happy.hara&quot; &quot;hello&quot;)
+  
+;; It does!
+@*happy*
+=&gt; [:create &quot;happy.hara&quot;]
+  
+;; We see that the one-shot watch has worked
+(watch/list (io/file &quot;.&quot;))
+=&gt; {}</div></div></section><section class="section" id="watch-options"><h3 class="section">2.3  &nbsp;&nbsp; Watch Options</h3><div class="paragraph"><p>There are a couple of cenfigurable options for the filewatch:</p><ul><li><code>:types</code> determine which actions are responded to. The possible values are<ul><li><code>:create</code>, when a file is created</li><li><code>:modify</code>, when a file is mobifies</li><li><code>:delete</code>, when a file is deleted</li><li>or a combination of them</li></ul></li><li><code>:recursive</code> determines if subfolders are also going to be responded to</li><li><code>:filter</code> will pick out only files that match this pattern.</li><li><code>:exclude</code> wil leave out files that match this patter</li><li><code>:mode</code>, can be either :sync or :async</li></ul></div></section><section class="section" id="components"><h3 class="section">2.4  &nbsp;&nbsp; Components</h3><div class="paragraph"><p>It was actually very easy to build <code>hara.io.watch</code> using the idea of something that is startable and stoppable. <code>watcher</code>, <code>start-watcher</code> and <code>stop-watcher</code> all follow the conventions and so it becomes easy to wrap the component model around the three methods:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(require '[hara.component :as component]
+         '[hara.io.watch :refer :all])
+
+(extend-protocol component/IComponent
+  Watcher
+  (component/-start [watcher]
+    (println &quot;Starting Watcher&quot;)
+    (start-watcher watcher))
+
+  (component/-stop [watcher]
+    (println &quot;Stopping Watcher&quot;)
+    (stop-watcher watcher)))
+
+(def w (component/start
+        (watcher [&quot;.&quot;] println
+                 {:types #{:create :modify}
+                  :recursive false
+                  :filter  [&quot;.clj&quot;]
+                  :exclude [&quot;.git&quot;]
+                  :async false})))
+
+(component/stop w)</div></div></section></section>
     </div>
 </div><!--end of .container-->
 

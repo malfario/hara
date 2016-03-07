@@ -1,0 +1,265 @@
+
+
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <meta name="google" value="notranslate">
+
+
+    <title>time</title>
+
+    
+  <link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/languages/clojure.min.js"></script>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/magula.min.css">
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular.min.js"></script>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-cookies.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
+  <script type="text/javascript" src="js/angular-highlightjs.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="css/rdash.min.css">
+  <link rel="stylesheet" type="text/css" href="css/scrollspy.css">
+
+
+  <script>
+    window.console = window.console || function(t) {};
+    window.open = function(){ console.log("window.open is disabled."); };
+    window.print   = function(){ console.log("window.print is disabled."); };
+  </script>
+
+  <script>
+    var app = angular.module('app', ['hljs']);
+  </script>
+  </head>
+
+  <body ng-app="app" data-spy="scroll" data-target=".scrollspy">
+  <!-- Fixed navbar -->
+    <nav class="navbar navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html"><img src="img/logo.png"></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Guides <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="hara-class.html">class</a></li>
+                <li><a href="hara-common.html">common</a></li>
+                <li><a href="hara-component.html">component</a></li>
+                <li><a href="hara-concurrent.html">concurrent</a></li>
+                <li><a href="hara-concurrent-ova.html">concurrent.ova</a></li>
+                <li><a href="hara-concurrent-procedure.html">concurrent.procedure</a></li>
+                <li><a href="hara-data.html">data</a></li>
+                <li><a href="hara-event.html">event</a></li>
+                <li><a href="hara-expression.html">expression</a></li>
+                <li><a href="hara-extend.html">extend</a></li>
+                <li><a href="hara-function.html">function</a></li>
+                <li><a href="hara-group.html">group</a></li>
+                <li><a href="hara-io-environment.html">io.environment</a></li>
+                <li><a href="hara-io-scheduler.html">io.scheduler</a></li>
+                <li><a href="hara-io-watch.html">io.watch</a></li>
+                <li><a href="hara-namespace.html">namespace</a></li>
+                <li><a href="hara-object.html">object</a></li>
+                <li><a href="hara-reflect.html">reflect</a></li>
+                <li><a href="hara-sort.html">sort</a></li>
+                <li><a href="hara-string.html">string</a></li>
+                <li><a href="hara-time.html">time</a></li>
+            </ul>
+            </li>
+            <li>
+              <a href="https://github.com/zcaudate/hara" target="_blank">Github</a></li>
+            <li>
+              <a href="http://gitter.im/zcaudate/hara" target="_blank">Gitter</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+
+  <div class="container row">
+    <div class="col-md-4 scrollspy pull-right">
+      <ul id="nav" class="nav hidden-xs hidden-sm" data-spy="affix">
+        <li><a href="#introduction">1  &nbsp;&nbsp; Introduction</a><ul class="nav"><li><a href="#installation">1.1  &nbsp;&nbsp; Installation</a></li><li><a href="#motivation">1.2  &nbsp;&nbsp; Motivation</a></li></ul></li><li><a href="#walkthrough">2  &nbsp;&nbsp; Walkthrough</a><ul class="nav"><li><a href="#representation">2.1  &nbsp;&nbsp; Representation</a></li><li><a href="#supported-types">2.2  &nbsp;&nbsp; Supported Types</a></li><li><a href="#date-as-data">2.3  &nbsp;&nbsp; Date as Data</a></li><li><a href="#accessors">2.4  &nbsp;&nbsp; Accessors</a></li><li><a href="#coercion">2.5  &nbsp;&nbsp; Coercion</a></li><li><a href="#format">2.6  &nbsp;&nbsp; Format</a></li><li><a href="#parsing">2.7  &nbsp;&nbsp; Parsing</a></li><li><a href="#addition-and-subtraction">2.8  &nbsp;&nbsp; Addition and Subtraction</a></li><li><a href="#timezone">2.9  &nbsp;&nbsp; Timezone</a></li><li><a href="#comparison">2.10  &nbsp;&nbsp; Comparison</a></li><li><a href="#coercion-0">2.11  &nbsp;&nbsp; Coercion</a></li><li><a href="#adjust-and-truncate">2.12  &nbsp;&nbsp; Adjust and Truncate</a></li></ul></li><li><a href="#extensiblity">3  &nbsp;&nbsp; Extensiblity</a></li>
+      </ul>
+    </div>
+    <div class="col-md-8" id="content">
+      <div class="jumbotron">
+        <div class="container">
+          <h1>time</h1>
+          <h4>time as a clojure map</h4>
+        </div>
+      </div>
+      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/time.clj'>hara.time</a> is a unified framework for representating time on the jvm.</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.time &quot;2.2.17&quot;&#93;
+</code></pre><p>All functionality is contained in the <code>hara.time</code> namespace.</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(require '[hara.time :as t])</div></div></section><section class="section" id="motivation"><h3 class="section">1.2  &nbsp;&nbsp; Motivation</h3><div class="paragraph"><p><code>hara.time</code> provides a compact interface for dealing with the different representation of time available on the jvm. The library sticks to the following principles of how an interface around dates should be exposed:</p><ul><li>it should be consistent, so that there may be a common language between all time implementions.</li><li>it should be extensible, so that new implemention can be added easily</li><li>it should be simple and clear, to have easy to use functions and for interfactions between time objects to be seamless</li></ul><p>Currently there are a couple of implementions for time on the JVM:</p><ul><li>the < jdk1.8 options for time: <code>java.util.Date</code>, <code>java.util.Calendar</code>, <code>java.sql.Timestamp</code></li><li>the < jdk1.8 defacto standard: the <a href='http://www.joda.org/joda-time/'>joda-time</a> package</li><li>the new jdk1.8 <code>java.time</code> library</li></ul><p>Clojure libraries for time are:</p><ul><li><a href='https://github.com/clj-time/clj-time'>clj-time</a> wraps joda and is the standard for dealing with time in clojure</li><li><a href='https://github.com/dm3/clojure.joda-time'>clojure.joda-time</a> is another wrapper around joda time</li><li><a href='https://github.com/dm3/clojure.java-time'>clojure.java-time</a> is a wrapper around the jdk1.8 <code>java.time</code> package.</li><li><a href='https://github.com/wit-ai/duckling'>duckling</a> is a super amazing library for temporal expressions</li></ul><p>Ignoring <a href='https://github.com/wit-ai/duckling'>duckling</a>, which is about ten years ahead of it's time, the other three implementations faithfully wrap the underlying time library. While there are advantages in such an apprach, design decisions at the object level may impact the usability at the wrapper level.</p><p><code>hara.time</code> comes at the problem from a slightly different angle. A core set of operations and representations of time is abstracted out of each implementation, allowing for many different implementions of time to speak the same language. The library may not be as feature complete as the rest, but provides a generic and very extensible framework for time manipulation.</p><p>An example of extensiblity can be seen with <a href='https://github.com/zcaudate/hara.time.joda'>hara.time.joda</a>, an add-on package for <code>hara.time</code> for <a href='http://www.joda.org/joda-time/'>joda-time</a> compatibility.</p></div></section></section><section class="chapter" id="walkthrough"><h2 class="chapter">2  &nbsp;&nbsp; Walkthrough</h2><section class="section" id="representation"><h3 class="section">2.1  &nbsp;&nbsp; Representation</h3><div class="paragraph"><p>We can start off with the easiest call:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/now)
+;;=&gt; {:day 4, :hour 14, :timezone &quot;Asia/Kolkata&quot;,
+;;    :long 1457081866919, :second 46, :month 3,
+;;    :type java.util.Date, :year 2016, :millisecond 919, :minute 27}</div></div><div class="paragraph"><p>Note that <code>now</code> returns a clojure map representing the current time. This is the default type, but we can also specify that we want a <code>java.util.Date</code> object</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/now {:type java.util.Date})
+;;=&gt; #inst &quot;2016-03-04T08:57:46.919-00:00&quot;</div></div><div class="paragraph"><p>If the jvm is Java 1.8, the use of <code>:type</code> can set the returned object to be of type <code>java.time.Instant</code>.</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/now {:type java.time.Instant})
+;;=&gt; #&lt;Instant 2016-03-04T08:58:11.678Z&gt;</div></div><div class="paragraph"><p>The default type can be accessed through <code>default-type</code>:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/default-type)
+;;=&gt; clojure.lang.PersistentArrayMap</div></div><div class="paragraph"><p>The default timezone can also be accessed and modified through <code>default-timezone</code></p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/default-timezone)
+;;=&gt; &quot;Asia/Kolkata&quot;</div></div></section><section class="section" id="supported-types"><h3 class="section">2.2  &nbsp;&nbsp; Supported Types</h3><div class="paragraph"><p>The default type can be changed by passing in another parameter, currently <code>hara.time</code> supports the following options:</p><ul><li><code>java.lang.Long</code></li><li><code>java.util.Date</code></li><li><code>java.util.Calendar</code></li><li><code>java.sql.Timestamp</code></li><li><code>java.time.Instant</code></li><li><code>java.time.Clock</code></li><li><code>java.time.ZonedDateTime</code></li></ul></div><div class="paragraph"><p>Changing the default-type to Calendar will immediately affect the <code>now</code> function to return a <code>java.util.Calendar</code> object</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/default-type java.util.Calendar)
+
+(t/now)
+;;=&gt; #inst &quot;2016-03-04T14:28:39.481+05:30&quot;
+
+(type (t/now))
+;;=&gt; java.util.GregorianCalendar</div></div><div class="paragraph"><p>And again, a change of type will result in another representation</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/default-type java.time.ZonedDateTime)
+
+(t/now)
+;;=&gt; #&lt;ZonedDateTime 2016-03-04T15:41:17.901+05:30[Asia/Kolkata]&gt;
+
+(type (t/now))
+;;=&gt; java.time.ZonedDateTime</div></div></section><section class="section" id="date-as-data"><h3 class="section">2.3  &nbsp;&nbsp; Date as Data</h3><div class="paragraph"><p><code>hara.time</code> has two basic concepts of time:</p><ul><li>time as an absolute value (long)</li><li>time as a representation in a given context (map)</li></ul></div><div class="paragraph"><p>These concepts can also be set as the default type, for example, we now set <code>Long</code> as the default type:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/default-type Long)
+
+(t/now)
+;;=&gt; 1457086323250</div></div><div class="paragraph"><p>As well as a map as the default type:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/default-type clojure.lang.PersistentArrayMap)
+
+(t/now)
+;;=&gt; {:day 4, :hour 14, :timezone &quot;Asia/Kolkata&quot;,
+;;    :second 0, :day-of-week 6, :month 3,
+;;    :year 2016, :millisecond 611, :minute 33}</div></div><div class="paragraph"><p>A specific timezone can be passed in and this is the same for all supported time objects:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/now {:timezone &quot;GMT&quot;})
+;;=&gt; {:day 4, :hour 9, :timezone &quot;GMT&quot;,
+;;    :second 13, :day-of-week 6, :month 3,
+;;    :year 2016, :millisecond 585, :minute 4}</div></div></section><section class="section" id="accessors"><h3 class="section">2.4  &nbsp;&nbsp; Accessors</h3><section class="subsection" id="year"><h4 class="subsection">2.4.1  &nbsp;&nbsp; year</h4><div class="paragraph"><p>accesses the year representated by the instant</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/year 0 {:timezone &quot;GMT&quot;}) =&gt; 1970
+
+(t/year (Date. 0) {:timezone &quot;EST&quot;}) =&gt; 1969</div></div></section><section class="subsection" id="month"><h4 class="subsection">2.4.2  &nbsp;&nbsp; month</h4><div class="paragraph"><p>accesses the month representated by the instant</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/month 0 {:timezone &quot;GMT&quot;}) =&gt; 1
+^:hidden
+(t/month (Date. 0) {:timezone &quot;EST&quot;}) =&gt; 12</div></div></section><section class="subsection" id="month-0"><h4 class="subsection">2.4.3  &nbsp;&nbsp; month</h4><div class="paragraph"><p>accesses the day representated by the instant</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/day 0 {:timezone &quot;GMT&quot;}) =&gt; 1
+
+(t/day (Date. 0) {:timezone &quot;EST&quot;}) =&gt; 31</div></div></section><section class="subsection" id="day"><h4 class="subsection">2.4.4  &nbsp;&nbsp; day</h4><div class="paragraph"><p>accesses the day of week representated by the instant</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/day-of-week 0 {:timezone &quot;GMT&quot;}) =&gt; 4
+
+(t/day-of-week (Date. 0) {:timezone &quot;EST&quot;}) =&gt; 3</div></div></section><section class="subsection" id="hour"><h4 class="subsection">2.4.5  &nbsp;&nbsp; hour</h4><div class="paragraph"><p>accesses the hour representated by the instant</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/hour 0 {:timezone &quot;GMT&quot;}) =&gt; 0
+
+(t/hour (Date. 0) {:timezone &quot;Asia/Kolkata&quot;}) =&gt; 5</div></div></section><section class="subsection" id="minute"><h4 class="subsection">2.4.6  &nbsp;&nbsp; minute</h4><div class="paragraph"><p>accesses the minute representated by the instant</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/minute 0 {:timezone &quot;GMT&quot;}) =&gt; 0
+
+(t/minute (Date. 0) {:timezone &quot;Asia/Kolkata&quot;}) =&gt; 30</div></div></section><section class="subsection" id="second"><h4 class="subsection">2.4.7  &nbsp;&nbsp; second</h4><div class="paragraph"><p>accesses the second representated by the instant</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/second 1000 {:timezone &quot;GMT&quot;}) =&gt; 1</div></div></section><section class="subsection" id="millisecond"><h4 class="subsection">2.4.8  &nbsp;&nbsp; millisecond</h4><div class="paragraph"><p>accesses the millisecond representated by the instant</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/millisecond 1010 {:timezone &quot;GMT&quot;}) =&gt; 10</div></div></section></section><section class="section" id="coercion"><h3 class="section">2.5  &nbsp;&nbsp; Coercion</h3><div class="paragraph"><p>The map representation and the long representation provide the two most basic forms of time</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/to-map 0 {:timezone &quot;GMT&quot;})
+=&gt; {:type java.lang.Long,
+    :timezone &quot;GMT&quot;, :long 0
+    :year 1970, :month 1, :day 1, 
+    :hour 0, :minute 0, :second 0, :millisecond 0}</div></div><div class="paragraph"><p><code>from-map</code>, <code>to-map</code>, <code>from-long</code> and <code>to-long</code> can be used to convert datetime to the representation of data and back</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(-&gt; (t/from-long 0 {:type java.util.Calendar})
+    (t/to-map {:timezone &quot;GMT&quot;}))
+=&gt; {:type java.util.GregorianCalendar
+    :timezone &quot;GMT&quot;, :long 0
+    :year 1970, :month 1, :day 1,
+    :hour 0, :minute 0, :second 0, :millisecond 0}</div></div><div class="paragraph"><p>Here are a couple more examples of the flexibilty of these methods:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/from-map {:timezone &quot;GMT&quot;, 
+             :year 1970, :month 1, :day 1, :day-of-week 4,
+             :hour 0, :minute 0, :second 0, :millisecond 0}
+            {:type java.util.Date})
+=&gt; #inst &quot;1970-01-01T00:00:00.000-00:00&quot;</div></div><div class="paragraph"><p>Most time objects can be created using <code>from-long</code></p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/from-long 0 {:type java.time.Instant})
+;;=&gt; #&lt;Instant 1970-01-01T00:00:00Z&gt;</div></div></section><section class="section" id="format"><h3 class="section">2.6  &nbsp;&nbsp; Format</h3><div class="paragraph"><p>Dates can be formatted as follows:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(-&gt; (t/from-long 0 {:type java.util.Date})
+    (t/format &quot;yyyy MM dd HH mm ss&quot;
+              {:timezone &quot;GMT&quot;}))
+=&gt; &quot;1970 01 01 00 00 00&quot;</div></div><div class="paragraph"><p>All types will follow the same interface:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(-&gt; (t/from-long 0 {:type java.time.Instant})
+    (t/format &quot;yyyy MM dd HH mm ss&quot;
+              {:timezone &quot;GMT&quot;}))
+=&gt; &quot;1970 01 01 00 00 00&quot;</div></div></section><section class="section" id="parsing"><h3 class="section">2.7  &nbsp;&nbsp; Parsing</h3><div class="paragraph"><p>The opposite of formatting is parsing:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(-&gt; &quot;1970 01 01 00 00 00 +0000&quot;
+    (t/parse &quot;yyyy MM dd HH mm ss Z&quot;
+             {:type java.util.Date}))
+=&gt; #inst &quot;1970-01-01T00:00:00.000-00:00&quot;</div></div><div class="paragraph"><p>All types will follow the same interface:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(-&gt; &quot;1970 01 01 00 00 00 +0000&quot;
+    (t/parse &quot;yyyy MM dd HH mm ss Z&quot;
+             {:type java.time.ZonedDateTime})
+    (t/to-map {}))
+=&gt; {:type java.time.ZonedDateTime
+    :timezone &quot;Etc/GMT&quot;, :long 0
+    :year 1970, :month 1, :day 1,
+    :hour 0, :minute 0, :second 0, :millisecond 0}</div></div></section><section class="section" id="addition-and-subtraction"><h3 class="section">2.8  &nbsp;&nbsp; Addition and Subtraction</h3><div class="paragraph"><p>Dates can be added and substracted using long values</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/plus (java.util.Date. 0) 1000)
+=&gt; #inst &quot;1970-01-01T00:00:01.000-00:00&quot;</div></div><div class="paragraph"><p>Dates can be added and substracted using as well as map values:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/plus (java.util.Date. 0) {:weeks 4})
+=&gt; #inst &quot;1970-01-29T00:00:00.000-00:00&quot;</div></div><div class="paragraph"><p>Following the convention of adding an <code>s</code> at the end of each field, we can manipulate dates very easily</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/plus (java.util.Date. 0) {:years 10 :months 1 :weeks 4 :days 2})
+=&gt; #inst &quot;1980-03-02T00:00:00.000-00:00&quot;</div></div><div class="paragraph"><p>As well as convert from a map and back again</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(-&gt; (t/from-map {:type java.time.ZonedDateTime
+                 :timezone &quot;GMT&quot;, 
+                 :year 1970, :month 1, :day 1, 
+                 :hour 0, :minute 0, :second 0, :millisecond 0})
+    (t/minus    {:years 10 :months 1 :weeks 4 :days 2})
+    (t/to-map {:timezone &quot;GMT&quot;}))
+=&gt; {:type java.time.ZonedDateTime, :timezone &quot;GMT&quot;,
+    :long -320803200000
+    :year 1959, :month 11, :day 2, 
+    :hour 0, :minute 0, :second 0, :millisecond 0}</div></div></section><section class="section" id="timezone"><h3 class="section">2.9  &nbsp;&nbsp; Timezone</h3><div class="paragraph"><p>There are additional methods for dealing with timezone:</p></div><section class="subsection" id="has-timezone"><h4 class="subsection">2.9.1  &nbsp;&nbsp; has-timezone?</h4><div class="paragraph"><p>checks if the instance contains a timezone</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/has-timezone? 0) =&gt; false
+
+(t/has-timezone? (common/calendar (Date. 0)
+                                  (TimeZone/getDefault)))
+=&gt; true</div></div></section><section class="subsection" id="get-timezone"><h4 class="subsection">2.9.2  &nbsp;&nbsp; get-timezone?</h4><div class="paragraph"><p>returns the contained timezone if exists</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/get-timezone 0) =&gt; nil
+
+(t/get-timezone (common/calendar (Date. 0)
+                                 (TimeZone/getTimeZone &quot;EST&quot;)))
+=&gt; &quot;EST&quot;</div></div></section><section class="subsection" id="with-timezone"><h4 class="subsection">2.9.3  &nbsp;&nbsp; with-timezone?</h4><div class="paragraph"><p>returns the same instance in a different timezone</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/with-timezone 0 &quot;EST&quot;) =&gt; 0
+  
+(t/to-map (t/with-timezone (common/calendar (Date. 0)
+                                            (TimeZone/getTimeZone &quot;GMT&quot;))
+            &quot;EST&quot;))
+=&gt; {:type java.util.GregorianCalendar,
+    :timezone &quot;EST&quot;, :long 0,
+    :year 1969, :month 12, :day 31, :hour 19,
+    :minute 0, :second 0, :millisecond 0}</div></div></section></section><section class="section" id="comparison"><h3 class="section">2.10  &nbsp;&nbsp; Comparison</h3><section class="subsection" id="equal"><h4 class="subsection">2.10.1  &nbsp;&nbsp; equal</h4><div class="paragraph"><p>compares dates, retruns true if all inputs are the same</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/equal 1 (Date. 1) (common/calendar (Date. 1) (TimeZone/getTimeZone &quot;GMT&quot;)))
+=&gt; true</div></div></section><section class="subsection" id="before"><h4 class="subsection">2.10.2  &nbsp;&nbsp; before</h4><div class="paragraph"><p>compare dates, returns true if t1 is before t2, etc</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/before 0 (Date. 1) (common/calendar (Date. 2) (TimeZone/getTimeZone &quot;GMT&quot;)))
+=&gt; true</div></div></section><section class="subsection" id="after"><h4 class="subsection">2.10.3  &nbsp;&nbsp; after</h4><div class="paragraph"><p>compare dates, returns true if t1 is after t2, etc</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/after 2 (Date. 1) (common/calendar (Date. 0) (TimeZone/getTimeZone &quot;GMT&quot;)))
+=&gt; true</div></div></section><section class="subsection" id="lastest"><h4 class="subsection">2.10.4  &nbsp;&nbsp; lastest</h4><div class="paragraph"><p>returns the latest date out of a range of inputs</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/latest (Date. 0) (Date. 1000) (Date. 20000))
+=&gt; #inst &quot;1970-01-01T00:00:20.000-00:00&quot;</div></div></section><section class="subsection" id="earliest"><h4 class="subsection">2.10.5  &nbsp;&nbsp; earliest</h4><div class="paragraph"><p>returns the earliest date out of a range of inputs</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/earliest (Date. 0) (Date. 1000) (Date. 20000))
+=&gt; #inst &quot;1970-01-01T00:00:00.000-00:00&quot;</div></div></section></section><section class="section" id="coercion-0"><h3 class="section">2.11  &nbsp;&nbsp; Coercion</h3><div class="paragraph"><p>Any of the dates can be coerced to and from each other:</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/coerce 0 {:type Date})
+=&gt; #inst &quot;1970-01-01T00:00:00.000-00:00&quot;
+  
+(t/coerce {:type clojure.lang.PersistentHashMap,
+           :timezone &quot;PST&quot;, :long 915148800000,
+           :year 1999, :month 1, :day 1, :hour 0, :minute 0 :second 0, :millisecond 0}
+          {:type Date})
+=&gt; #inst &quot;1999-01-01T08:00:00.000-00:00&quot;</div></div></section><section class="section" id="adjust-and-truncate"><h3 class="section">2.12  &nbsp;&nbsp; Adjust and Truncate</h3><section class="subsection" id="truncate"><h4 class="subsection">2.12.1  &nbsp;&nbsp; truncate</h4><div class="paragraph"><p>truncates the time to a particular field</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/truncate #inst &quot;1989-12-28T12:34:00.000-00:00&quot;
+            :hour {:timezone &quot;GMT&quot;})
+=&gt; #inst &quot;1989-12-28T12:00:00.000-00:00&quot;
+  
+(t/truncate #inst &quot;1989-12-28T12:34:00.000-00:00&quot;
+            :year {:timezone &quot;GMT&quot;})
+=&gt; #inst &quot;1989-01-01T00:00:00.000-00:00&quot;
+
+(t/truncate (t/to-map #inst &quot;1989-12-28T12:34:00.000-00:00&quot; {:timezone &quot;GMT&quot;})
+            :hour)
+=&gt; {:type clojure.lang.PersistentHashMap, :timezone &quot;GMT&quot;, :long 630849600000,
+    :year 1989, :month 12, :day 28,
+    :hour 12, :minute 0, :second 0, :millisecond 0}</div></div></section><section class="subsection" id="adjust"><h4 class="subsection">2.12.2  &nbsp;&nbsp; adjust</h4><div class="paragraph"><p>adjust fields of a particular time</p></div><div class="code"><div hljs="hljs" language="clojure" no-escape="no-escape">(t/adjust (Date. 0) {:year 2000 :second 10} {:timezone &quot;GMT&quot;})
+=&gt; #inst &quot;2000-01-01T00:00:10.000-00:00&quot;
+^:hidden
+(t/adjust {:year 1970, :month 1 :day 1, :day-of-week 4, 
+           :hour 0 :minute 0 :second 0 :millisecond 0, 
+           :timezone &quot;GMT&quot;}
+          {:year 1999})
+=&gt; {:type clojure.lang.PersistentHashMap,
+    :timezone &quot;GMT&quot;, :long 915148800000,
+    :year 1999, :month 1, :day 1, :hour 0, :minute 0 :second 0, :millisecond 0}</div></div></section></section></section><section class="chapter" id="extensiblity"><h2 class="chapter">3  &nbsp;&nbsp; Extensiblity</h2><div class="group"><div class="paragraph"><p>Because the API is based on protocols, it is very easy to extend. For an example of how other date libraries can be added to the framework, please see <a href='https://github.com/zcaudate/hara.time.joda'>hara.time.joda</a> for how <a href='http://www.joda.org/joda-time/'>joda-time</a> was added.</p></div></div></section>
+    </div>
+</div><!--end of .container-->
+
+  <section class="application">
+    
+  </section>
+</body>
+
+<script>
+  $('#nav').affix({
+    offset: {
+        top: $('#nav').offset().top,
+        bottom: $('footer').outerHeight(true) + $('.application').outerHeight(true) + 40
+    }});
+</script>
+
+
+<script>
+  if (document.location.search.match(/type=embed/gi)) {
+    window.parent.postMessage("resize", "*");
+  }
+</script>
+</body>
+</html>
