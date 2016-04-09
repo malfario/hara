@@ -59,6 +59,11 @@
 
   (uri? (java.net.URI. "http://www.google.com")) => true)
 
+^{:refer hara.common.checks/url? :added "2.2"}
+(fact "Returns `true` if `x` is of type `java.net.URL`."
+
+  (url? (java.net.URL. "file:/Users/chris/Development")) => true)
+
 ^{:refer hara.common.checks/regex? :added "2.0"}
 (fact "Returns `true` if `x` implements `clojure.lang.IPersistentMap`."
 

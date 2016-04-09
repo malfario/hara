@@ -81,6 +81,13 @@
   {:added "2.0"}
   [x] (instance? java.net.URI x))
 
+(defn url?
+  "Returns `true` if `x` is of type `java.net.URL`.
+ 
+   (url? (java.net.URL. \"file:/Users/chris/Development\")) => true"
+  {:added "2.2"}
+  [x] (instance? java.net.URL x))
+
 (defn regex?
   "Returns `true` if `x` implements `clojure.lang.IPersistentMap`.
  

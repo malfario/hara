@@ -1,9 +1,9 @@
-(defproject im.chit/hara "2.2.17"
+(defproject im.chit/hara "2.2.18-SNAPSHOT"
   :description "patterns and utilities"
   :url "https://github.com/zcaudate/hara"
   :license {:name "The MIT License"
             :url "http://http://opensource.org/licenses/MIT"}
-  :dependencies [[org.clojure/clojure "1.6.0"]]
+  :dependencies [[org.clojure/clojure "1.8.0"]]
   :profiles {:dev {:dependencies [[midje "1.6.3"]
                                   [compojure "1.4.0"]
                                   [ring "1.4.0"]

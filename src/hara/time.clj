@@ -74,14 +74,7 @@
 (defn with-timezone
   "returns the same instance in a different timezone
    (t/with-timezone 0 \"EST\") => 0
- 
-   (t/to-map (t/with-timezone (common/calendar (Date. 0)
-                                               (TimeZone/getTimeZone \"GMT\"))
-               \"EST\"))
-   => {:type java.util.GregorianCalendar,
-       :timezone \"EST\", :long 0,
-       :year 1969, :month 12, :day 31, :hour 19,
-       :minute 0, :second 0, :millisecond 0}"
+   "
   {:added "2.2"}
   [t tz]
   (time/-with-timezone t tz))
@@ -90,13 +83,7 @@
   "retrieves the meta-data for the time object
    (t/time-meta TimeZone)
    => {:base :zone}
- 
-   (t/time-meta Date)
-   => (contains {:base :instant,
-                 :map (contains {:from (contains {:proxy java.util.Calendar,
-                                                  :via fn?}),
-                                 :to (contains {:proxy java.util.Calendar,
-                                                :via fn?})})})"
+   "
   {:added "2.2"}
   [cls]
   (time/-time-meta cls))
@@ -154,23 +141,7 @@
                {:timezone \"Asia/Kolkata\"
                 :type Date})
    => #inst \"1970-01-01T00:00:00.000-00:00\"
-    
-   (t/from-map {:type Long,
-                :timezone \"Asia/Kolkata\", :long 0
-                :year 1970, :month 1, :day 1,
-                :hour 5, :minute 30 :second 0, :millisecond 0})
-   => 0
- 
-   (t/from-map {:type Long
-                :timezone \"Asia/Kolkata\",
-                :year 1970, :month 1, :day 1,
-                :hour 5, :minute 30 :second 0, :millisecond 0}
-               {:type clojure.lang.PersistentHashMap
-                :timezone \"GMT\"})
-   => {:type clojure.lang.PersistentHashMap
-       :timezone \"GMT\", :long 0
-       :year 1970, :month 1, :day 1,
-       :hour 0, :minute 0 :second 0, :millisecond 0}"
+   "
   {:added "2.2"}
   ([t] (from-map t {}))
   ([t opts] (from-map t opts common/+zero-values+))
@@ -215,8 +186,7 @@
 (defn month
   "accesses the month representated by the instant
    (t/month 0 {:timezone \"GMT\"}) => 1
- 
-   (t/month (Date. 0) {:timezone \"EST\"}) => 12"
+   "
   {:added "2.2"}
   ([t] (month t {}))
   ([t opts]
@@ -282,9 +252,7 @@
   "returns the current datetime
    (t/now {:type Date})
    => #(instance? Date %)
- 
-   (t/now {:type Calendar})
-   => #(instance? Calendar %)"
+   "
   {:added "2.2"}
   ([] (now {}))
   ([opts] (time/-now (merge {:type common/*default-type*}
@@ -294,11 +262,7 @@
   "returns the beginning of unix epoch
    (t/epoch {:type Date})
    => #inst \"1970-01-01T00:00:00.000-00:00\"
- 
-   (t/epoch {:type clojure.lang.PersistentArrayMap :timezone \"GMT\"})
-   {:type clojure.lang.PersistentArrayMap,
-    :timezone \"GMT\", :long 0, 
-    :year 1970, :month 1, :day 1, :hour 0, :minute 0, :second 0, :millisecond 0, }"
+   "
   {:added "2.2"}
   ([] (epoch {}))
   ([opts] (from-long 0 (merge {:type common/*default-type*}
@@ -369,14 +333,7 @@
   "adjust fields of a particular time
    (t/adjust (Date. 0) {:year 2000 :second 10} {:timezone \"GMT\"})
    => #inst \"2000-01-01T00:00:10.000-00:00\"
- 
-   (t/adjust {:year 1970, :month 1 :day 1, :day-of-week 4, 
-              :hour 0 :minute 0 :second 0 :millisecond 0, 
-              :timezone \"GMT\"}
-             {:year 1999})
-   => {:type clojure.lang.PersistentHashMap,
-       :timezone \"GMT\", :long 915148800000,
-       :year 1999, :month 1, :day 1, :hour 0, :minute 0 :second 0, :millisecond 0}"
+   "
   {:added "2.2"}
   ([t rep]
    (adjust t rep {}))
@@ -396,12 +353,7 @@
    (t/truncate #inst \"1989-12-28T12:34:00.000-00:00\"
                :year {:timezone \"GMT\"})
    => #inst \"1989-01-01T00:00:00.000-00:00\"
- 
-   (t/truncate (t/to-map #inst \"1989-12-28T12:34:00.000-00:00\" {:timezone \"GMT\"})
-               :hour)
-   => {:type clojure.lang.PersistentHashMap, :timezone \"GMT\", :long 630849600000,
-       :year 1989, :month 12, :day 28,
-       :hour 12, :minute 0, :second 0, :millisecond 0}"
+   "
   {:added "2.2"}
   ([t col]
    (truncate t col {}))
