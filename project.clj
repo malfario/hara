@@ -7,12 +7,12 @@
   :profiles {:dev {:dependencies [[midje "1.6.3"]
                                   [compojure "1.4.0"]
                                   [ring "1.4.0"]
-                                  [clj-http "1.1.2"]
+                                  [clj-http "2.1.0"]
                                   [org.eclipse.jgit "4.0.1.201506240215-r"]
-                                  [helpshift/hydrox "0.1.15"]]
+                                  [helpshift/hydrox "0.1.16"]]
                    :plugins [[lein-midje "3.1.3"]
                              [lein-repack "0.2.10"]
-                             [lein-hydrox "0.1.14"]]}}
+                             [lein-hydrox "0.1.16"]]}}
   :documentation {:site   "hara"
                   :output "docs"
                   :description "patterns and utilities"
