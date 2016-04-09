@@ -14,8 +14,9 @@
     (-get [this]))
 
   (protocol-basis IVal '- 'pre- '-tail)
-  => '({:args [this], :fn pre-get-tail, :name -get}
-       {:args [this val], :fn pre-set-tail, :name -set}))
+  => (contains '({:args [this], :fn pre-get-tail, :name -get}
+                 {:args [this val], :fn pre-set-tail, :name -set})
+               :in-any-order))
 
 ^{:refer hara.extend.abstract/map-walk-submap :added "2.1"}
 (fact "Gets a submap depending on whether it is a key or it

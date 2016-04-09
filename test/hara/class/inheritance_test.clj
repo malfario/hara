@@ -19,14 +19,16 @@
                           java.lang.reflect.GenericDeclaration}]]
   ^:hidden
   (ancestor-tree clojure.lang.PersistentHashMap)
-  => [[clojure.lang.APersistentMap #{clojure.lang.IEditableCollection
-                                     clojure.lang.IObj}]
-      [clojure.lang.AFn #{java.io.Serializable
-                          clojure.lang.IHashEq
-                          clojure.lang.MapEquivalence
-                          java.util.Map
-                          java.lang.Iterable
-                          clojure.lang.IPersistentMap}]
+  => [[clojure.lang.APersistentMap #{clojure.lang.IKVReduce 
+                                    clojure.lang.IMapIterable 
+                                    clojure.lang.IEditableCollection 
+                                    clojure.lang.IObj}] 
+      [clojure.lang.AFn #{java.lang.Iterable 
+                          clojure.lang.MapEquivalence 
+                          clojure.lang.IHashEq 
+                          java.io.Serializable 
+                          java.util.Map 
+                          clojure.lang.IPersistentMap}] 
       [java.lang.Object #{clojure.lang.IFn}]])
 
 ^{:refer hara.class.inheritance/best-match :added "2.1"}

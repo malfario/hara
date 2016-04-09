@@ -20,4 +20,4 @@
 
   (topological-sort {:a #{:b},
                      :b #{:a}})
-  => (throws Exception "Graph Contains Circular Dependency: {:b #{:a}, :a #{:b}}"))
+  => (throws Exception))

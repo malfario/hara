@@ -253,7 +253,7 @@
   ^:hidden
   (t/truncate (t/to-map #inst "1989-12-28T12:34:00.000-00:00" {:timezone "GMT"})
               :hour)
-  => {:type clojure.lang.PersistentHashMap, :timezone "GMT", :long 630849600000,
+  => {:type clojure.lang.PersistentArrayMap, :timezone "GMT", :long 630849600000,
       :year 1989, :month 12, :day 28,
       :hour 12, :minute 0, :second 0, :millisecond 0})
 

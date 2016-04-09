@@ -6,9 +6,8 @@
 (fact "returns a list of classloaders in order of top to bottom"
   (-> (Thread/currentThread)
       (.getContextClassLoader)
-      (delegation)
-      count)
-  => #(> % 3))
+      (delegation))
+  => list?)
 
 ^{:refer hara.io.classloader/to-url :added "2.2"}
 (fact "constructs a `java.net.URL` object from a string"
