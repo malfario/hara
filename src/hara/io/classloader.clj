@@ -13,9 +13,8 @@
   "returns a list of classloaders in order of top to bottom
    (-> (Thread/currentThread)
        (.getContextClassLoader)
-       (delegation)
-       count)
-   => #(> % 3)"
+       (delegation))
+   => list?"
   {:added "2.2"}
   [cl]
   (->> cl

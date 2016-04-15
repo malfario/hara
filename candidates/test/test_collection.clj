@@ -1,7 +1,7 @@
 (ns hara.test-collection
+  (:use midje.sweet)
   (:require [hara.collection :as h]
             [clj-time.core :as t]
-            [midje.sweet :refer :all]
             [hara.common.checks :refer [hash-map? bytes?]]
             [hara.common.error :refer [suppress]]))
 

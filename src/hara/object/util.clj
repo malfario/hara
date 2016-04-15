@@ -52,9 +52,8 @@
 (defn object-getters
   "finds all the reflected functions that act as getters.
  
-   (object-getters [])
-   => (just {:empty? element/element?
-             :class  element/element?})"
+   (keys (object-getters []))
+   => (just [:empty? :class] :in-any-order)"
   {:added "2.2"}
   ([obj]
    (if obj
@@ -67,18 +66,12 @@
 (defn object-setters
   "finds all the reflected functions that act as setters.
  
-   (object-setters (java.util.Date.))
-   => (contains {:year element/element?
-                 :time element/element?
-                 :seconds element/element?
-                 :month element/element?
-                 :minutes element/element?
-                :hours element/element?
-                 :date element/element?})"
+   (keys (object-setters (java.util.Date.)))
+   => (contains [:date :hours :minutes :month :seconds :time :year] :in-any-order)"
   {:added "2.2"}
   ([obj]
    (if obj
-     (->> (reflect/query-hierarchy obj [#"(^set)[A-Z].+" 2 :instance])
+     (->> (reflect/query-hierarchy obj [#"(^set)[A-Z].+" :instance])
           (reduce (fn [m ele]
                     (assoc m (-> ele :name java->clojure keyword) ele))
                   {}))

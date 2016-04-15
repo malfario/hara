@@ -1,66 +1,96 @@
 (ns hara.object.access
   (:require [hara.data.nested :as nested]
             [hara.object.base :as base]
-            [hara.object.util :as object]
-            [hara.reflect.util :as util]
+            [hara.object.util :as util]
+            [hara.reflect.util :as reflect-util]
             [hara.reflect :as reflect])
   (:import hara.reflect.types.element.Element))
 
-(defn may-coerce [^Class param arg]
-  (let [^Class targ (type arg)
-        {:keys [types from-data]} (base/meta-object param)]
-    (cond (util/param-arg-match param targ) arg
-
-          :else
-          (if (and (-> types empty? not)
-                   (-> from-data nil? not)
-                   (types targ))
-            (from-data arg param)
-            (throw (Exception. (str "Cannot convert value " arg
-                                    " of type " (.getName targ) " to " (.getName param)) ))))))
-
-(defn apply-with-coercion
-  ([{:keys [params] :as ele} args]
-   (apply ele (map may-coerce params args))))
-
-(defn access-get [obj k]
+(defn access-get
+  "access data within a class through keyword getters"
+  {:added "2.2"} [obj k]
   (if-let [getter (-> obj base/meta-object :getters k)]
     (getter obj)
     (if (instance? java.util.Map obj)
       (get obj k))))
 
-(defn access-set [obj k v]
-  (if-let [setter (-> obj base/meta-object :setters k)]
-    (cond (instance? Element setter)
-          (apply-with-coercion
-           (reflect/query-class obj [(object/clojure->java (name k) :set) 2 :#]) [obj v])
+(defn coerce
+  "coerces data into the right class
+   (-> (coerce  Authentication {:username \"chris\"})
+       map/-to-map)
+   => {:username \"chris\"}"
+  {:added "2.2"} [^Class param arg]
+  (let [^Class targ (type arg)
+        {:keys [types from-data]} (base/meta-object param)]
+    (cond (and (vector? arg)
+               (.isArray param))
+          (let [cls (.getComponentType targ)]
+            (->> arg
+                 (map #(coerce cls %))
+                 (into-array cls)))
+
+          (reflect-util/param-arg-match param targ) arg
 
           :else
-          (setter obj v)))
+          (if (-> from-data nil? not)
+            (from-data arg param)
+            (throw (Exception. (str "Cannot convert value " arg
+                                    " of type " (.getName targ) " to " (.getName param)) ))))))
+
+(defn access-set-coerce
+  "function that allows access-set to use coercion"
+  {:added "2.2"}
+  ([{:keys [params] :as ele} args]
+   (cond (nil? params)
+         (apply ele args)
+
+         :else
+         (apply ele (map coerce params args)))))
+
+(defn access-set
+  "access data within a class through keyword setters"
+  {:added "2.2"} [obj k v]
+  (if-let [setter (-> obj base/meta-object :setters k)]
+    (let [v (if (vector? v) v [v])]
+      (cond (instance? Element setter)
+            (-> obj
+                (reflect/query-class obj [(util/clojure->java (name k) :set) :#]) 
+                (apply access-set-coerce obj v))
+
+            :else
+            (apply setter obj v))))
   obj)
 
-(defn access-get-nested [obj [k & more]]
+(defn access-get-nested
+  "access data within nested classes"
+  {:added "2.2"} [obj [k & more]]
   (cond (nil? obj) nil
-        
+
         (empty? more) (access-get obj k)
 
         :else (access-get-nested (access-get obj k) more)))
 
-(defn access-set-nested [obj [k & more] v]
+(defn access-set-nested
+  "set data within nested classes"
+  {:added "2.2"} [obj [k & more] v]
   (cond (or (nil? obj) (nil? k)) nil
-        
+
         (empty? more) (access-set obj k v)
 
         :else (access-set-nested (access-get obj k) more v))
   obj)
 
-(defn access-set-map [obj m]
+(defn access-set-map
+  "sets class data using a map"
+  {:added "2.2"} [obj m]
   (reduce-kv (fn [obj k v]
                (access-set obj k v))
              obj
              m))
 
 (defn access
+  "generic interface for getters and setters"
+  {:added "2.2"}
   ([obj]
    (-> obj
        base/meta-object

@@ -189,3 +189,23 @@
   {:added "2.1"}
   [m ks v]
   (if (not (nil? (get-in m ks))) m (assoc-in m ks v)))
+
+(defn transform-in
+  [m rels]
+  (reduce (fn [out [to from]]
+            (let [v (get-in m from)]
+              (-> out
+                  (assoc-in-if to v)
+                  (dissoc-in from))))
+          m
+          rels))
+
+(defn retract-in
+  [m rels]
+  (reduce (fn [out [to from]]
+            (let [v (get-in m to)]
+              (-> out
+                  (assoc-in-if from v)
+                  (dissoc-in to))))
+          m
+          (reverse rels)))

@@ -21,10 +21,10 @@
   "The set of all paths in a map, governed by a max level of nesting
  
    (key-paths {:a {:b 1} :c {:d 1}})
-   => [[:c :d] [:a :b]]
+   => (contains [[:c :d] [:a :b]] :in-any-order)
  
    (key-paths {:a {:b 1} :c {:d 1}} 1)
-   => [[:c] [:a]]"
+   => (contains [[:c] [:a]] :in-any-order)"
   {:added "2.1"}
   ([m] (key-paths m -1 []))
   ([m max] (key-paths m max []))

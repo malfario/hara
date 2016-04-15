@@ -1,6 +1,6 @@
 (ns documentation.hara-event.unlucky-numbers
-  (:require [hara.event :refer :all]
-            [midje.sweet :refer :all]))
+  (:use midje.sweet)
+  (:require [hara.event :refer :all]))
 
 [[:section {:title "Unlucky Numbers"}]]
 "

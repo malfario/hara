@@ -11,8 +11,9 @@
      (-get [this]))
  
    (protocol-basis IVal '- 'pre- '-tail)
-   => '({:args [this], :fn pre-get-tail, :name -get}
-        {:args [this val], :fn pre-set-tail, :name -set})"
+   => (contains '({:args [this], :fn pre-get-tail, :name -get}
+                  {:args [this val], :fn pre-set-tail, :name -set})
+                :in-any-order)"
   {:added "2.1"}
   [protocol select prefix suffix]
   (->> protocol :sigs vals

@@ -24,7 +24,7 @@
  
    (topological-sort {:a #{:b},
                       :b #{:a}})
-   => (throws Exception \"Graph Contains Circular Dependency: {:b #{:a}, :a #{:b}}\")"
+   => (throws Exception)"
   {:added "2.1"}
   ([g]
      (let [g (let [dependent-nodes (apply union (vals g))]

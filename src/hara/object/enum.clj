@@ -2,7 +2,6 @@
   (:require [hara.protocol.string :as string]
             [hara.protocol.data :as data]
             [hara.reflect :as reflect]
-            
             [hara.class.inheritance :as inheritance]))
 
 (defn enum?

@@ -1,6 +1,6 @@
 (ns documentation.hara-event.strategies
+  (:use midje.sweet)
   (:require [hara.event :refer :all]
-            [midje.sweet :refer :all]
             [documentation.hara-event.api :refer [raises-issue]]))
 
 "This is a comprehensive (though non-exhaustive) list of program control strategies that can be used. It can be noted that the `try/catch` paradigm can implement sections [{{normal}}](#normal) and [{{catch}}](#catch). Other clojure restart libraries such as `errorkit`, `swell` and `conditions` additionally implement sections [{{continue}}](#continue), [{{choose}}](#choose) and [{{choose-more}}](#choose-more).
