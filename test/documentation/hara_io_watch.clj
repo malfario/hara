@@ -111,7 +111,7 @@ The `hara.common.watch` package provides for additional options to be specified 
   
   ;; It does!
   @*happy*
-  => [:create "happy.hara"]
+  => (contains [anything "happy.hara"])
   
   ;; We see that the one-shot watch has worked
   (watch/list (io/file "."))

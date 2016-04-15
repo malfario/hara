@@ -12,7 +12,8 @@
 
 (defn build
   "creates an object from a build template"
-  {:added "2.2"} [{:keys [init final setters exclude prefix] :as template} data]
+  {:added 2.2}
+  [{:keys [init final setters exclude prefix] :as template} data]
   (let [builder (init data)
         builder (reduce-kv (fn [b k v]
                              (if-let [setter (setters k)]
