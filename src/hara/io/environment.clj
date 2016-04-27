@@ -31,7 +31,8 @@
   {:added "2.2"}
   []
   (let [[major minor incremental qualifier]
-        (->> (path/split (System/getProperty "java.version") #"[\._]")
+        (->> (path/split (System/getProperty "java.version") #"[\._-]")
+             (take 4)
              (map #(Long/parseLong %)))]
     {:major major
      :minor minor
