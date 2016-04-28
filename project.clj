@@ -135,6 +135,7 @@
                        :auto-number true}}
   :jvm-opts []
   :global-vars {*warn-on-reflection* true}
+  :java-source-paths ["java"]
   :jar-exclusions [#"^test\..+\.class"]
   :repack [{:type :clojure
             :levels 2
