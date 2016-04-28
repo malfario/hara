@@ -1,14 +1,14 @@
 (ns hara.object.enum
   (:require [hara.protocol.string :as string]
-            [hara.protocol.data :as data]
+            [hara.protocol.object :as object]
             [hara.reflect :as reflect]
             [hara.class.inheritance :as inheritance]))
 
 (defn enum?
   "Check to see if class is an enum type
- 
+
    (enum? java.lang.annotation.ElementType) => true
- 
+
    (enum? String) => false"
   {:added "2.2"}
   [type]
@@ -29,12 +29,13 @@
   (let [vf (reflect/query-class type ["$VALUES" :#])]
     (->> (vf type) (seq))))
 
-(defmethod data/-meta-object Enum
-  [type]
-  {:class java.lang.Enum
-   :types #{String}
-   :to-data string/-to-string
-   :from-data string/-from-string})
+(defmethod object/-meta-read Enum
+  [_]
+  {:to-string string/-to-string})
+
+(defmethod object/-meta-write Enum
+  [_]
+  {:from-string string/-from-string})
 
 (extend-type Enum
   string/IString
@@ -48,3 +49,15 @@
     (field type)
     (throw (Exception. (str "Options for " (.getName type) " are: "
                             (mapv str (enum-values type)))))))
+
+(defmethod print-method Enum
+  [v w]
+  (.write w (format "#enum[%s %s]"
+                    (.getName (class v))
+                    (string/-to-string v))))
+(comment
+
+  (string/-from-string
+   (string/-to-string
+    java.lang.annotation.ElementType/FIELD)
+   java.lang.annotation.ElementType))

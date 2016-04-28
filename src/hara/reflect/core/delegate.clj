@@ -7,8 +7,7 @@
     (format "<%s@%s %s>" (.getName ^Class (type pointer)) (.hashCode pointer) (self)))
 
   clojure.lang.IDeref
-  (deref [self]
-    (self))
+  (deref [self] fields)
 
   java.util.Map
   (equals [self other] (= (self) other))

@@ -1,4 +1,4 @@
-(defproject im.chit/hara "2.2.18-SNAPSHOT"
+(defproject im.chit/hara "2.3.0-SNAPSHOT"
   :description "patterns and utilities"
   :url "https://github.com/zcaudate/hara"
   :license {:name "The MIT License"
@@ -19,7 +19,8 @@
                                   [org.eclipse.aether/aether-transport-file "1.1.0"]
                                   [org.eclipse.aether/aether-transport-classpath "1.1.0"]
                                   [org.apache.maven/maven-aether-provider "3.1.0"]
-                                  [helpshift/hydrox "0.1.16"]]
+                                  ;[helpshift/hydrox "0.1.16"]
+                                  ]
                    :plugins [[lein-midje "3.1.3"]
                              [lein-repack "0.2.10"]
                              [lein-hydrox "0.1.16"]]}}
@@ -134,6 +135,7 @@
                        :auto-number true}}
   :jvm-opts []
   :global-vars {*warn-on-reflection* true}
+  :jar-exclusions [#"^test\..+\.class"]
   :repack [{:type :clojure
             :levels 2
             :path "src"

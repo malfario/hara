@@ -1,88 +1,66 @@
 (ns hara.object.map-like
-  (:require [hara.protocol.map :as map]
-            [hara.protocol.data :as data]
-            [hara.object.base :as base]
-            [hara.object.util :as util]
-            [hara.object.access :as access]))
+  (:require [hara.protocol.object :as object]
+            [hara.object.write :as write]
+            [hara.object.read :as read]))
 
-(defn proxy-functions [obj type proxy]
-  (reduce-kv (fn [out prx ks]
-               (reduce (fn [out k]
-                         (assoc out k
-                                (case type
-                                  :get (fn [obj]
-                                         (let [proxy (prx obj)]
-                                           (access/access proxy k)))
-                                  :set (fn [obj v]
-                                         (let [proxy (prx obj)]
-                                           (access/access proxy k v)
-                                           obj)))))
-                       out
-                       ks))
-             {}
-             proxy))
+(defmacro extend-map-like [^Class cls {:keys [tag read write exclude] :as opts}]
+  `[(defmethod object/-meta-read ~cls
+      [~'_]
+      ~(cond (map? read) read
 
-(defn map-functions [obj {:keys [type proxy func default exclude include extra] :as opts}]
-  (let [fns (if-not (false? default) (func obj) {})
-        fns (if proxy
-              (merge fns (proxy-functions obj type proxy))
-              fns)
-        fns (if include
-              (select-keys fns include)
-              fns)
-        fns (apply dissoc fns :class exclude)
-        fns (if extra
-              (merge extra fns)
-              fns)]
-    fns))
+             (= read :reflect)
+             `{:methods (read/read-reflect-fields ~cls)}
 
-(defmacro extend-maplike-class [cls {:keys [tag meta to from proxy getters setters default hide] :as opts}]
-  `(vector
-    
-    (defmethod data/-meta-object ~cls
-      [type#]
-      {:class      type#
-       :types      #{java.util.Map}
-       :to-data    map/-to-map
-       :from-data  map/-from-map
-       :getters    (map-functions type# (assoc ~opts
-                                               :type :get
-                                               :func util/object-getters
-                                               :extra ~getters
-                                               :proxy ~proxy))
-       
-       :setters    (map-functions type# (assoc ~opts
-                                               :type :set
-                                               :func util/object-setters
-                                               :extra ~setters
-                                               :proxy ~proxy))})
-    
-    (extend-protocol map/IMap
-      ~cls
-      ~(if to
-         `(-to-map [obj#]
-                   (~to obj#))
-         `(-to-map [obj#]
-                   (let [getters# (:getters (data/-meta-object (type obj#)))]
-                     (util/object-apply getters# obj# base/to-data))))
-      
-      ~(if meta
-         `(-to-map-meta
-           [obj#]
-           (~meta obj#))
-         `(-to-map-meta
-           [obj#]
-           {:class ~cls})))
+             (or (nil? read)
+                 (= read :getters))
+             `{:methods (read/read-getters ~cls)}))
 
-      ~(if from
-         `(defmethod map/-from-map ~cls
-            [data# type#]
-            (~from data# type#))
-         `(defmethod map/-from-map ~cls
-            [data# type#]
-            (throw (Exception. (str "Cannot create " type# " from map.")))))
+    ~(when (and write (map? write))
+       (assert (or (:from-map write)
+                   (:empty write))
+               "The :write entry requires a sub-entry for either :from-map or :empty ")
+       (let [methods (:methods write)]
+         `(defmethod object/-meta-write ~cls
+            [~'_]
+            ~(cond-> write
+               (= methods :reflect)
+               (assoc :methods `(write/write-reflect-fields ~cls))
+
+               (or (= methods :setters)
+                   (nil? methods))
+               (assoc :methods `(write/write-setters ~cls))))))
+
 
     (defmethod print-method ~cls
       [v# ^java.io.Writer w#]
-      (.write w# (str "#" ~(or tag cls) ""
-                      (dissoc (map/-to-map v#) ~@hide))))))
+      (.write w# (str "#" (or ~tag (.getName ~cls)) ""
+                      (dissoc (read/to-data v#) ~@exclude))))])
+
+
+(comment
+
+  (write/meta-write test.Dog)
+  (read/meta-read test.Dog)
+
+  (extend-map-like test.Dog {:tag "dog"
+                             :write  {:methods :reflect
+                                      :from-map (fn [m] (-> m
+                                                            (write/from-map test.DogBuilder)
+                                                            (.build)))}
+                             :exclude [:species]})
+
+  (extend-map-like test.Cat {:tag "cat"
+                             :write  {:from-map (fn [m] (test.Cat. (:name m)))}
+                             :exclude [:species]})
+
+  (extend-map-like test.Pet {:tag "pet"
+                             :from-map (fn [m] (case (:species m)
+                                                 "dog" (from-map m Dog)
+                                                 "cat" (from-map m Cat)))})
+  
+  (write/from-data {:name "hello"} test.Dog)
+  (write/from-data {:name "hello"} test.Cat)
+  (write/from-data {:name "hello" :species "cat"} test.Pet)
+  
+
+  )
