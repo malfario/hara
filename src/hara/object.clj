@@ -6,8 +6,8 @@
              [map-like :as map-like]
              [string-like :as string-like]]))
 
-(ns/import hara.object.read   [to-data meta-read]
-           hara.object.write  [from-data meta-write]
+(ns/import hara.object.read   [to-data meta-read read-getters read-reflect-fields]
+           hara.object.write  [from-data meta-write write-setters write-reflect-fields]
            hara.object.enum   [enum? enum-values])
 
 (defmacro string-like [& {:as classes}]

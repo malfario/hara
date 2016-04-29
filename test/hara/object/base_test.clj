@@ -54,14 +54,14 @@
   [_]
   {:methods (read/read-getters Person)})
 
-^{:refer hara.object.read/meta-read :added "0.1"}
+^{:refer hara.object.read/meta-read :added "2.3"}
 (fact "accesses the read-attributes of an object"
 
   (read/meta-read Pet)
   => (contains {:class test.Pet
                 :methods (contains {:name fn? :species fn?})}))
 
-^{:refer hara.object.write/meta-write :added "0.1"}
+^{:refer hara.object.write/meta-write :added "2.3"}
 (fact "accesses the write-attributes of an object"
 
   (write/meta-write DogBuilder)
@@ -71,25 +71,25 @@
                           {:name
                            (contains {:type java.lang.String, :fn fn?})})}))
 
-^{:refer hara.object.read/read-reflect-fields :added "0.1"}
+^{:refer hara.object.read/read-reflect-fields :added "2.3"}
 (fact "fields of an object from reflection"
   (-> (read/read-reflect-fields Dog)
       keys)
   => [:name :species])
 
-^{:refer hara.object.read/read-getters :added "0.1"}
+^{:refer hara.object.read/read-getters :added "2.3"}
 (fact "returns fields of an object through getter methods"
   (-> (read/read-getters Dog)
       keys)
   => [:name :species])
 
-^{:refer hara.object.write/write-reflect-fields :added "0.1"}
+^{:refer hara.object.write/write-reflect-fields :added "2.3"}
 (fact "write fields of an object from reflection"
   (-> (write/write-reflect-fields Dog)
       keys)
   => [:name :species])
 
-^{:refer hara.object.write/write-setters :added "0.1"}
+^{:refer hara.object.write/write-setters :added "2.3"}
 (fact "write fields of an object through setter methods"
   (write/write-setters Dog)
   => {}
@@ -97,7 +97,7 @@
   (keys (write/write-setters DogBuilder))
   => [:name])
 
-^{:refer hara.object.write/from-empty :added "0.1"}
+^{:refer hara.object.write/from-empty :added "2.3"}
 (fact "creates the object from an empty object constructor"
   (write/from-empty {:name "chris" :pet "dog"}
                     (fn [_] (java.util.Hashtable.))
@@ -111,7 +111,7 @@
                                   obj)}})
   => {"pet" :dog, "hello" :chris})
 
-^{:refer hara.object.write/from-map :added "0.1"}
+^{:refer hara.object.write/from-map :added "2.3"}
 (fact "creates the object from a map"
   (-> {:name "chris" :age 30 :pets [{:name "slurp" :species "dog"}
                                     {:name "happy" :species "cat"}]}
@@ -120,7 +120,7 @@
   => {:name "chris", :age 30, :pets [{:name "slurp", :species "dog"}
                                      {:name "happy", :species "cat"}]})
 
-^{:refer hara.objectr.read/to-data :added "0.1"}
+^{:refer hara.object.read/to-data :added "2.3"}
 (fact "creates the object from a string or map"
   (read/to-data "hello")
   => "hello"
@@ -128,7 +128,7 @@
   (read/to-data (write/from-map {:name "hello" :species "dog"} Pet))
   => {:name "hello", :species "dog"})
 
-^{:refer hara.object.write/from-data :added "0.1"}
+^{:refer hara.object.write/from-data :added "2.3"}
 (fact "creates the object from data"
   (-> (write/from-data ["hello"] (Class/forName "[Ljava.lang.String;"))
       seq)

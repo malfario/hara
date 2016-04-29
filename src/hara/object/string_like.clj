@@ -2,7 +2,20 @@
   (:require [hara.protocol.string :as string]
             [hara.protocol.object :as object]))
 
-(defmacro extend-string-like [cls {:keys [tag read write meta] :as opts}]
+(defmacro extend-string-like
+  "creates an entry for string-like classes
+ 
+   (extend-string-like
+    java.io.File
+    {:tag \"path\"
+     :read .getPath
+     :write (fn [^String path _] (java.io.File. path))})
+ 
+   (with-out-str
+     (prn (java.io.File. \"/home\")))
+   => \"#path \"/home\"\""
+  {:added "2.3"} 
+  [cls {:keys [tag read write meta] :as opts}]
   `(vector
     (defmethod object/-meta-read ~cls
       [~'_]
