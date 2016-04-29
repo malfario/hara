@@ -1,4 +1,4 @@
-(defproject im.chit/hara "2.3.0-SNAPSHOT"
+(defproject im.chit/hara "2.3.0"
   :description "patterns and utilities"
   :url "https://github.com/zcaudate/hara"
   :license {:name "The MIT License"
@@ -8,19 +8,7 @@
                                   [compojure "1.4.0"]
                                   [ring "1.4.0"]
                                   [clj-http "2.1.0"]
-                                  [org.eclipse.jgit "4.0.1.201506240215-r"]
-                                  [org.eclipse.aether/aether-api "1.1.0"]
-                                  [org.eclipse.aether/aether-spi "1.1.0"]
-                                  [org.eclipse.aether/aether-util "1.1.0"]
-                                  [org.eclipse.aether/aether-impl "1.1.0"]
-                                  [org.eclipse.aether/aether-connector-basic "1.1.0"]
-                                  [org.eclipse.aether/aether-transport-wagon "1.1.0"]
-                                  [org.eclipse.aether/aether-transport-http "1.1.0"]
-                                  [org.eclipse.aether/aether-transport-file "1.1.0"]
-                                  [org.eclipse.aether/aether-transport-classpath "1.1.0"]
-                                  [org.apache.maven/maven-aether-provider "3.1.0"]
-                                  ;[helpshift/hydrox "0.1.16"]
-                                  ]
+                                  [org.eclipse.jgit "4.0.1.201506240215-r"]]
                    :plugins [[lein-midje "3.1.3"]
                              [lein-repack "0.2.10"]
                              [lein-hydrox "0.1.16"]]}}

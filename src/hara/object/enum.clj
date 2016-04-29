@@ -6,9 +6,9 @@
 
 (defn enum?
   "Check to see if class is an enum type
-
+ 
    (enum? java.lang.annotation.ElementType) => true
-
+ 
    (enum? String) => false"
   {:added "2.2"}
   [type]
@@ -55,9 +55,3 @@
   (.write w (format "#enum[%s %s]"
                     (.getName (class v))
                     (string/-to-string v))))
-(comment
-
-  (string/-from-string
-   (string/-to-string
-    java.lang.annotation.ElementType/FIELD)
-   java.lang.annotation.ElementType))

@@ -3,17 +3,57 @@
             [hara.object.write :as write]
             [hara.object.read :as read]))
 
-(defmacro extend-map-like [^Class cls {:keys [tag read write exclude] :as opts}]
+(defn key-selection
+  [m include exclude]
+  (cond-> m
+    include (select-keys include)
+    exclude (#(apply dissoc % exclude))))
+
+(defmacro extend-map-like
+  "creates an entry for map-like classes
+ 
+   (extend-map-like test.DogBuilder
+                    {:tag \"build.dog\"
+                     :write {:empty (fn [_] (test.DogBuilder.))}
+                     :read :reflect})
+ 
+   (extend-map-like test.Dog {:tag \"dog\"
+                              :write  {:methods :reflect
+                                       :from-map (fn [m] (-> m
+                                                             (write/from-map test.DogBuilder)
+                                                             (.build)))}
+                              :exclude [:species]})
+ 
+   (with-out-str
+     (prn (write/from-data {:name \"hello\"} test.Dog)))
+   => \"#dog{:name \"hello\"}\"
+ 
+   (extend-map-like test.Cat {:tag \"cat\"
+                              :write  {:from-map (fn [m] (test.Cat. (:name m)))}
+                              :exclude [:species]})
+ 
+   (extend-map-like test.Pet {:tag \"pet\"
+                              :from-map (fn [m] (case (:species m)
+                                                  \"dog\" (write/from-map m test.Dog)
+                                                  \"cat\" (write/from-map m test.Cat)))})
+ 
+   (with-out-str
+    (prn (write/from-data {:name \"hello\" :species \"cat\"} test.Pet)))
+   => \"#cat{:name \"hello\"}\""
+  {:added "2.3"} 
+  [^Class cls {:keys [tag read write exclude include display] :as opts}]
   `[(defmethod object/-meta-read ~cls
       [~'_]
       ~(cond (map? read) read
 
              (= read :reflect)
-             `{:methods (read/read-reflect-fields ~cls)}
+             `{:methods (key-selection (read/read-reflect-fields ~cls) ~include ~exclude)}
 
              (or (nil? read)
                  (= read :getters))
-             `{:methods (read/read-getters ~cls)}))
+             `{:methods (-> (merge (read/read-getters ~cls read/+read-get-template+)
+                                   (read/read-getters ~cls read/+read-is-template+))
+                            (key-selection ~include ~exclude))}))
 
     ~(when (and write (map? write))
        (assert (or (:from-map write)
@@ -30,37 +70,8 @@
                    (nil? methods))
                (assoc :methods `(write/write-setters ~cls))))))
 
-
     (defmethod print-method ~cls
-      [v# ^java.io.Writer w#]
-      (.write w# (str "#" (or ~tag (.getName ~cls)) ""
-                      (dissoc (read/to-data v#) ~@exclude))))])
-
-
-(comment
-
-  (write/meta-write test.Dog)
-  (read/meta-read test.Dog)
-
-  (extend-map-like test.Dog {:tag "dog"
-                             :write  {:methods :reflect
-                                      :from-map (fn [m] (-> m
-                                                            (write/from-map test.DogBuilder)
-                                                            (.build)))}
-                             :exclude [:species]})
-
-  (extend-map-like test.Cat {:tag "cat"
-                             :write  {:from-map (fn [m] (test.Cat. (:name m)))}
-                             :exclude [:species]})
-
-  (extend-map-like test.Pet {:tag "pet"
-                             :from-map (fn [m] (case (:species m)
-                                                 "dog" (from-map m Dog)
-                                                 "cat" (from-map m Cat)))})
-  
-  (write/from-data {:name "hello"} test.Dog)
-  (write/from-data {:name "hello"} test.Cat)
-  (write/from-data {:name "hello" :species "cat"} test.Pet)
-  
-
-  )
+      [~'v ^java.io.Writer ~'w]
+      (.write ~'w (str "#" (or ~tag (.getName ~cls)) ""
+                      ~(cond->> `(read/to-data ~'v)
+                         display (list display)))))])
