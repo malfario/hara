@@ -104,10 +104,10 @@
           <h4>utilities for manipulation of namespaces</h4>
         </div>
       </div>
-      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/namespace.clj'>hara.namespace</a> contain namespace functions and utilities</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.namespace &quot;2.3.1&quot;&#93;
-</code></pre><p>Individual namespaces can be added seperately:</p><pre><code>&#91;im.chit/hara.namespace.eval &quot;2.3.1&quot;&#93;
-&#91;im.chit/hara.namespace.import &quot;2.3.1&quot;&#93;
-&#91;im.chit/hara.namespace.resolve &quot;2.3.1&quot;&#93;
+      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/namespace.clj'>hara.namespace</a> contain namespace functions and utilities</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.namespace &quot;2.3.3&quot;&#93;
+</code></pre><p>Individual namespaces can be added seperately:</p><pre><code>&#91;im.chit/hara.namespace.eval &quot;2.3.3&quot;&#93;
+&#91;im.chit/hara.namespace.import &quot;2.3.3&quot;&#93;
+&#91;im.chit/hara.namespace.resolve &quot;2.3.3&quot;&#93;
 </code></pre></div></section></section><section class="chapter" id="api---eval"><h2 class="chapter">2  &nbsp;&nbsp; API - eval</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/namespace/eval.clj'>hara.namespace.eval</a></p></div><div class="api"><hr /><div><a name="api-hara-namespace-eval"></a><h4><i>API</i></h4><a href="#api-hara-namespace-eval--eval-ns">eval-ns</a>&nbsp;&nbsp;<a href="#api-hara-namespace-eval--eval-temp-ns">eval-temp-ns</a>&nbsp;&nbsp;<a href="#api-hara-namespace-eval--with-ns">with-ns</a>&nbsp;&nbsp;<a href="#api-hara-namespace-eval--with-temp-ns">with-temp-ns</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-namespace-eval--eval-ns"></a><h4>eval-ns <a href="#api-hara-namespace-eval">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;Evaluates a list of forms in an existing namespace&quot;
 (eval-ns 'hara.common.checks
               '[(long? 1)])
