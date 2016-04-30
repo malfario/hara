@@ -5,8 +5,8 @@ All notable changes to this project will be documented in this file. This change
 
 ## 2.3
 
-#### 2.3.1
-- reworked hara.object (incompatible with hara.object 2.2.*)
+#### 2.3.2
+- reworked `hara.object` (incompatible with version `2.2.*``)
 
 ## 2.2
 
@@ -49,4 +49,3 @@ All notable changes to this project will be documented in this file. This change
 
 - Moved [iroh](http://github.com/zcaudate/iroh) to `im.chit/hara.reflect`
 - Added initialisers for `hara.component`
-

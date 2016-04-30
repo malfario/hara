@@ -3,22 +3,17 @@
             [hara.object.read :as read]))
 
 (defmacro extend-vector-like
-  {:added "2.3"} 
+  {:added "2.3"}
   [cls {:keys [tag read write meta] :as opts}]
-  (vector
-   (if read
-     `(defmethod object/-meta-read ~cls
-        [~'_]
-        ~read))
-
-   (if write
-     `(defmethod object/-meta-write ~cls
-        [~'_]
-        ~write))
-
-   (defmethod print-method ~cls
-     [v# ^java.io.Writer w#]
-     (.write w# (str "#" (or ~tag
-                             (.getName ^Class ~cls))
-                      (read/to-data v#))))))
-
+  (cond-> []
+    read  (conj `(defmethod object/-meta-read ~cls
+                   [~'_]
+                   ~read))
+    write (conj `(defmethod object/-meta-write ~cls
+                   [~'_]
+                   ~write))
+    true  (conj `(defmethod print-method ~cls
+                  [v# ^java.io.Writer w#]
+                  (.write w# (str "#" (or ~tag
+                                          (.getName ^Class ~cls))
+                                  (read/to-data v#)))))))
