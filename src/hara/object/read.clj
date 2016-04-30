@@ -30,7 +30,7 @@
   '(fn <method> [obj] (. obj (<method>))))
 
 (def +read-is-template+
-  {:prefix "is" :template +read-template+ :extra "!"})
+  {:prefix "is" :template +read-template+ :extra "?"})
 
 (def +read-get-template+
   {:prefix "get" :template +read-template+})
@@ -43,7 +43,7 @@
   {:added "2.3"}
   ([cls] (read-getters cls +read-get-template+))
   ([cls {:keys [prefix template extra]}]
-   (->> [:method :instance (re-pattern (str "^" prefix ".+")) 1]
+   (->> [:method :instance :public (re-pattern (str "^" prefix ".+")) 1]
         (reflect/query-class cls)
         (reduce (fn [out ele]
                   (assoc out

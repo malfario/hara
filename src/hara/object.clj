@@ -4,7 +4,8 @@
              [read :as read]
              [write :as write]
              [map-like :as map-like]
-             [string-like :as string-like]]))
+             [string-like :as string-like]
+             [vector-like :as vector-like]]))
 
 (ns/import hara.object.read   [to-data meta-read read-getters read-reflect-fields]
            hara.object.write  [from-data meta-write write-setters write-reflect-fields]
@@ -18,4 +19,9 @@
 (defmacro map-like [& {:as classes}]
   `(vector ~@(map (fn [[cls opts]]
                     `(map-like/extend-map-like ~cls ~opts))
+                  classes)))
+
+(defmacro vector-like [& {:as classes}]
+  `(vector ~@(map (fn [[cls opts]]
+                    `(vector-like/extend-vector-like ~cls ~opts))
                   classes)))
