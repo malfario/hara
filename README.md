@@ -5,7 +5,7 @@
 
 Code patterns and utilities.
 
-![](http://assets0.redbubble.net/assets/clear-67639d145bbd91d418a8f15359c341b0.gif)
+[![](https://raw.githubusercontent.com/zcaudate/hara/master/spring.jpg)](http://www.redbubble.com/people/ethereaofficina/works/9750109-wocekiye)
 
 Please visit the [hara website](http://docs.caudate.me/hara/) for more comprehensive information
 
