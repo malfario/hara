@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file. This change
 
 ## 2.3
 
-#### 2.3.2
+#### 2.3.3
 - reworked `hara.object` (incompatible with version `2.2.*``)
 
 ## 2.2

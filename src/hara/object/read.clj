@@ -67,7 +67,6 @@
   [obj]
   (let [cls (type obj)
         {:keys [to-string to-map to-vector methods]} (meta-read cls)]
-    ;;(println "CLASS:" cls)
     (cond (nil? obj) nil
 
           (instance? java.util.Map obj)
