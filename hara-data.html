@@ -104,15 +104,15 @@
           <h4>manipulation of maps and representations of data</h4>
         </div>
       </div>
-      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/data.clj'>hara.data</a> are a set of functions that act on clojure hash-maps and map-like representations of data. The level of complexity needed for working with data increases as it becomes nested and then relational. The functions of <code>hara.data</code> get increasingly sophisticated, with the <code>hara.data.complex</code> namespace built specifically for working with datomic datastructures.</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.data &quot;2.3.3&quot;&#93;
-</code></pre><p>Individual namespaces can be added seperately:</p><pre><code>&#91;im.chit/hara.data.map &quot;2.3.3&quot;&#93;
-&#91;im.chit/hara.data.nested &quot;2.3.3&quot;&#93;
-&#91;im.chit/hara.data.diff &quot;2.3.3&quot;&#93;
-&#91;im.chit/hara.data.combine &quot;2.3.3&quot;&#93;
-&#91;im.chit/hara.data.complex &quot;2.3.3&quot;&#93;
-&#91;im.chit/hara.data.record &quot;2.3.3&quot;&#93;
-&#91;im.chit/hara.data.path &quot;2.3.3&quot;&#93;
-&#91;im.chit/hara.data.seq &quot;2.3.3&quot;&#93;
+      <section class="chapter" id="introduction"><h2 class="chapter">1  &nbsp;&nbsp; Introduction</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/data.clj'>hara.data</a> are a set of functions that act on clojure hash-maps and map-like representations of data. The level of complexity needed for working with data increases as it becomes nested and then relational. The functions of <code>hara.data</code> get increasingly sophisticated, with the <code>hara.data.complex</code> namespace built specifically for working with datomic datastructures.</p></div></div><section class="section" id="installation"><h3 class="section">1.1  &nbsp;&nbsp; Installation</h3><div class="paragraph"><p>Add to <code>project.clj</code> dependencies:</p><pre><code>&#91;im.chit/hara.data &quot;2.3.4&quot;&#93;
+</code></pre><p>Individual namespaces can be added seperately:</p><pre><code>&#91;im.chit/hara.data.map &quot;2.3.4&quot;&#93;
+&#91;im.chit/hara.data.nested &quot;2.3.4&quot;&#93;
+&#91;im.chit/hara.data.diff &quot;2.3.4&quot;&#93;
+&#91;im.chit/hara.data.combine &quot;2.3.4&quot;&#93;
+&#91;im.chit/hara.data.complex &quot;2.3.4&quot;&#93;
+&#91;im.chit/hara.data.record &quot;2.3.4&quot;&#93;
+&#91;im.chit/hara.data.path &quot;2.3.4&quot;&#93;
+&#91;im.chit/hara.data.seq &quot;2.3.4&quot;&#93;
 </code></pre></div></section></section><section class="chapter" id="api---map"><h2 class="chapter">2  &nbsp;&nbsp; API - map</h2><div class="group"><div class="paragraph"><p><a href='https://github.com/zcaudate/hara/blob/master/src/hara/data/map.clj'>hara.data.map</a> contain functions for updating hashmaps.</p></div><div class="api"><hr /><div><a name="api-hara-data-map"></a><h4><i>API</i></h4><a href="#api-hara-data-map--assoc-if">assoc-if</a>&nbsp;&nbsp;<a href="#api-hara-data-map--assoc-in-if">assoc-in-if</a>&nbsp;&nbsp;<a href="#api-hara-data-map--assoc-in-nil">assoc-in-nil</a>&nbsp;&nbsp;<a href="#api-hara-data-map--assoc-nil">assoc-nil</a>&nbsp;&nbsp;<a href="#api-hara-data-map--dissoc-in">dissoc-in</a>&nbsp;&nbsp;<a href="#api-hara-data-map--into-if">into-if</a>&nbsp;&nbsp;<a href="#api-hara-data-map--merge-if">merge-if</a>&nbsp;&nbsp;<a href="#api-hara-data-map--merge-nil">merge-nil</a>&nbsp;&nbsp;<a href="#api-hara-data-map--select-keys-if">select-keys-if</a>&nbsp;&nbsp;<a href="#api-hara-data-map--unique">unique</a>&nbsp;&nbsp;<a href="#api-hara-data-map--update-in-if">update-in-if</a>&nbsp;&nbsp;</div><hr /><div><div><a name="api-hara-data-map--assoc-if"></a><h4>assoc-if <a href="#api-hara-data-map">&#9652;</a></h4><div hljs="hljs" language="clojure" no-escape="no-escape">&quot;assoc key/value pairs to the map only on non-nil values&quot;
 
 (assoc-if {} :a 1)
