@@ -34,8 +34,8 @@
   {:to-string string/-to-string})
 
 (defmethod object/-meta-write Enum
-  [_]
-  {:from-string string/-from-string})
+  [cls]
+  {:from-string (fn [arg] (string/-from-string arg cls))})
 
 (extend-type Enum
   string/IString

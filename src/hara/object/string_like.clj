@@ -23,7 +23,7 @@
 
     (defmethod object/-meta-write ~cls
       [~'_]
-      {:from-string string/-from-string})
+      {:from-string (fn [s#] (string/-from-string s# ~cls))})
 
     (extend-protocol string/IString
       ~cls
@@ -37,8 +37,8 @@
 
     ~(if write
        `(defmethod string/-from-string ~cls
-          [data# type#]
-          (~write data# type#))
+          [data# ~'_]
+          (~write data#))
        `(defmethod string/-from-string ~cls
           [data# type#]
           (throw (Exception. (str "Cannot create " type# " from string.")))))

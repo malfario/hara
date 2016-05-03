@@ -75,7 +75,7 @@ It is best to look at a real world example of how to use such a library.
  java.io.File
  {:tag "path"
   :read .getPath
-  :write (fn [^String path _] (java.io.File. path))})
+  :write (fn [^String path] (java.io.File. path))})
 
 "The three keys that are important in the map are:
 
@@ -104,7 +104,7 @@ Constructing a File object, notice that the output is different from before:"
  {:tag   "repo"
   :read     (fn [^org.eclipse.jgit.lib.Repository repo]
               (-> repo (.getDirectory) object/to-data))
-  :write    (fn [^String path _]
+  :write    (fn [^String path]
               (org.eclipse.jgit.internal.storage.file.FileRepository. path))})
 
 "It's usage can be seen:"

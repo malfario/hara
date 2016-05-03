@@ -8,10 +8,11 @@
   (cond-> []
     read  (conj `(defmethod object/-meta-read ~cls
                    [~'_]
-                   ~read))
+                   {:to-vector ~read}))
     write (conj `(defmethod object/-meta-write ~cls
                    [~'_]
-                   ~write))
+                   {:from-vector ~write}))
+
     true  (conj `(defmethod print-method ~cls
                   [v# ^java.io.Writer w#]
                   (.write w# (str "#" (or ~tag
