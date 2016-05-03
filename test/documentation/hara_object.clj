@@ -139,9 +139,19 @@ Constructing a File object, notice that the output is different from before:"
      (sort))
 ;;=> ("BLOCKED" "NEW" "RUNNABLE" "TERMINATED" "TIMED_WAITING" "WAITING")
 
+[[:chapter {:title "vector-like"}]]
+
+"Classes that behave like lists and collections can be extended with the `vector-like` attribute. Note that class arrays, `java.lang.Iterable`, `java.util.Iterator` and `java.util.AbstractCollection` are automatically converted to a vector of things:"
+
+(object/vector-like
+ org.eclipse.jgit.revwalk.RevWalk
+ {:tag "commits"
+  :read (fn [^org.eclipse.jgit.revwalk.RevWalk walk]
+          (->> walk (.iterator) object/to-data))})
+
 [[:chapter {:title "map-like"}]]
 
-"Classes are containers of fields and methods. Therefore, they can be considered maplike because instances of the class contain fields that hold data about its state. [hara.reflect](hara-reflect.html) allows access of fields through the [delegate](hara-reflect.html#delegate) function. However, it has been found that this is a little too overpowered and a more subtle way would be to use the `getter` and `setter` methods."
+"Classes are containers of fields and methods. Therefore, they can be considered map-like because instances of the class contain fields that hold data about its state. [hara.reflect](hara-reflect.html) allows access of fields through the [delegate](hara-reflect.html#delegate) function. However, it has been found that this is a little too overpowered and a more subtle way would be to use the `getter` and `setter` methods."
 
 [[:section {:title "Primitives"}]]
 
@@ -166,7 +176,7 @@ Constructing a File object, notice that the output is different from before:"
     (sort))
 ;=> (:case-insensitive-order :hash :serial-persistent-fields :serial-version-uid :value)
 
-[[:section {:title ""}]]
+[[:section {:title "map-like"}]]
 
 "As for stringlike classes, maplike classes can also be seen to be extended in [gita](https://github.com/zcaudate/gita/src/gita/interop/map_like.clj). Below are examples of classes that have been extended:"
 
