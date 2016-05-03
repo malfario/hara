@@ -127,12 +127,16 @@
              (into-array cls)))
 
       :else
-      (let [{:keys [from-string] :as mobj} (meta-write cls)]
+      (let [{:keys [from-string from-vector] :as mobj} (meta-write cls)]
         (cond
           ;; If input is a string and there is a from-string method
           (and (string? arg) from-string)
-          (from-string arg cls)
+          (from-string arg)
 
+          ;; If input is a string and there is a from-string method
+          (and (vector? arg) from-vector)
+          (from-vector arg)
+          
           ;; If the input is a map
           (map? arg)
           (from-map arg cls)
