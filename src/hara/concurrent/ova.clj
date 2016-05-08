@@ -362,7 +362,7 @@
   {:added "2.1"}
   [ova f]
   (doseq [i (range (count ova))]
-    (alter (@ova i) #(f i %) ))
+    (alter (nth @ova i) #(f i %) ))
   ova)
 
 (defn smap!
@@ -378,7 +378,7 @@
   [ova pchk f & args]
   (let [idx (indices ova pchk)]
     (doseq [i idx]
-      (apply alter (@ova i) f args)))
+      (apply alter (nth @ova i) f args)))
   ova)
 
 (defn smap-indexed!
@@ -396,7 +396,7 @@
   [ova pchk f]
   (let [idx (indices ova pchk)]
     (doseq [i idx]
-      (alter (@ova i) #(f i %))))
+      (alter (nth @ova i) #(f i %))))
   ova)
 
 (defn insert-fn [v val & [i]]
@@ -433,13 +433,19 @@
   ([ova] (sort! ova compare))
   ([ova comp]
      (alter (state/get ova)
-            #(sort (fn [x y]
-                     (comp @x @y)) %))
+            (fn [state]
+              (->> state
+                   (sort (fn [x y]
+                          (comp @x @y)))
+                   vec)))
      ova)
   ([ova sel comp]
      (alter (state/get ova)
-            #(sort (fn [x y]
-                     (comp (get-> @x sel) (get-> @y sel))) %))
+            (fn [state]
+              (->> state
+                   (sort (fn [x y]
+                           (comp (get-> @x sel) (get-> @y sel))))
+                   vec)))
      ova))
 
 (defn reverse!
