@@ -455,7 +455,7 @@
     (persistent! o) => [4 3 2 1 0])"
   {:added "2.1"}
   [ova]
-  (alter (state/get ova) reverse)
+  (alter (state/get ova) (comp vec reverse))
   ova)
 
 (defn- delete-internal-objs [ova indices]
