@@ -74,7 +74,7 @@ It is best to look at a real world example of how to use such a library.
 (object/string-like
  java.io.File
  {:tag "path"
-  :read .getPath
+  :read (fn [f] (.getPath f))
   :write (fn [^String path] (java.io.File. path))})
 
 "The three keys that are important in the map are:

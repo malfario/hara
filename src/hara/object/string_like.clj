@@ -1,6 +1,7 @@
 (ns hara.object.string-like
   (:require [hara.protocol.string :as string]
-            [hara.protocol.object :as object]))
+            [hara.protocol.object :as object]
+            [hara.object.print :as print]))
 
 (defmacro extend-string-like
   "creates an entry for string-like classes
@@ -15,11 +16,12 @@
      (prn (java.io.File. \"/home\")))
    => \"#path \"/home\"\""
   {:added "2.3"} 
-  [cls {:keys [tag read write meta] :as opts}]
+  [cls {:keys [read write meta] :as opts}]
   `(vector
     (defmethod object/-meta-read ~cls
       [~'_]
-      {:to-string string/-to-string})
+      ~(-> {:to-string `string/-to-string}
+           (print/assoc-print-vars opts)))
 
     (defmethod object/-meta-write ~cls
       [~'_]
@@ -42,9 +44,5 @@
        `(defmethod string/-from-string ~cls
           [data# type#]
           (throw (Exception. (str "Cannot create " type# " from string.")))))
-
-    (defmethod print-method ~cls
-      [v# ^java.io.Writer w#]
-      (.write w# (str "#" (or ~tag
-                              (.getName ~cls))
-                      " \"" (string/-to-string v#) "\"")))))
+    
+    (print/extend-print ~cls)))

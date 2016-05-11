@@ -1,7 +1,8 @@
 (ns hara.object.map-like
   (:require [hara.protocol.object :as object]
             [hara.object.write :as write]
-            [hara.object.read :as read]))
+            [hara.object.read :as read]
+            [hara.object.print :as print]))
 
 (defn key-selection
   [m include exclude]
@@ -41,19 +42,20 @@
     (prn (write/from-data {:name \"hello\" :species \"cat\"} test.Pet)))
    => \"#cat{:name \"hello\"}\""
   {:added "2.3"} 
-  [^Class cls {:keys [tag read write exclude include display] :as opts}]
+  [^Class cls {:keys [read write exclude include] :as opts}]
   `[(defmethod object/-meta-read ~cls
       [~'_]
-      ~(cond (map? read) read
+      ~(let [read (cond (map? read) read
 
-             (= read :reflect)
-             `{:methods (key-selection (read/read-reflect-fields ~cls) ~include ~exclude)}
+                        (= read :reflect)
+                        `{:methods (key-selection (read/read-reflect-fields ~cls) ~include ~exclude)}
 
-             (or (nil? read)
-                 (= read :getters))
-             `{:methods (-> (merge (read/read-getters ~cls read/+read-get-template+)
-                                   (read/read-getters ~cls read/+read-is-template+))
-                            (key-selection ~include ~exclude))}))
+                        (or (nil? read)
+                            (= read :getters))
+                        `{:methods (-> (merge (read/read-getters ~cls read/+read-get-template+)
+                                              (read/read-getters ~cls read/+read-is-template+))
+                                       (key-selection ~include ~exclude))})]
+         (print/assoc-print-vars read opts)))
 
     ~(when (and write (map? write))
        (assert (or (:from-map write)
@@ -70,8 +72,4 @@
                    (nil? methods))
                (assoc :methods `(write/write-setters ~cls))))))
 
-    (defmethod print-method ~cls
-      [~'v ^java.io.Writer w#]
-      (.write w# (str "#" (or ~tag (.getName ~cls)) ""
-                      ~(cond->> `(read/to-data ~'v)
-                         display (list display)))))])
+    (print/extend-print ~cls)])
