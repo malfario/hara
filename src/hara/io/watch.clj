@@ -3,7 +3,9 @@
             [hara.data.map :refer [merge-nil]]
             [clojure.java.io :as io]
             [clojure.string :as string])
-  (:import [java.nio.file WatchService Paths FileSystems StandardWatchEventKinds]
+  (:import [java.nio.file WatchService Paths FileSystems
+            StandardWatchEventKinds WatchEvent$Modifier]
+           [com.sun.nio.file ExtendedWatchEventModifier]
            [java.util.concurrent TimeUnit]))
 
 (def ^:dynamic *defaults* {:recursive true
@@ -35,8 +37,9 @@
                (not (or (get @seen dir-path)
                         (some #(re-find % (last (string/split dir-path #"/"))) excludes))))
       (let [dir (Paths/get dir-path (make-array String 0))]
-        (.register dir service (into-array event-kinds))
-        (swap! seen conj dir-path))
+        (.register dir service (into-array event-kinds)
+                   (into-array [ExtendedWatchEventModifier/FILE_TREE]))
+        (swap! seen conj dir-path)
       (if (:recursive options)
         (doseq [^java.io.File f (.listFiles (io/file dir-path))]
           (when (. f isDirectory)
@@ -54,6 +57,9 @@
         :async (future (callback (kind-lookup kind) file))
         :sync  (callback (kind-lookup kind) file)))))
 
+(defn process-deleted [watcher kind ^java.io.File file]
+  (process-event watcher kind file))
+
 (defn run-watcher [watcher]
   (let [^java.nio.file.WatchKey wkey
         (.take ^java.nio.file.WatchService (:service watcher))]
@@ -65,11 +71,14 @@
             ^java.nio.file.Path context (.context event)
             ^java.nio.file.Path res-path (.resolve path context)
             ^java.io.File file (.toFile res-path)]
-        (if (and (= kind StandardWatchEventKinds/ENTRY_CREATE)
+        (when (= kind StandardWatchEventKinds/ENTRY_DELETE)
+          ;; Deleted entries are neither a file nor a dir
+          (process-deleted watcher kind file))
+        (when (and (= kind StandardWatchEventKinds/ENTRY_CREATE)
                  (.isDirectory file)
                  (-> watcher :options :recursive))
           (register-sub-directory watcher (.getPath file)))
-        (if (.isFile file)
+        (when (.isFile file)
           (process-event watcher kind file))))
     (.reset wkey)
     (recur watcher)))
