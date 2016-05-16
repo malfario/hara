@@ -44,7 +44,7 @@
         (doseq [^java.io.File f (.listFiles (io/file dir-path))]
           (when (. f isDirectory)
             (register-sub-directory watcher (.getCanonicalPath f))))))
-    watcher))
+    watcher)))
 
 (defn process-event [watcher kind ^java.io.File file]
   (let [{:keys [options callback excludes filters kinds]} watcher
