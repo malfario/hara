@@ -4,10 +4,12 @@
   :license {:name "The MIT License"
             :url "http://http://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.8.0"]]
-  :profiles {:dev {:dependencies [[midje "1.6.3"]
+  :profiles {:dev {:source-paths ["dev"]
+                   :dependencies [[midje "1.6.3"]
                                   [compojure "1.4.0"]
                                   [ring "1.4.0"]
                                   [clj-http "2.1.0"]
+                                  [org.clojure/tools.namespace "0.2.11"]
                                   [org.eclipse.jgit "4.0.1.201506240215-r"]]
                    :plugins [[lein-midje "3.1.3"]
                              [lein-repack "0.2.10"]
