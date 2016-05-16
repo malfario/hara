@@ -5,18 +5,23 @@
 
 (def system nil)
 
+(defn filemap []
+  {:test {:file "\\\\VMX-XP32\\elastindex_test"
+          :callback println
+          :opts {:mode :sync :recursive false}}} )
+
 (defn init [])
 
 (defn start []
-  (alter-var-root
-   #'system
-   (constantly {:watcher (w/add-io-watch
-                          (io/file "\\\\VMX-XP32\\elastindex_test")
-                          :test println {:mode :sync :recursive false})})))
+  (let [filemap (filemap)]
+    (doseq [[name {:keys [file callback opts]}] filemap]
+      (w/add-io-watch (io/file file) (keyword name) callback opts))
+    (alter-var-root #'system (constantly filemap))))
 
 (defn stop []
   (when system
-    (w/remove-io-watch (io/file "\\\\VMX-XP32\\elastindex_test") :test nil)))
+    (doseq [[name {:keys [file]}] system]
+      (w/remove-io-watch (io/file file) (keyword name) nil))))
 
 (defn reset []
   (stop)
